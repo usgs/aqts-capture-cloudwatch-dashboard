@@ -33,15 +33,11 @@ pipeline {
                         env.AWS_ACCESS_KEY_ID = roleJson.Credentials.AccessKeyId
                         env.AWS_SECRET_ACCESS_KEY = roleJson.Credentials.SecretAccessKey
                         env.AWS_SESSION_TOKEN = roleJson.Credentials.SessionToken
-                        env.BUCKET = 'iow-cloud-applications-dev'
                     } else {
-                        env.BUCKET = 'iow-cloud-applications'
+                        // TODO set up prod env, or does jenkins have access to this by default?
                     }
+                    // TODO run whatever python/boto3 commands we need to make the dashboard?
                 }
-                sh '''
-                npm install
-                ./node_modules/serverless/bin/serverless.js deploy --stage ${DEPLOY_STAGE} --bucket ${BUCKET} --region us-west-2
-                '''
             }
         }
     }
