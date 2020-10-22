@@ -21,6 +21,8 @@ pipeline {
             }
             steps {
                 script {
+                    // By default, jenkins has access to prod account/vpc environment variables.
+                    // If deploying to dev account/vpc, we need to change these default values.
                     if ("${params.DEPLOY_STAGE}" == 'DEV') {
                         def secretsString = sh(script: '/usr/local/bin/aws ssm get-parameter --name "/aws/reference/secretsmanager/IOW_AWS" --query "Parameter.Value" --with-decryption --output text --region "us-west-2"', returnStdout: true).trim()
                         def secretsJson = readJSON text: secretsString
@@ -33,10 +35,9 @@ pipeline {
                         env.AWS_ACCESS_KEY_ID = roleJson.Credentials.AccessKeyId
                         env.AWS_SECRET_ACCESS_KEY = roleJson.Credentials.SecretAccessKey
                         env.AWS_SESSION_TOKEN = roleJson.Credentials.SessionToken
-                    } else {
-                        // TODO set up prod env, or does jenkins have access to this by default?
                     }
-                    // TODO run whatever python/boto3 commands we need to make the dashboard?
+                    // TODO run whatever python/boto3 commands we need to make the dashboard
+                    sh 'python --version'
                 }
             }
         }
