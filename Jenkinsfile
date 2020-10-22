@@ -40,7 +40,7 @@ pipeline {
                     sh '''
                         python --version
                         ls -al
-                        python cloudwatch_monitoring/dashboard.py.create_cloudwatch_dashboard()
+                        python cloudwatch_monitoring/dashboard.py
                     '''
                 }
             }
@@ -62,7 +62,7 @@ pipeline {
         failure {
             script {
                 pipelineUtils.sendEmailNotification(
-                    to: 'ayan@usgs.gov',
+                    to: 'ssoper@contractor.usgs.gov',
                     attachLog: true
                 )
             }
