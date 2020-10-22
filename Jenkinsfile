@@ -40,7 +40,7 @@ pipeline {
                     sh '''
                         python --version
                         ls -al
-                        python cloudwatch_monitoring/dashboard.create_cloudwatch_dashboard
+                        python cloudwatch_monitoring/dashboard.py.create_cloudwatch_dashboard()
                     '''
                 }
             }
