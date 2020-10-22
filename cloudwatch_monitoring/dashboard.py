@@ -34,7 +34,7 @@ if __name__ == '__main__':
             if 'wma:organization' in function_metadata['Tags']:
                 print('wma:organization key exists in the Tags dictionary')
                 if 'IOW' == function_metadata['Tags']['wma:organization']:
-                    print(function_metadata['Tags']['wma:organization'])
+                    print('The lambda function and tag: ' + function['FunctionName'] + ' ' + function_metadata['Tags']['wma:organization'])
                     # TODO and do other fun stuff
 
 
