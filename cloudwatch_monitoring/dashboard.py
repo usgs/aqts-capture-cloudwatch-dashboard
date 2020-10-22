@@ -33,12 +33,8 @@ if __name__ == '__main__':
             print('Tags key exists in the function metadata')
             if 'wma:organization' in function_metadata['Tags']:
                 print('wma:organization key exists in the Tags dictionary')
-                for wma_tag in function_metadata['Tags']['wma:organization']:
-                    print('this happened')
-                    print(wma_tag)
-                    if 'IOW' == wma_tag:
-
-                        print(wma_tag)
-                        # TODO and do other fun stuff
+                if 'IOW' == function_metadata['Tags']['wma:organization']:
+                    print(function_metadata['Tags']['wma:organization'])
+                    # TODO and do other fun stuff
 
 
