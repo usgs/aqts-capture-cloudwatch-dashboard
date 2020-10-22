@@ -41,6 +41,7 @@ pipeline {
                         python --version
                         python3 -m pip --version
                         ls -al
+                        pip install -r requirements.txt
                         python cloudwatch_monitoring/dashboard.py
                     '''
                 }
