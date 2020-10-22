@@ -22,13 +22,11 @@ if __name__ == '__main__':
     # initialize the array of widgets
     widgets = []
 
-    print('Use print statements for diagnostics')
-
     # create lambda widgets
     # get all the lambdas in the account
     iow_lambdas = []
     all_lambdas_response = lambda_client.list_functions(MaxItems=1000)
-    for function_name in all_lambdas_response['FunctionName']:
+    for function_name in all_lambdas_response['Functions']['FunctionName']:
         metadata = lambda_client.get_function(function_name)
         tags = lambda_client.list_tags(metadata['FunctionArn'])
         print(tags)
