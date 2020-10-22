@@ -26,8 +26,12 @@ if __name__ == '__main__':
 
     # create lambda widgets
     # get all the lambdas in the account
+    iow_lambdas = []
     all_lambdas_response = lambda_client.list_functions(MaxItems=1000)
-    for single_lambda in all_lambdas_response:
-        metadata = lambda_client.get_function(single_lambda)
-        tags = metadata.get_tags
+    for function_name in all_lambdas_response['FunctionName']:
+        metadata = lambda_client.get_function(function_name)
+        tags = lambda_client.list_tags(metadata['FunctionArn'])
         print(tags)
+        for wma_tag in tags['wma:organization']:
+            if 'IOW' in wma_tag:
+                print(wma_tag)
