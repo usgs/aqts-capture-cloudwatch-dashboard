@@ -39,6 +39,7 @@ pipeline {
                     // Python/boto3 entrypoint to create the dashboard
                     sh '''
                         python --version
+                        python3 -m pip --version
                         ls -al
                         python cloudwatch_monitoring/dashboard.py
                     '''
