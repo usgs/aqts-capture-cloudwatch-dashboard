@@ -2,7 +2,8 @@ import boto3
 import json
 import logging
 
-def create_cloudwatch_dashboard():
+# Entrypoint from the jenkins script, everything inside __name__ == '__main__' will be executed
+if __name__ == '__main__':
 
     """
     Create a cloudwatch dashboard with basic and custom widgets for
@@ -10,6 +11,7 @@ def create_cloudwatch_dashboard():
     """
 
     logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
 
     cloudwatch_client  = boto3.client("cloudwatch")
     lambda_client = boto3.client("lambda")
