@@ -1,6 +1,5 @@
 import boto3
 import json
-import logging
 
 # Entrypoint from the jenkins script, everything inside __name__ == '__main__' will be executed
 if __name__ == '__main__':
@@ -9,9 +8,6 @@ if __name__ == '__main__':
     Create a cloudwatch dashboard with basic and custom widgets for
     monitoring performance of aqts-capture etl assets
     """
-
-    logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
 
     region = 'us-west-2'
 
@@ -26,5 +22,8 @@ if __name__ == '__main__':
     # initialize the array of widgets
     widgets = []
 
-    logger.info('Did we make it this far?')
-    print('Did we make it to the print statement')
+    print('Use print statements for diagnostics')
+
+    # create lambda widgets
+    lambdas_response = lambda_client.list_functions(MaxItems=500)
+    print(lambdas_response);
