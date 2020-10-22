@@ -13,7 +13,7 @@ pipeline {
         pollSCM('H/5 * * * *')
     }
     stages {
-        stage('run build the zip file for lambda') {
+        stage('Run python script to build dashboard') {
             agent {
                 dockerfile {
                     label 'team:iow'
@@ -36,15 +36,19 @@ pipeline {
                         env.AWS_SECRET_ACCESS_KEY = roleJson.Credentials.SecretAccessKey
                         env.AWS_SESSION_TOKEN = roleJson.Credentials.SessionToken
                     }
-                    // TODO run whatever python/boto3 commands we need to make the dashboard
-                    sh 'python --version'
+                    // Python/boto3 entrypoint to create the dashboard
+                    sh '''
+                        python --version
+                        ls -al
+                        python cloudwatch_monitoring/dashboard.create_cloudwatch_dashboard()
+                    '''
                 }
             }
         }
-        stage('Set Build Description') {
+        stage('Set build description') {
             steps {
                 script {
-                    currentBuild.description = "Create dashboard on ${env.DEPLOY_STAGE} tier"
+                    currentBuild.description = "Created dashboard on ${env.DEPLOY_STAGE} tier"
                 }
             }
         }
