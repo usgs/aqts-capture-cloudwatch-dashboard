@@ -40,6 +40,13 @@ pipeline {
                 }
             }
         }
+        stage('Set Build Description') {
+            steps {
+                script {
+                    currentBuild.description = "Create dashboard on ${env.DEPLOY_STAGE} tier"
+                }
+            }
+        }
     }
     post {
         always {
