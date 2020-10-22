@@ -10,6 +10,7 @@ if __name__ == '__main__':
     """
 
     region = 'us-west-2'
+    wma_org_tag_key_name = 'wma:organization'
 
     cloudwatch_client  = boto3.client("cloudwatch", region_name=region)
     lambda_client = boto3.client("lambda", region_name=region)
@@ -29,11 +30,13 @@ if __name__ == '__main__':
     for function in all_lambdas_response['Functions']:
         config_metadata = lambda_client.get_function(FunctionName=function['FunctionName'])
         print(config_metadata)
-        tags = config_metadata['Tags']
-        print(tags)
-        if 'wma:organization' in tags:
-            for wma_tag in tags['wma:organization']:
-                if 'IOW' == wma_tag:
-                    print(wma_tag)
+        if config_metadata.has_key('Tags'):
+            tags = config_metadata['Tags']
+            # print(tags)
+            if tags.has_key(wma_org_tag_key_name):
+                for wma_tag in tags[wma_org_tag_key_name]:
+                    if 'IOW' == wma_tag:
+                        print(wma_tag)
+                        # TODO and do other fun stuff
 
 
