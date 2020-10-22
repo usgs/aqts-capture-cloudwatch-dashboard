@@ -27,7 +27,7 @@ if __name__ == '__main__':
     all_lambdas_response = lambda_client.list_functions(MaxItems=1000)
 
     for function in all_lambdas_response['Functions']:
-
+        print(function)
         metadata = lambda_client.get_function(function['FunctionName'])
         tags = lambda_client.list_tags(metadata['FunctionArn'])
         print(tags)
