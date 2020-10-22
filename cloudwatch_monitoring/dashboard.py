@@ -27,11 +27,14 @@ if __name__ == '__main__':
     all_lambdas_response = lambda_client.list_functions(MaxItems=1000)
 
     for function in all_lambdas_response['Functions']:
-        config_metadata = lambda_client.get_function(FunctionName=function['FunctionName'])
-        print(config_metadata)
-        if 'Tags' in config_metadata:
-            if 'wma:organization' in config_metadata['Tags']:
-                for wma_tag in config_metadata['Tags']['wma:organization']:
+        function_metadata = lambda_client.get_function(FunctionName=function['FunctionName'])
+        # print(function_metadata)
+        if 'Tags' in function_metadata:
+            print('Tags key exists in the function metadata')
+            if 'wma:organization' in function_metadata['Tags']:
+                print('wma:organization key exists in the Tags dictionary')
+                for wma_tag in function_metadata['Tags']['wma:organization']:
+                    print('this happened')
                     if 'IOW' == wma_tag:
                         print(wma_tag)
                         # TODO and do other fun stuff
