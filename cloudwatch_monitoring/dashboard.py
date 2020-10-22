@@ -28,13 +28,8 @@ if __name__ == '__main__':
 
     for function in all_lambdas_response['Functions']:
         function_metadata = lambda_client.get_function(FunctionName=function['FunctionName'])
-        # print(function_metadata)
         if 'Tags' in function_metadata:
-            print('Tags key exists in the function metadata')
             if 'wma:organization' in function_metadata['Tags']:
-                print('wma:organization key exists in the Tags dictionary')
                 if 'IOW' == function_metadata['Tags']['wma:organization']:
                     print('The lambda function and tag: ' + function['FunctionName'] + ' ' + function_metadata['Tags']['wma:organization'])
                     # TODO and do other fun stuff
-
-
