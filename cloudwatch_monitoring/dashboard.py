@@ -30,7 +30,7 @@ if __name__ == '__main__':
         config_metadata = lambda_client.get_function(FunctionName=function['FunctionName'])
         print(config_metadata)
         tags = lambda_client.list_tags(Resource=config_metadata['Configuration']['FunctionArn'])
-        tags2 = config_metadata['Configuration']['Tags']
+        tags2 = config_metadata['Tags']
         print(tags)
         print(tags2)
         for wma_tag in tags['wma:organization']:
