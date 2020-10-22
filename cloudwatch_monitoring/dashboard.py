@@ -13,8 +13,10 @@ if __name__ == '__main__':
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
 
-    cloudwatch_client  = boto3.client("cloudwatch")
-    lambda_client = boto3.client("lambda")
+    region = 'us-west-2'
+
+    cloudwatch_client  = boto3.client("cloudwatch", region_name=region)
+    lambda_client = boto3.client("lambda", region_name=region)
 
     # set starting and default values for widget positioning and dimensions
     x, y = [0, 0]
@@ -25,4 +27,3 @@ if __name__ == '__main__':
     widgets = []
 
     logger.info('Did we make it this far?')
-
