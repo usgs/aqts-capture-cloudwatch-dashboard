@@ -25,5 +25,9 @@ if __name__ == '__main__':
     print('Use print statements for diagnostics')
 
     # create lambda widgets
-    lambdas_response = lambda_client.list_functions(MaxItems=500)
-    print(lambdas_response);
+    # get all the lambdas in the account
+    all_lambdas_response = lambda_client.list_functions(MaxItems=1000)
+    for single_lambda in all_lambdas_response:
+        metadata = lambda_client.get_function(single_lambda)
+        tags = metadata.get_tags
+        print(tags)
