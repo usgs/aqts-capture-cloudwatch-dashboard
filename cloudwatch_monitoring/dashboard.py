@@ -28,6 +28,7 @@ if __name__ == '__main__':
 
     for function in all_lambdas_response['Functions']:
         print(function)
+        print(function['FunctionName'])
         metadata = lambda_client.get_function(function['FunctionName'])
         tags = lambda_client.list_tags(metadata['FunctionArn'])
         print(tags)
