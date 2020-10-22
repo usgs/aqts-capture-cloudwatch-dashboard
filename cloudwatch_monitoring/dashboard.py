@@ -27,3 +27,4 @@ if __name__ == '__main__':
     widgets = []
 
     logger.info('Did we make it this far?')
+    print('Did we make it to the print statement')
