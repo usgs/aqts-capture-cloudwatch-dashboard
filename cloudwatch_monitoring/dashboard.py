@@ -27,13 +27,22 @@ if __name__ == '__main__':
     # get all the lambdas in the account
     all_lambdas_response = lambda_client.list_functions(MaxItems=1000)
 
-    # grab the 'IOW' tagged lambdas and make widgets for them
+    # we are only interested in a subset of lambdas in the account
     for function in all_lambdas_response['Functions']:
-        function_metadata = lambda_client.get_function(FunctionName=function['FunctionName'])
+
+        # this is the name we specify in each lambda's serverless.yml config file.
+        function_name = function['FunctionName']
+
+        # separate API call to grab metadata for a specific function, specifically we are interested in the tags
+        function_metadata = lambda_client.get_function(FunctionName=function_name)
+
+        # we only want lambdas that are tagged as 'IOW'
         if 'Tags' in function_metadata:
-            if 'wma:organization' in function_metadata['Tags']:
-                if 'IOW' == function_metadata['Tags']['wma:organization']:
-                    # print('The lambda function and tag: ' + function['FunctionName'] + ' ' + function_metadata['Tags']['wma:organization'])
+            tags = function_metadata['Tags']
+            if 'wma:organization' in tags:
+                if 'IOW' == tags['wma:organization']:
+
+                    # generic widget template taken from existing custom dashboard
                     widget = {
                         'type': 'metric',
                         'x': x,
@@ -42,7 +51,7 @@ if __name__ == '__main__':
                         'width': lambda_widget_width,
                         'properties': {
                             "metrics": [
-                                ["AWS/Lambda", "ConcurrentExecutions", "FunctionName", function['FunctionName']],
+                                ["AWS/Lambda", "ConcurrentExecutions", "FunctionName", function_name],
                                 [".", "Invocations", ".", ".", {"stat": "Sum"}],
                                 [".", "Duration", ".", "."],
                                 [".", "Errors", ".", ".", {"stat": "Sum"}],
@@ -50,7 +59,7 @@ if __name__ == '__main__':
                             ],
                             "view": "singleValue",
                             "region": region,
-                            "title": function['FunctionName'],
+                            "title": function_name,
                             "period": 300,
                             "stacked": False,
                             "stat": "Average"
