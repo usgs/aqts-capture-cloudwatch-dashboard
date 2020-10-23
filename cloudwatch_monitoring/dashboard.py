@@ -52,7 +52,7 @@ if __name__ == '__main__':
                             "region": region,
                             "title": function['FunctionName'],
                             "period": 300,
-                            "stacked": false,
+                            "stacked": False,
                             "stat": "Average"
                         }
                     }
