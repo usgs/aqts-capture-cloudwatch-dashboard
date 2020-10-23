@@ -5,7 +5,7 @@ module for creating lambda widgets
 import boto3
 
 
-def create_lambda_widgets(region, lambda_client):
+def create_lambda_widgets(region, deploy_stage):
     """
     Iterate over an account's list of lambdas and create generic widgets for those with
     wma:organization = 'IOW' tags.
@@ -13,6 +13,9 @@ def create_lambda_widgets(region, lambda_client):
     :return: List of lambda widgets
     :rtype: list
     """
+
+    # create the aws python sdk lambda client
+    lambda_client = boto3.client("lambda", region_name=region)
 
     # set starting and default values for lambda widget positioning and dimensions
     x, y = [0, 0]
@@ -75,5 +78,40 @@ def create_lambda_widgets(region, lambda_client):
                         if x + lambda_widget_width > lambda_widget_max_width:
                             x = 0
                             y += lambda_widget_height
+
+    # Custom widget for monitoring concurrency of lambdas specifically involved in the ETL
+    concurrent_lambdas = {
+        'type': 'metric',
+        'x': x,
+        'y': y,
+        'height': lambda_widget_height + 3,
+        'width': lambda_widget_width,
+        'properties': {
+            "metrics": [
+                ["AWS/Lambda", "ConcurrentExecutions", "FunctionName", "aqts-capture-dvstat-transform-" + deploy_stage + "-transform", {"label": "DV Stat Transform"}],
+                ["...", "aqts-capture-error-handler-" + deploy_stage + "-aqtsErrorHandler", {"label": "Error Handler"}],
+                ["...", "aqts-capture-raw-load" + deploy_stage + "iowCapture", {"label": "Capture Raw Load"}],
+                ["...", "aqts-capture-stattype-router" + deploy_stage + "determineRoute", {"label": "Statistic Type Router"}],
+                ["...", "aqts-capture-trigger" + deploy_stage + "aqtsCaptureTrigger", {"label": "Capture Trigger"}],
+                ["...", "aqts-capture-ts-corrected" + deploy_stage + "preProcess", {"label": "PreProcess TS Corrected"}],
+                ["...", "aqts-capture-ts-description" + deploy_stage + "processTsDescription", {"label": "Pre Process TS Description"}],
+                ["...", "aqts-ts-type-router" + deploy_stage + "determineRoute", {"label": "TS Type Router"}],
+                ["...", "aqts-capture-ts-loader" + deploy_stage + "loadTimeSeries", {"label": "Load Time Series"}],
+                ["...", "aqts-capture-ts-field-visit" + deploy_stage + "preProcess"],
+                ["...", "aqts-capture-field-visit-transform" + deploy_stage + "transform"],
+                ["...", "aqts-capture-discrete-loader" + deploy_stage + "loadDiscrete"],
+                ["...", "aqts-capture-field-visit-metadata" + deploy_stage + "preProcess"],
+                ["...", "aqts-capture-raw-load" + deploy_stage + "iowCaptureMedium"]
+            ],
+            "view": "timeSeries",
+            "stacked": True,
+            "region": region,
+            "period": 60,
+            "stat": "Average",
+            "title": "Concurrent Lambdas (Average per minute)",
+        }
+    }
+
+    lambda_widgets.append(concurrent_lambdas)
 
     return lambda_widgets
