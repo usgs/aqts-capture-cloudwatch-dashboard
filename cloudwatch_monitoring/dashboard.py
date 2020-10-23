@@ -1,7 +1,7 @@
 import boto3
 import json
 import os
-from .lambdas import create_lambda_widgets
+from cloudwatch_monitoring.lambdas import create_lambda_widgets
 
 # Entrypoint from the jenkins script, everything inside __name__ == '__main__' will be executed
 if __name__ == '__main__':
