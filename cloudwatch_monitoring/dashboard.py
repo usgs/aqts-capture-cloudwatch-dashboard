@@ -16,10 +16,10 @@ if __name__ == '__main__':
     cloudwatch_client = boto3.client("cloudwatch", region_name=region)
     lambda_client = boto3.client("lambda", region_name=region)
 
-    # set starting and default values for widget positioning and dimensions
+    # set starting and default values for lambda widget positioning and dimensions
     x, y = [0, 0]
-    width, height = [3, 3]
-    max_width = 12
+    lambda_widget_width, lambda_widget_height = [24, 3]
+    lambda_widget_max_width = 24
 
     # initialize the array of widgets
     widgets = []
@@ -38,8 +38,8 @@ if __name__ == '__main__':
                         'type': 'metric',
                         'x': x,
                         'y': y,
-                        'height': height,
-                        'width': width,
+                        'height': lambda_widget_height,
+                        'width': lambda_widget_width,
                         'properties': {
                             "metrics": [
                                 ["AWS/Lambda", "ConcurrentExecutions", "FunctionName", function['FunctionName']],
@@ -61,10 +61,10 @@ if __name__ == '__main__':
                     widgets.append(widget)
 
                     # iterate the position on the dashboard for the next widget
-                    x += width
-                    if (x + width > max_width):
+                    x += lambda_widget_width
+                    if (x + lambda_widget_width > lambda_widget_max_width):
                         x = 0
-                        y += height
+                        y += lambda_widget_height
 
     # TODO other widget iterations to follow (ec2, fargate, rds, custom widgets, etc.)
 
