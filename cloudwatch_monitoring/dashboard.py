@@ -42,38 +42,41 @@ if __name__ == '__main__':
             if 'wma:organization' in tags:
                 if 'IOW' == tags['wma:organization']:
 
-                    # generic widget template taken from existing custom dashboard
-                    widget = {
-                        'type': 'metric',
-                        'x': x,
-                        'y': y,
-                        'height': lambda_widget_height,
-                        'width': lambda_widget_width,
-                        'properties': {
-                            "metrics": [
-                                ["AWS/Lambda", "ConcurrentExecutions", "FunctionName", function_name],
-                                [".", "Invocations", ".", ".", {"stat": "Sum"}],
-                                [".", "Duration", ".", "."],
-                                [".", "Errors", ".", ".", {"stat": "Sum"}],
-                                [".", "Throttles", ".", "."]
-                            ],
-                            "view": "singleValue",
-                            "region": region,
-                            "title": function_name,
-                            "period": 300,
-                            "stacked": False,
-                            "stat": "Average"
+                    # Not sure what SC-807615458658-pp-7rv6atnjwitc6-D-CleanupFunction-1LIPB7Y7PMUWB is, filter it out
+                    if 'CleanupFunction' not in function_name:
+
+                        # generic widget template taken from existing custom dashboard
+                        widget = {
+                            'type': 'metric',
+                            'x': x,
+                            'y': y,
+                            'height': lambda_widget_height,
+                            'width': lambda_widget_width,
+                            'properties': {
+                                "metrics": [
+                                    ["AWS/Lambda", "ConcurrentExecutions", "FunctionName", function_name],
+                                    [".", "Invocations", ".", ".", {"stat": "Sum"}],
+                                    [".", "Duration", ".", "."],
+                                    [".", "Errors", ".", ".", {"stat": "Sum"}],
+                                    [".", "Throttles", ".", "."]
+                                ],
+                                "view": "singleValue",
+                                "region": region,
+                                "title": function_name,
+                                "period": 300,
+                                "stacked": False,
+                                "stat": "Average"
+                            }
                         }
-                    }
 
-                    # add each widget to the widget list
-                    widgets.append(widget)
+                        # add each widget to the widget list
+                        widgets.append(widget)
 
-                    # iterate the position on the dashboard for the next widget
-                    x += lambda_widget_width
-                    if (x + lambda_widget_width > lambda_widget_max_width):
-                        x = 0
-                        y += lambda_widget_height
+                        # iterate the position on the dashboard for the next widget
+                        x += lambda_widget_width
+                        if (x + lambda_widget_width > lambda_widget_max_width):
+                            x = 0
+                            y += lambda_widget_height
 
     # TODO other widget iterations to follow (ec2, fargate, rds, custom widgets, etc.)
 
