@@ -29,6 +29,8 @@ def create_lambda_widgets(region, deploy_stage):
     # get all the lambdas in the account
     all_lambdas_response = lambda_client.list_functions(MaxItems=1000)
 
+    print(all_lambdas_response)
+
     # we are only interested in a subset of lambdas in the account
     for function in all_lambdas_response['Functions']:
 
