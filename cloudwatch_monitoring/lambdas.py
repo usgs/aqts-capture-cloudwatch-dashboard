@@ -117,4 +117,29 @@ def create_lambda_widgets(region, deploy_stage):
 
     lambda_widgets.append(concurrent_lambdas)
 
+    # Custom widget for monitoring error handler invocation counts over time
+    error_handler_activity = {
+        'type': 'metric',
+        'x': x,
+        'y': y,
+        'height': lambda_widget_height + 3,
+        'width': lambda_widget_width,
+        'properties': {
+            "metrics": [
+                ["AWS/Lambda", "ConcurrentExecutions", "FunctionName",
+                 "aqts-capture-error-handler-" + deploy_stage + "-aqtsErrorHandler", "Resource",
+                 "aqts-capture-error-handler-" + deploy_stage + "-aqtsErrorHandler"],
+                [".", "Invocations", ".", ".", {"stat": "Sum"}]
+            ],
+            "view": "timeSeries",
+            "stacked": False,
+            "region": region,
+            "title": "Error Handler Activity",
+            "period": 60,
+            "stat": "Average"
+        }
+    }
+
+    lambda_widgets.append(error_handler_activity)
+
     return lambda_widgets
