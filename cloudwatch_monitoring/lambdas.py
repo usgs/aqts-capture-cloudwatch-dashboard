@@ -32,7 +32,6 @@ def is_iow_asset_filter(function, deploy_stage, region):
     # this is the name we specify in each lambda's serverless.yml config file.
     function_name = function['FunctionName']
 
-    # set initial boolean
     is_iow_lambda = False
 
     # filtering on deploy tier
@@ -59,7 +58,6 @@ def create_lambda_widgets(region, deploy_stage):
     :return: List of lambda widgets
     :rtype: list
     """
-    lambda_client = boto3.client("lambda", region_name=region)
 
     # set starting and default values for lambda widget positioning and dimensions
     x, y = [0, 0]
@@ -75,7 +73,6 @@ def create_lambda_widgets(region, deploy_stage):
     for function in all_lambda_metadata_response['Functions']:
 
         if is_iow_asset_filter(function, deploy_stage, region):
-
             function_name = function['FunctionName']
 
             widget = {
@@ -142,8 +139,6 @@ def create_lambda_widgets(region, deploy_stage):
         }
     }
 
-    lambda_widgets.append(concurrent_lambdas)
-
     # Custom widget for monitoring error handler invocation counts over time
     error_handler_activity = {
         'type': 'metric',
@@ -167,6 +162,7 @@ def create_lambda_widgets(region, deploy_stage):
         }
     }
 
+    lambda_widgets.append(concurrent_lambdas)
     lambda_widgets.append(error_handler_activity)
 
     return lambda_widgets
