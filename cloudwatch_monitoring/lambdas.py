@@ -15,6 +15,7 @@ def get_all_lambda_metadata(region):
     lambda_client = boto3.client("lambda", region_name=region)
     response = lambda_client.list_functions(MaxItems=1000)
 
+    print(response)
     return response
 
 
@@ -39,6 +40,8 @@ def is_iow_asset_filter(function, deploy_stage, region):
 
         # launch API call to grab metadata for a specific function, we are interested in the tags
         function_metadata = lambda_client.get_function(FunctionName=function_name)
+
+        print(function_metadata)
 
         # we only want lambdas that are tagged as 'IOW'
         if 'Tags' in function_metadata:
@@ -74,6 +77,8 @@ def create_lambda_widgets(region, deploy_stage):
 
         if is_iow_asset_filter(function, deploy_stage, region):
             function_name = function['FunctionName']
+
+            print(function_name)
 
             widget = {
                 'type': 'metric',
