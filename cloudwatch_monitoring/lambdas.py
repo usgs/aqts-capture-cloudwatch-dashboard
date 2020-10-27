@@ -70,7 +70,6 @@ def create_lambda_widgets(region, deploy_stage):
 
     # grab all the lambdas in the account/region
     all_lambda_metadata_response = get_all_lambda_metadata(region)
-    print(all_lambda_metadata_response)
 
     # iterate over the list of lambda metadata and create widgets for the assets we care about based on filters
     for function in all_lambda_metadata_response['Functions']:
