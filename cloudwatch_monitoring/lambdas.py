@@ -26,7 +26,7 @@ def get_all_lambda_metadata(region):
     page_itorator = paginator.paginate(PaginationConfig={
         # 'MaxItems': 1000,
         'PageSize': 50
-    }).build_full_result
+    })
 
     for page in page_itorator:
         response.update(page)
