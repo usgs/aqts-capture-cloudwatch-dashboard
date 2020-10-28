@@ -13,7 +13,24 @@ def get_all_lambda_metadata(region):
     :return: response: dict containing a list of metadata about each lambda in the account.
     """
     lambda_client = boto3.client("lambda", region_name=region)
-    response = lambda_client.list_functions(MaxItems=1000)
+
+    response = {}
+
+    # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lambda.html#Lambda.Client.list_functions
+    # list_functions only supports 50 functions returned from a single call.  The MaxItems parameter is required, though
+    # you cannot currently request more than 50 functions in a response.  As such, we can use a paginator to paginate
+    # through the more than 50 functions present in our account/region.
+    # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lambda.html#Lambda.Paginator.ListFunctions
+    # How to paginate: https://boto3.amazonaws.com/v1/documentation/api/latest/guide/paginators.html
+    paginator = lambda_client.get_paginator('list_functions')
+    page_itorator = paginator.paginate(PaginationConfig={
+        'MaxItems': 1000,
+        'PageSize': 50
+    })
+
+    for page in page_itorator:
+        response.update(page)
+    # response = lambda_client.list_functions(MaxItems=1000)
 
     print(response)
     return response
@@ -40,8 +57,6 @@ def is_iow_asset_filter(function, deploy_stage, region):
 
         # launch API call to grab metadata for a specific function, we are interested in the tags
         function_metadata = lambda_client.get_function(FunctionName=function_name)
-
-        print(function_metadata)
 
         # we only want lambdas that are tagged as 'IOW'
         if 'Tags' in function_metadata:
@@ -77,8 +92,6 @@ def create_lambda_widgets(region, deploy_stage):
 
         if is_iow_asset_filter(function, deploy_stage, region):
             function_name = function['FunctionName']
-
-            print(function_name)
 
             widget = {
                 'type': 'metric',
