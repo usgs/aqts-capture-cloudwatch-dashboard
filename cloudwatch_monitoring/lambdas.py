@@ -11,35 +11,17 @@ def get_all_lambda_metadata(region):
     Using the AWS python sdk (boto3), grab all the lambda functions for the specified account for a given region.
 
     :param region: The region, for us that's usually us-west-2
-    :return: response: dict containing a list of metadata about each lambda in the account.
+    :return: response: metadata about each lambda in the account.
+    :rtype: dict
     """
     lambda_client = boto3.client("lambda", region_name=region)
 
-    response = {}
-
+    # Currently you cannot get more than 50 functions from the list_functions call in a single request.  Thus, we need
+    # to iterate over the entire list of available functions in the account using the provided NextMarker string, which
+    # allows us to paginate. boto3 does have pagination tools, but I have found the documentation generally unhelpful,
+    # so below is a more manual approach.
     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lambda.html#Lambda.Client.list_functions
-    # list_functions only supports 50 functions returned from a single call.  The MaxItems parameter is required, though
-    # you cannot currently request more than 50 functions in a response.  As such, we can use a paginator to paginate
-    # through the more than 50 functions present in our account/region.
-    # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lambda.html#Lambda.Paginator.ListFunctions
-    # How to paginate: https://boto3.amazonaws.com/v1/documentation/api/latest/guide/paginators.html
-    # paginator = lambda_client.get_paginator('list_functions')
-    #
-    # # need to iterate on the iterator...
-    # page_iterator = iter(
-    #     paginator.paginate(PaginationConfig={
-    #         'MaxItems': 1000,
-    #         'PageSize': 50,
-    #     })
-    # )
-    #
-    # for page in page_iterator:
-    #     response.update(page)
-    # # response = lambda_client.list_functions(MaxItems=1000)
-    #
-    # for function in response['Functions']:
-    #     print(function['FunctionName'])
-
+    response = {}
     marker = None
     while True:
         if marker:
@@ -52,14 +34,8 @@ def get_all_lambda_metadata(region):
                 MaxItems=10
             )
             response.update(response_iterator)
-            # print("initial response: " + response)
-        # response.update(response_iterator)
-        for function in response_iterator['Functions']:
-            print(function['FunctionName'])
-
         try:
             marker = response_iterator['NextMarker']
-            print(marker)
         except KeyError:
             print("Pagination through list_functions complete")
             break
@@ -74,7 +50,8 @@ def is_iow_asset_filter(function, deploy_stage, region):
     :param function: A single lambda function's metadata
     :param deploy_stage: The specified deployment environment (DEV, TEST, QA, PROD-EXTERNAL)
     :param region: typically 'us-west-2'
-    :return: boolean
+    :return: is_iow_lambda: is this an IOW asset or not
+    :rtype: bool
     """
     lambda_client = boto3.client("lambda", region_name=region)
 
@@ -102,7 +79,7 @@ def is_iow_asset_filter(function, deploy_stage, region):
 def create_lambda_widgets(region, deploy_stage):
     """
     Iterate over an account's list of lambdas and create generic widgets for those with
-    wma:organization = 'IOW' tags.
+    wma:organization = 'IOW' tags.  It also creates some custom widgets.
 
     :return: List of lambda widgets
     :rtype: list
