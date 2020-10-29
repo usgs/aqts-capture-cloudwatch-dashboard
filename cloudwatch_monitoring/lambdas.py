@@ -36,9 +36,6 @@ def get_all_lambda_metadata(region):
         response.update(page)
     # response = lambda_client.list_functions(MaxItems=1000)
 
-    if (response['NextMarker']):
-        print('The next marker or token (bad doc): ' + response['NextMarker'])
-
     for function in response['Functions']:
         print(function['FunctionName'])
     return response
