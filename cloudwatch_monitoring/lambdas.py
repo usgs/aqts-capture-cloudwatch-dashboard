@@ -23,12 +23,16 @@ def get_all_lambda_metadata(region):
     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lambda.html#Lambda.Paginator.ListFunctions
     # How to paginate: https://boto3.amazonaws.com/v1/documentation/api/latest/guide/paginators.html
     paginator = lambda_client.get_paginator('list_functions')
-    page_itorator = paginator.paginate(PaginationConfig={
-        # 'MaxItems': 1000,
-        'PageSize': 50
-    })
 
-    for page in page_itorator:
+    # need to iterate on the iterator...
+    page_iterator = iter(
+        paginator.paginate(PaginationConfig={
+            'MaxItems': 1000,
+            'PageSize': 50,
+        })
+    )
+
+    for page in page_iterator:
         response.update(page)
     # response = lambda_client.list_functions(MaxItems=1000)
 
