@@ -59,6 +59,7 @@ def get_all_lambda_metadata(region):
             marker = response_iterator['NextMarker']
             print(marker)
         except KeyError:
+            print("no more keys in the list_functions output, should stop seeing print statements")
             break
 
     return response
