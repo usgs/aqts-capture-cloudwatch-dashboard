@@ -14,7 +14,7 @@ class TestCreateLambdaWidgets(TestCase):
     def setUp(self):
         self.deploy_stage = 'DEV'
         self.region = 'us-south-10'
-        self.max_items = 1000
+        self.max_items = 10
         self.function_name = 'neat-lambda-function-in-DEV-account'
         self.function_list = {
             'Functions': [
@@ -35,8 +35,10 @@ class TestCreateLambdaWidgets(TestCase):
 
     @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
     def test_get_all_lambda_metadata(self, m_client):
-        mock_lambda_client = mock.MagicMock()
+        # mock_lambda_client = mock.MagicMock()
+        mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
+        mock_lambda_client.list_functions.return_value = self.function_list
 
         # noinspection PyPackageRequirements
         get_all_lambda_metadata(self.region)
