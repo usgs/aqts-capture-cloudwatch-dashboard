@@ -46,12 +46,13 @@ def get_all_lambda_metadata(region):
             response_iterator = lambda_client.list_functions(
                          MaxItems=10,
                          Marker=marker)
-            response.update(response_iterator)
+            # response.update(response_iterator)
         else:
             response_iterator = lambda_client.list_functions(
                 MaxItems=10
             )
-            response = response_iterator
+            # response = response_iterator
+        response.update(response_iterator)
         for function in response_iterator['Functions']:
             print(function['FunctionName'])
 
@@ -59,7 +60,7 @@ def get_all_lambda_metadata(region):
             marker = response_iterator['NextMarker']
             print(marker)
         except KeyError:
-            print("no more keys in the list_functions output, should stop seeing print statements")
+            print("Pagination through list_functions complete")
             break
 
     return response
