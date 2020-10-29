@@ -52,7 +52,7 @@ def get_all_lambda_metadata(region):
                 MaxItems=10
             )
             response.update(response_iterator)
-            print("initial response: " + response)
+            # print("initial response: " + response)
         # response.update(response_iterator)
         for function in response_iterator['Functions']:
             print(function['FunctionName'])
