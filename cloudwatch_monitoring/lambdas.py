@@ -2,6 +2,7 @@
 module for creating lambda widgets
 
 """
+
 import boto3
 
 
@@ -22,22 +23,43 @@ def get_all_lambda_metadata(region):
     # through the more than 50 functions present in our account/region.
     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lambda.html#Lambda.Paginator.ListFunctions
     # How to paginate: https://boto3.amazonaws.com/v1/documentation/api/latest/guide/paginators.html
-    paginator = lambda_client.get_paginator('list_functions')
+    # paginator = lambda_client.get_paginator('list_functions')
+    #
+    # # need to iterate on the iterator...
+    # page_iterator = iter(
+    #     paginator.paginate(PaginationConfig={
+    #         'MaxItems': 1000,
+    #         'PageSize': 50,
+    #     })
+    # )
+    #
+    # for page in page_iterator:
+    #     response.update(page)
+    # # response = lambda_client.list_functions(MaxItems=1000)
+    #
+    # for function in response['Functions']:
+    #     print(function['FunctionName'])
 
-    # need to iterate on the iterator...
-    page_iterator = iter(
-        paginator.paginate(PaginationConfig={
-            'MaxItems': 1000,
-            'PageSize': 50,
-        })
-    )
+    marker = None
+    while True:
+        if marker:
+            response_iterator = lambda_client.list_functions(
+                         MaxItems=10,
+                         Marker=marker)
+        else:
+            response_iterator = lambda_client.list_functions(
+                MaxItems=10
+            )
+        for function in response_iterator['Functions']:
+            print(function['FunctionName'])
 
-    for page in page_iterator:
-        response.update(page)
-    # response = lambda_client.list_functions(MaxItems=1000)
+        response.update(response_iterator)
 
-    for function in response['Functions']:
-        print(function['FunctionName'])
+        try:
+            marker = response_iterator['NextMarker']
+            print(marker)
+        except KeyError:
+            break
     return response
 
 
