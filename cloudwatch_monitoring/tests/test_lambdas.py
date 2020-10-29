@@ -16,10 +16,17 @@ class TestCreateLambdaWidgets(TestCase):
         self.region = 'us-south-10'
         self.max_items = 10
         self.function_name = 'neat-lambda-function-in-DEV-account'
+        self.marker = 'some string'
         self.function_list = {
             'Functions': [
                 {'FunctionName': self.function_name}
             ]
+        }
+        self.function_list_with_next_marker = {
+            'Functions': [
+                {'FunctionName': self.function_name}
+            ],
+            'NextMarker': self.marker
         }
         self.function_list_single_good_function = {
             'FunctionName': self.function_name
@@ -38,6 +45,8 @@ class TestCreateLambdaWidgets(TestCase):
         # mock_lambda_client = mock.MagicMock()
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
+
+        # only one function returned from list_functions
         mock_lambda_client.list_functions.return_value = self.function_list
 
         # noinspection PyPackageRequirements
@@ -48,6 +57,31 @@ class TestCreateLambdaWidgets(TestCase):
 
         # assert the lambda client called list_functions with expected arguments
         mock_lambda_client.list_functions.assert_called_with(MaxItems=self.max_items)
+
+    @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
+    def test_get_all_lambda_metadata_next_marker(self, m_client):
+        mock_lambda_client = mock.Mock()
+        m_client.return_value = mock_lambda_client
+
+        # 2 functions returned, the first function has the key Marker that causes us to begin iterating through pages
+        # of list_function responses
+        mock_lambda_client.list_functions.side_effect = [
+            self.function_list_with_next_marker,
+            self.function_list
+        ]
+
+        expected = [
+            mock.call(MaxItems=self.max_items),
+            mock.call(MaxItems=self.max_items, Marker=self.marker)
+        ]
+
+        # noinspection PyPackageRequirements
+        get_all_lambda_metadata(self.region)
+
+        # assert the boto3 lambda client was called with expected params
+        m_client.assert_called_with('lambda', region_name=self.region)
+
+        mock_lambda_client.list_functions.assert_has_calls(expected, any_order=False)
 
     @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
     def test_is_iow_asset_filter(self, m_client):
@@ -62,7 +96,6 @@ class TestCreateLambdaWidgets(TestCase):
 
         # assert the lambda client called get_function with expected arguments
         mock_lambda_client.get_function.assert_called_with(FunctionName=self.function_name)
-
 
     @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
     @mock.patch('cloudwatch_monitoring.lambdas.create_lambda_widgets', autospec=True)
@@ -164,7 +197,7 @@ class TestCreateLambdaWidgets(TestCase):
 
         # assert the widget list is what it should be, note the misleading name of the assertCountEqual test name
         # doc here: https://docs.python.org/3/library/unittest.html#unittest.TestCase.assertCountEqual
-        self.assertCountEqual(
+        self.assertListEqual(
             create_lambda_widgets(self.region, self.deploy_stage),
             expected_widget_list
         )

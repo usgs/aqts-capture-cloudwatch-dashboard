@@ -37,7 +37,7 @@ def get_all_lambda_metadata(region):
         try:
             marker = response_iterator['NextMarker']
         except KeyError:
-            print("Pagination through list_functions complete")
+            # no more pages, move on
             break
 
     return response
