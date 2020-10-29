@@ -46,13 +46,13 @@ def get_all_lambda_metadata(region):
             response_iterator = lambda_client.list_functions(
                          MaxItems=10,
                          Marker=marker)
-            # response.update(response_iterator)
+            response.update(response_iterator['Functions'])
         else:
             response_iterator = lambda_client.list_functions(
                 MaxItems=10
             )
-            # response = response_iterator
-        response.update(response_iterator)
+            response.update(response_iterator)
+        # response.update(response_iterator)
         for function in response_iterator['Functions']:
             print(function['FunctionName'])
 
