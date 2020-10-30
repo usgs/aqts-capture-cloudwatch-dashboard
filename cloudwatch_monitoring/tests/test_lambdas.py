@@ -15,25 +15,84 @@ class TestCreateLambdaWidgets(TestCase):
         self.deploy_stage = 'DEV'
         self.region = 'us-south-10'
         self.max_items = 10
-        self.function_name = 'neat-lambda-function-in-DEV-account'
-        self.marker = 'some string'
-        self.function_list = {
+        self.valid_function_name_1 = 'lambda-function-in-DEV-account'
+        self.valid_function_name_2 = 'another-lambda-function-in-DEV-account'
+        self.valid_function_name_3 = 'sweet_DEV_function_name'
+        self.bad_function_name = 'some-function-name-with-no-valid-TIER-specified'
+        self.marker = 'some huge string'
+
+        self.function_list_with_page_marker_1 = {
             'Functions': [
-                {'FunctionName': self.function_name}
-            ]
-        }
-        self.function_list_with_next_marker = {
-            'Functions': [
-                {'FunctionName': self.function_name}
+                {'FunctionName': self.valid_function_name_2},
+                {'FunctionName': self.bad_function_name}
             ],
             'NextMarker': self.marker
         }
-        self.function_list_single_good_function = {
-            'FunctionName': self.function_name
+
+        self.function_list_with_page_marker_2 = {
+            'Functions': [
+                {'FunctionName': self.valid_function_name_3},
+                {'FunctionName': self.bad_function_name}
+            ],
+            'NextMarker': self.marker
         }
-        self.get_function = {
+
+        self.function_list_no_page_marker = {
+            'Functions': [
+                {'FunctionName': self.valid_function_name_1},
+                {'FunctionName': self.bad_function_name}
+            ]
+        }
+
+        self.full_function_list = {
+            'Functions': [
+                {'FunctionName': self.valid_function_name_2},
+                {'FunctionName': self.bad_function_name},
+                {'FunctionName': self.valid_function_name_3},
+                {'FunctionName': self.bad_function_name},
+                {'FunctionName': self.valid_function_name_1},
+                {'FunctionName': self.bad_function_name}
+            ],
+            'NextMarker': self.marker
+        }
+
+        self.valid_function_1 = {
+            'FunctionName': self.valid_function_name_1
+        }
+
+        self.valid_function_2 = {
+            'FunctionName': self.valid_function_name_2
+        }
+
+        self.valid_function_3 = {
+            'FunctionName': self.valid_function_name_3
+        }
+
+        self.bad_function = {
+            'FunctionName': self.bad_function_name
+        }
+
+        self.get_function_1 = {
             'Configuration': {
-                'FunctionName': self.function_name
+                'FunctionName': self.valid_function_name_1
+            },
+            'Tags': {
+                'wma:organization': 'IOW'
+            }
+        }
+
+        self.get_function_2 = {
+            'Configuration': {
+                'FunctionName': self.valid_function_name_2
+            },
+            'Tags': {
+                'wma:organization': 'IOW'
+            }
+        }
+
+        self.get_function_3 = {
+            'Configuration': {
+                'FunctionName': self.valid_function_name_3
             },
             'Tags': {
                 'wma:organization': 'IOW'
@@ -42,12 +101,11 @@ class TestCreateLambdaWidgets(TestCase):
 
     @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
     def test_get_all_lambda_metadata(self, m_client):
-        # mock_lambda_client = mock.MagicMock()
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
 
         # only one function returned from list_functions
-        mock_lambda_client.list_functions.return_value = self.function_list
+        mock_lambda_client.list_functions.return_value = self.function_list_no_page_marker
 
         # noinspection PyPackageRequirements
         get_all_lambda_metadata(self.region)
@@ -59,17 +117,16 @@ class TestCreateLambdaWidgets(TestCase):
         mock_lambda_client.list_functions.assert_called_with(MaxItems=self.max_items)
 
     @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
-    def test_get_all_lambda_metadata_next_marker(self, m_client):
+    def test_get_all_lambda_metadata_next_marker_pagination(self, m_client):
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
 
         # 2 functions returned, the first function has the key Marker that causes us to begin iterating through pages
         # of list_function responses
         mock_lambda_client.list_functions.side_effect = [
-            self.function_list_with_next_marker,
-            self.function_list
+            self.function_list_with_page_marker_1,
+            self.function_list_no_page_marker
         ]
-
         expected = [
             mock.call(MaxItems=self.max_items),
             mock.call(MaxItems=self.max_items, Marker=self.marker)
@@ -81,6 +138,7 @@ class TestCreateLambdaWidgets(TestCase):
         # assert the boto3 lambda client was called with expected params
         m_client.assert_called_with('lambda', region_name=self.region)
 
+        # assert the list_function calls were called, and in the expected order
         mock_lambda_client.list_functions.assert_has_calls(expected, any_order=False)
 
     @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
@@ -89,36 +147,56 @@ class TestCreateLambdaWidgets(TestCase):
         m_client.return_value = mock_lambda_client
 
         # noinspection PyPackageRequirements
-        is_iow_asset_filter(self.function_list_single_good_function, self.deploy_stage, self.region)
+        is_iow_asset_filter(self.valid_function_1, self.deploy_stage, self.region)
 
         # assert the boto3 lambda client was called with expected params
         m_client.assert_called_with('lambda', region_name=self.region)
 
         # assert the lambda client called get_function with expected arguments
-        mock_lambda_client.get_function.assert_called_with(FunctionName=self.function_name)
+        mock_lambda_client.get_function.assert_called_with(FunctionName=self.valid_function_name_1)
 
     @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
-    @mock.patch('cloudwatch_monitoring.lambdas.create_lambda_widgets', autospec=True)
     @mock.patch('cloudwatch_monitoring.lambdas.is_iow_asset_filter', autospec=True)
     @mock.patch('cloudwatch_monitoring.lambdas.get_all_lambda_metadata', autospec=True)
-    def test_create_lambda_widgets(self, m_all_lambdas, m_filter, m_create, m_client):
-        mock_lambda_client = mock.MagicMock()
+    def test_create_lambda_widgets(self, m_all_lambdas, m_filter, m_client):
+        mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
 
-        # mock the return values from the mock lambda client
-        mock_lambda_client.list_functions.return_value = self.function_list
-        mock_lambda_client.get_function.return_value = self.get_function
-
-        # mock the return values from the function calls
-        m_all_lambdas.return_value = self.function_list
-
-        # noinspection PyPackageRequirements
-        create_lambda_widgets(self.region, self.deploy_stage)
-
-        # assert the get_all_lambda_metadata function was called with expected arguments
-        m_all_lambdas.assert_called_with(self.region)
-        # assert the is_iow_asset_filter function was called with expected arguments
-        m_filter.assert_called_with(self.function_list_single_good_function, self.deploy_stage, self.region)
+        # SET UP get_all_lambda_metadata return value, expected boto3 calls, and expected boto3 return values
+        m_all_lambdas.return_value = self.full_function_list
+        # mock_lambda_client.list_functions.side_effect = [
+        #     self.function_list_with_page_marker_1,
+        #     self.function_list_with_page_marker_2,
+        #     self.function_list_no_page_marker
+        # ]
+        # expected_list_function_calls = [
+        #     mock.call(MaxItems=self.max_items),
+        #     mock.call(MaxItems=self.max_items, Marker=self.marker),
+        #     mock.call(MaxItems=self.max_items, Marker=self.marker)
+        # ]
+        #
+        # # SET UP is_iow_asset_filter return values, expected boto3 calls, and expected boto3 return values
+        # mock_lambda_client.get_function.side_effect = [
+        #     self.get_function_2,
+        #     self.get_function_3,
+        #     self.get_function_1
+        # ]
+        m_filter.side_effect = [
+            True, False, True, False, True, False
+        ]
+        expected_is_iow_asset_filter_calls = [
+            mock.call(self.valid_function_2, self.deploy_stage, self.region),
+            mock.call(self.bad_function, self.deploy_stage, self.region),
+            mock.call(self.valid_function_3, self.deploy_stage, self.region),
+            mock.call(self.bad_function, self.deploy_stage, self.region),
+            mock.call(self.valid_function_1, self.deploy_stage, self.region),
+            mock.call(self.bad_function, self.deploy_stage, self.region)
+        ]
+        # expected_get_function_calls = [
+        #     mock.call(FunctionName=self.valid_function_name_2),
+        #     mock.call(FunctionName=self.valid_function_name_3),
+        #     mock.call(FunctionName=self.valid_function_name_1)
+        # ]
 
         expected_widget_list = [
             {
@@ -129,7 +207,7 @@ class TestCreateLambdaWidgets(TestCase):
                 'width': 24,
                 'properties': {
                     'metrics': [
-                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'neat-lambda-function-in-DEV-account'],
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'another-lambda-function-in-DEV-account'],
                         ['.', 'Invocations', '.', '.', {'stat': 'Sum'}],
                         ['.', 'Duration', '.', '.'],
                         ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
@@ -137,16 +215,60 @@ class TestCreateLambdaWidgets(TestCase):
                     ],
                     'view': 'singleValue',
                     'region': 'us-south-10',
-                    'title': 'neat-lambda-function-in-DEV-account',
+                    'title': 'another-lambda-function-in-DEV-account',
                     'period': 300,
                     'stacked': False,
-                    'stat': 'Average'
-                }
+                    'stat': 'Average',
+                },
             },
             {
                 'type': 'metric',
                 'x': 0,
                 'y': 3,
+                'height': 3,
+                'width': 24,
+                'properties': {
+                    'metrics': [
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'sweet_DEV_function_name'],
+                        ['.', 'Invocations', '.', '.', {'stat': 'Sum'}],
+                        ['.', 'Duration', '.', '.'],
+                        ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
+                        ['.', 'Throttles', '.', '.']
+                    ],
+                    'view': 'singleValue',
+                    'region': 'us-south-10',
+                    'title': 'sweet_DEV_function_name',
+                    'period': 300,
+                    'stacked': False,
+                    'stat': 'Average',
+                },
+            },
+            {
+                'type': 'metric',
+                'x': 0,
+                'y': 6,
+                'height': 3,
+                'width': 24,
+                'properties': {
+                    'metrics': [
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'lambda-function-in-DEV-account'],
+                        ['.', 'Invocations', '.', '.', {'stat': 'Sum'}],
+                        ['.', 'Duration', '.', '.'],
+                        ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
+                        ['.', 'Throttles', '.', '.']
+                    ],
+                    'view': 'singleValue',
+                    'region': 'us-south-10',
+                    'title': 'lambda-function-in-DEV-account',
+                    'period': 300,
+                    'stacked': False,
+                    'stat': 'Average',
+                },
+            },
+            {
+                'type': 'metric',
+                'x': 0,
+                'y': 9,
                 'height': 6,
                 'width': 24,
                 'properties': {
@@ -164,25 +286,25 @@ class TestCreateLambdaWidgets(TestCase):
                         ['...', 'aqts-capture-field-visit-transform-DEV-transform', {'label': 'Field visit transformer'}],
                         ['...', 'aqts-capture-discrete-loader-DEV-loadDiscrete', {'label': 'Discrete GW loader'}],
                         ['...', 'aqts-capture-field-visit-metadata-DEV-preProcess', {'label': 'Field visit metadata preprocessor'}],
-                        ['...', 'aqts-capture-raw-load-DEV-iowCaptureMedium', {'label': 'Raw Load Medium'}]
+                        ['...', 'aqts-capture-raw-load-DEV-iowCaptureMedium', {'label': 'Raw Load Medium'}],
                     ],
                     'view': 'timeSeries',
                     'stacked': True,
                     'region': 'us-south-10',
                     'period': 60,
                     'stat': 'Average',
-                    'title': 'Concurrent Lambdas (Average per minute)'
-                }
+                    'title': 'Concurrent Lambdas (Average per minute)',
+                },
             },
             {
                 'type': 'metric',
                 'x': 0,
-                'y': 3,
+                'y': 9,
                 'height': 6,
                 'width': 24,
                 'properties': {
                     'metrics': [
-                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', 'Resource', 'aqts-capture-error-handler-DEV-aqtsErrorHandler'],
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', 'Resource', 'aqts-capture-error-handler-DEV-aqtsErrorHandler',],
                         ['.', 'Invocations', '.', '.', {'stat': 'Sum'}]
                     ],
                     'view': 'timeSeries',
@@ -190,14 +312,16 @@ class TestCreateLambdaWidgets(TestCase):
                     'region': 'us-south-10',
                     'title': 'Error Handler Activity',
                     'period': 60,
-                    'stat': 'Average'
-                }
+                    'stat': 'Average',
+                },
             }
         ]
 
-        # assert the widget list is what it should be, note the misleading name of the assertCountEqual test name
-        # doc here: https://docs.python.org/3/library/unittest.html#unittest.TestCase.assertCountEqual
+        # noinspection PyPackageRequirements
         self.assertListEqual(
             create_lambda_widgets(self.region, self.deploy_stage),
             expected_widget_list
         )
+
+        m_all_lambdas.assert_called_once_with(self.region)
+        m_filter.assert_has_calls(expected_is_iow_asset_filter_calls, any_order=False)
