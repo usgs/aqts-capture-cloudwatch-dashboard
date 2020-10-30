@@ -4,6 +4,8 @@ module for creating lambda widgets
 """
 
 import boto3
+from .lookups import (dashboard_lambdas, custom_lambda_widgets, error_handler_activity)
+
 
 
 def get_all_lambda_metadata(region):
@@ -26,12 +28,12 @@ def get_all_lambda_metadata(region):
     while True:
         if marker:
             response_iterator = lambda_client.list_functions(
-                         MaxItems=10,
-                         Marker=marker)
+                     MaxItems=10,
+                     Marker=marker)
             response['Functions'].extend(response_iterator['Functions'])
         else:
             response_iterator = lambda_client.list_functions(
-                MaxItems=10
+                    MaxItems=10
             )
             response.update(response_iterator)
         try:
@@ -140,22 +142,7 @@ def create_lambda_widgets(region, deploy_stage):
         'height': lambda_widget_height + 3,
         'width': lambda_widget_width,
         'properties': {
-            "metrics": [
-                ["AWS/Lambda", "ConcurrentExecutions", "FunctionName", "aqts-capture-dvstat-transform-" + deploy_stage + "-transform", {"label": "DV stat Transformer"}],
-                ["...", "aqts-capture-error-handler-" + deploy_stage + "-aqtsErrorHandler", {"label": "Error Handler"}],
-                ["...", "aqts-capture-raw-load-" + deploy_stage + "-iowCapture", {"label": "Raw Loader"}],
-                ["...", "aqts-capture-stattype-router-" + deploy_stage + "-determineRoute", {"label": "Statistic type router"}],
-                ["...", "aqts-capture-trigger-" + deploy_stage + "-aqtsCaptureTrigger", {"label": "Capture trigger"}],
-                ["...", "aqts-capture-ts-corrected-" + deploy_stage + "-preProcess", {"label": "TS corrected preprocessor"}],
-                ["...", "aqts-capture-ts-description-" + deploy_stage + "-processTsDescription", {"label": "TS descriptions preprocessor"}],
-                ["...", "aqts-ts-type-router-" + deploy_stage + "-determineRoute", {"label": "TS type router"}],
-                ["...", "aqts-capture-ts-loader-" + deploy_stage + "-loadTimeSeries", {"label": "DV TS loader"}],
-                ["...", "aqts-capture-ts-field-visit-" + deploy_stage + "-preProcess", {"label": "Field visit preprocessor"}],
-                ["...", "aqts-capture-field-visit-transform-" + deploy_stage + "-transform", {"label": "Field visit transformer"}],
-                ["...", "aqts-capture-discrete-loader-" + deploy_stage + "-loadDiscrete", {"label": "Discrete GW loader"}],
-                ["...", "aqts-capture-field-visit-metadata-" + deploy_stage + "-preProcess", {"label": "Field visit metadata preprocessor"}],
-                ["...", "aqts-capture-raw-load-" + deploy_stage + "-iowCaptureMedium", {"label": "Raw Load Medium"}]
-            ],
+            "metrics": generate_concurrent_lambdas_metrics(deploy_stage),
             "view": "timeSeries",
             "stacked": True,
             "region": region,
@@ -192,3 +179,49 @@ def create_lambda_widgets(region, deploy_stage):
     lambda_widgets.append(error_handler_activity)
 
     return lambda_widgets
+
+
+def lambda_properties(lookup_name, deploy_stage):
+    """
+
+    :param lookup_name: the name of the lookup object containing lambda properties
+    :param deploy_stage: the deploy stage (DEV, TEST, QA, PROD-EXTERNAL)
+    :return: the lambda name and label
+    :rtype: dict
+    """
+    properties = dashboard_lambdas[lookup_name]
+    name = f"{properties['repo_name']}-{deploy_stage}-{properties['descriptor']}"
+    label = properties['label']
+
+    return {'name': name, 'label': label}
+
+
+def generate_concurrent_lambdas_metrics(deploy_stage):
+
+    metrics_list = []
+    count = 0
+
+    for name in custom_lambda_widgets['concurrent_lambdas']:
+        lambda_attributes = lambda_properties(name, deploy_stage)
+
+        if count < 1:
+            # the first metric in the list has some additional stuff
+            first_metric = [
+                "AWS/Lambda",
+                "ConcurrentExecutions",
+                "FunctionName",
+                lambda_attributes['name'],
+                {"label": lambda_attributes['label']}
+            ]
+            metrics_list.append(first_metric)
+        else:
+            metric = [
+                "...",
+                lambda_attributes['name'],
+                {"label": lambda_attributes['label']}
+            ]
+            metrics_list.append(metric)
+
+        count += 1
+
+    return metrics_list

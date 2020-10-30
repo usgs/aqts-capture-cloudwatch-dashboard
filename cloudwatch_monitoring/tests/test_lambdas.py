@@ -256,7 +256,6 @@ class TestCreateLambdaWidgets(TestCase):
                         ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-dvstat-transform-DEV-transform', {'label': 'DV stat Transformer'}],
                         ['...', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', {'label': 'Error Handler'}],
                         ['...', 'aqts-capture-raw-load-DEV-iowCapture', {'label': 'Raw Loader'}],
-                        ['...', 'aqts-capture-stattype-router-DEV-determineRoute', {'label': 'Statistic type router'}],
                         ['...', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', {'label': 'Capture trigger'}],
                         ['...', 'aqts-capture-ts-corrected-DEV-preProcess', {'label': 'TS corrected preprocessor'}],
                         ['...', 'aqts-capture-ts-description-DEV-processTsDescription', {'label': 'TS descriptions preprocessor'}],
