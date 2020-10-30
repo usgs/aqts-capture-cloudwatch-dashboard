@@ -98,12 +98,8 @@ def create_lambda_widgets(region, deploy_stage):
     # iterate over the list of lambda metadata and create widgets for the assets we care about based on filters
     for function in all_lambda_metadata_response['Functions']:
 
-        print(function)
-
         if is_iow_asset_filter(function, deploy_stage, region):
             function_name = function['FunctionName']
-
-            print(function_name)
 
             widget = {
                 'type': 'metric',

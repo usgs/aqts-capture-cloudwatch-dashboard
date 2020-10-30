@@ -162,28 +162,13 @@ class TestCreateLambdaWidgets(TestCase):
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
 
-        # SET UP get_all_lambda_metadata return value, expected boto3 calls, and expected boto3 return values
+        # return values
         m_all_lambdas.return_value = self.full_function_list
-        # mock_lambda_client.list_functions.side_effect = [
-        #     self.function_list_with_page_marker_1,
-        #     self.function_list_with_page_marker_2,
-        #     self.function_list_no_page_marker
-        # ]
-        # expected_list_function_calls = [
-        #     mock.call(MaxItems=self.max_items),
-        #     mock.call(MaxItems=self.max_items, Marker=self.marker),
-        #     mock.call(MaxItems=self.max_items, Marker=self.marker)
-        # ]
-        #
-        # # SET UP is_iow_asset_filter return values, expected boto3 calls, and expected boto3 return values
-        # mock_lambda_client.get_function.side_effect = [
-        #     self.get_function_2,
-        #     self.get_function_3,
-        #     self.get_function_1
-        # ]
         m_filter.side_effect = [
             True, False, True, False, True, False
         ]
+
+        # expected calls
         expected_is_iow_asset_filter_calls = [
             mock.call(self.valid_function_2, self.deploy_stage, self.region),
             mock.call(self.bad_function, self.deploy_stage, self.region),
@@ -192,11 +177,6 @@ class TestCreateLambdaWidgets(TestCase):
             mock.call(self.valid_function_1, self.deploy_stage, self.region),
             mock.call(self.bad_function, self.deploy_stage, self.region)
         ]
-        # expected_get_function_calls = [
-        #     mock.call(FunctionName=self.valid_function_name_2),
-        #     mock.call(FunctionName=self.valid_function_name_3),
-        #     mock.call(FunctionName=self.valid_function_name_1)
-        # ]
 
         expected_widget_list = [
             {
@@ -317,11 +297,13 @@ class TestCreateLambdaWidgets(TestCase):
             }
         ]
 
+        # Make sure the resultant widget list is correct
         # noinspection PyPackageRequirements
         self.assertListEqual(
             create_lambda_widgets(self.region, self.deploy_stage),
             expected_widget_list
         )
 
+        # assert our helper functions were called the expected number of times and in the proper order
         m_all_lambdas.assert_called_once_with(self.region)
         m_filter.assert_has_calls(expected_is_iow_asset_filter_calls, any_order=False)
