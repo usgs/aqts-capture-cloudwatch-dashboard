@@ -1,2 +1,4 @@
 .idea/
 env/
+cloudwatch_monitoring/__pycache__/
+cloudwatch_monitoring/tests/__pycache__/
