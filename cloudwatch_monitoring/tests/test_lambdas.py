@@ -4,9 +4,10 @@ Tests for the lambdas module.
 """
 from unittest import TestCase, mock
 
-from ..lambdas import create_lambda_widgets
-from ..lambdas import get_all_lambda_metadata
-from ..lambdas import is_iow_asset_filter
+from ..lambdas import (
+    create_lambda_widgets, get_all_lambda_metadata, is_iow_asset_filter, lambda_properties,
+    generate_concurrent_lambdas_metrics
+)
 
 
 class TestCreateLambdaWidgets(TestCase):
@@ -55,7 +56,7 @@ class TestCreateLambdaWidgets(TestCase):
             'NextMarker': self.marker
         }
 
-        self.full_function_list = {
+        self.function_list_after_successful_pagination_2 = {
             'Functions': [
                 {'FunctionName': self.valid_function_name_2},
                 {'FunctionName': self.bad_function_name},
@@ -123,6 +124,42 @@ class TestCreateLambdaWidgets(TestCase):
                 'wma:organization': 'notIOWTag'
             }
         }
+
+        self.concurrent_lambdas_metrics_list = [
+            ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-dvstat-transform-DEV-transform',
+             {'label': 'DV stat Transformer'}],
+            ['...', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', {'label': 'Error Handler'}],
+            ['...', 'aqts-capture-raw-load-DEV-iowCapture', {'label': 'Raw Loader'}],
+            ['...', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', {'label': 'Capture trigger'}],
+            ['...', 'aqts-capture-ts-corrected-DEV-preProcess', {'label': 'TS corrected preprocessor'}],
+            ['...', 'aqts-capture-ts-description-DEV-processTsDescription',
+             {'label': 'TS descriptions preprocessor'}],
+            ['...', 'aqts-ts-type-router-DEV-determineRoute', {'label': 'TS type router'}],
+            ['...', 'aqts-capture-ts-loader-DEV-loadTimeSeries', {'label': 'DV TS loader'}],
+            ['...', 'aqts-capture-ts-field-visit-DEV-preProcess', {'label': 'Field visit preprocessor'}],
+            ['...', 'aqts-capture-field-visit-transform-DEV-transform', {'label': 'Field visit transformer'}],
+            ['...', 'aqts-capture-discrete-loader-DEV-loadDiscrete', {'label': 'Discrete GW loader'}],
+            ['...', 'aqts-capture-field-visit-metadata-DEV-preProcess',
+             {'label': 'Field visit metadata preprocessor'}],
+            ['...', 'aqts-capture-raw-load-DEV-iowCaptureMedium', {'label': 'Raw Load Medium'}]
+        ]
+
+    def test_lambda_properties(self):
+        expected_properties = {
+            'name': 'aqts-capture-dvstat-transform-DEV-transform',
+            'label': 'DV stat Transformer'
+        }
+
+        self.assertDictEqual(
+            lambda_properties('dvstat_transform', self.deploy_stage),
+            expected_properties
+        )
+
+    def test_generate_concurrent_lambdas_metrics(self):
+        self.assertListEqual(
+            generate_concurrent_lambdas_metrics(self.deploy_stage),
+            self.concurrent_lambdas_metrics_list
+        )
 
     @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
     def test_get_all_lambda_metadata(self, m_client):
@@ -254,7 +291,7 @@ class TestCreateLambdaWidgets(TestCase):
         m_client.return_value = mock_lambda_client
 
         # return values
-        m_all_lambdas.return_value = self.full_function_list
+        m_all_lambdas.return_value = self.function_list_after_successful_pagination_2
         m_filter.side_effect = [
             True, False, True, False, True, False
         ]
@@ -343,21 +380,7 @@ class TestCreateLambdaWidgets(TestCase):
                 'height': 6,
                 'width': 24,
                 'properties': {
-                    'metrics': [
-                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-dvstat-transform-DEV-transform', {'label': 'DV stat Transformer'}],
-                        ['...', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', {'label': 'Error Handler'}],
-                        ['...', 'aqts-capture-raw-load-DEV-iowCapture', {'label': 'Raw Loader'}],
-                        ['...', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', {'label': 'Capture trigger'}],
-                        ['...', 'aqts-capture-ts-corrected-DEV-preProcess', {'label': 'TS corrected preprocessor'}],
-                        ['...', 'aqts-capture-ts-description-DEV-processTsDescription', {'label': 'TS descriptions preprocessor'}],
-                        ['...', 'aqts-ts-type-router-DEV-determineRoute', {'label': 'TS type router'}],
-                        ['...', 'aqts-capture-ts-loader-DEV-loadTimeSeries', {'label': 'DV TS loader'}],
-                        ['...', 'aqts-capture-ts-field-visit-DEV-preProcess', {'label': 'Field visit preprocessor'}],
-                        ['...', 'aqts-capture-field-visit-transform-DEV-transform', {'label': 'Field visit transformer'}],
-                        ['...', 'aqts-capture-discrete-loader-DEV-loadDiscrete', {'label': 'Discrete GW loader'}],
-                        ['...', 'aqts-capture-field-visit-metadata-DEV-preProcess', {'label': 'Field visit metadata preprocessor'}],
-                        ['...', 'aqts-capture-raw-load-DEV-iowCaptureMedium', {'label': 'Raw Load Medium'}],
-                    ],
+                    'metrics': self.concurrent_lambdas_metrics_list,
                     'view': 'timeSeries',
                     'stacked': True,
                     'region': 'us-south-10',
