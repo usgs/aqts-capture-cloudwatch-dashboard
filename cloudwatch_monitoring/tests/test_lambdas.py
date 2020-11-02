@@ -141,7 +141,9 @@ class TestCreateLambdaWidgets(TestCase):
             ['...', 'aqts-capture-discrete-loader-DEV-loadDiscrete', {'label': 'Discrete GW loader'}],
             ['...', 'aqts-capture-field-visit-metadata-DEV-preProcess',
              {'label': 'Field visit metadata preprocessor'}],
-            ['...', 'aqts-capture-raw-load-DEV-iowCaptureMedium', {'label': 'Raw Load Medium'}]
+            ['...', 'aqts-capture-raw-load-DEV-iowCaptureMedium', {'label': 'Raw Load Medium'}],
+            ['...', 'aqts-capture-raw-load-DEV-iowCaptureSmall', {'label': 'Raw Load Small'}],
+            ['...', 'aqts-capture-raw-load-DEV-iowCaptureExtraSmall', {'label': 'Raw Load Extra Small'}]
         ]
 
     def test_lambda_properties(self):
