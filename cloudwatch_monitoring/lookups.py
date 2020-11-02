@@ -70,6 +70,16 @@ dashboard_lambdas = {
         'repo_name': 'aqts-capture-raw-load',
         'descriptor': 'iowCaptureMedium',
         'label': 'Raw Load Medium'
+    },
+    'raw_load_small': {
+        'repo_name': 'aqts-capture-raw-load',
+        'descriptor': 'iowCaptureSmall',
+        'label': 'Raw Load Small'
+    },
+    'raw_load_extra_small': {
+        'repo_name': 'aqts-capture-raw-load',
+        'descriptor': 'iowCaptureExtraSmall',
+        'label': 'Raw Load Extra Small'
     }
 }
 
@@ -88,7 +98,9 @@ custom_lambda_widgets = {
         'field_visit_transform',
         'discrete_loader',
         'field_visit_metadata',
-        'raw_load_medium'
+        'raw_load_medium',
+        'raw_load_small',
+        'raw_load_extra_small'
     ]
 }
 
