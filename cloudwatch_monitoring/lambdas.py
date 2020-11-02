@@ -161,7 +161,9 @@ def create_lambda_widgets(region, deploy_stage):
         'width': lambda_widget_width,
         'properties': {
             "metrics": [
-                ["AWS/Lambda", "ConcurrentExecutions", "FunctionName", f"aqts-capture-error-handler-{deploy_stage}-aqtsErrorHandler", "Resource", f"aqts-capture-error-handler-{deploy_stage}-aqtsErrorHandler"],
+                ["AWS/Lambda", "ConcurrentExecutions", "FunctionName",
+                    lambda_properties('error_handler', deploy_stage)['name'], "Resource",
+                    lambda_properties('error_handler', deploy_stage)['name']],
                 [".", "Invocations", ".", ".", {"stat": "Sum"}]
             ],
             "view": "timeSeries",
