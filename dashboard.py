@@ -1,7 +1,9 @@
 import boto3
 import json
 import os
+from cloudwatch_monitoring.positioning import Positioning
 from cloudwatch_monitoring.lambdas import create_lambda_widgets
+from cloudwatch_monitoring.rds import create_rds_widgets
 
 # Entrypoint from the jenkins script
 if __name__ == '__main__':
@@ -13,9 +15,12 @@ if __name__ == '__main__':
     region = 'us-west-2'
     deploy_stage = os.getenv('DEPLOY_STAGE')
 
-    # add widgets per asset type
     widgets = []
-    widgets.extend(create_lambda_widgets(region, deploy_stage))
+    positioning = Positioning()
+
+    # add widgets per asset type
+    widgets.extend(create_lambda_widgets(region, deploy_stage, positioning))
+    widgets.extend(create_rds_widgets(region, deploy_stage))
     # TODO other widget iterations to follow (ec2, fargate, rds, custom widgets, etc.)
 
     # create the dashboard when the widget list is complete
