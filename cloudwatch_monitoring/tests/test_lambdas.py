@@ -18,6 +18,7 @@ class TestCreateLambdaWidgets(TestCase):
         self.valid_function_name_1 = 'lambda-function-in-DEV-account'
         self.valid_function_name_2 = 'another-lambda-function-in-DEV-account'
         self.valid_function_name_3 = 'sweet_DEV_function_name'
+        self.valid_function_name_4 = 'cool_function_DEV_name'
         self.bad_function_name = 'some-function-name-with-no-valid-TIER-specified'
         self.marker = 'some huge string'
 
@@ -44,6 +45,16 @@ class TestCreateLambdaWidgets(TestCase):
             ]
         }
 
+        self.function_list_after_successful_pagination = {
+            'Functions': [
+                {'FunctionName': self.valid_function_name_2},
+                {'FunctionName': self.bad_function_name},
+                {'FunctionName': self.valid_function_name_1},
+                {'FunctionName': self.bad_function_name}
+            ],
+            'NextMarker': self.marker
+        }
+
         self.full_function_list = {
             'Functions': [
                 {'FunctionName': self.valid_function_name_2},
@@ -68,10 +79,15 @@ class TestCreateLambdaWidgets(TestCase):
             'FunctionName': self.valid_function_name_3
         }
 
+        self.valid_function_4 = {
+            'FunctionName': self.valid_function_name_4
+        }
+
         self.bad_function = {
             'FunctionName': self.bad_function_name
         }
 
+        # happy path
         self.get_function_1 = {
             'Configuration': {
                 'FunctionName': self.valid_function_name_1
@@ -81,21 +97,30 @@ class TestCreateLambdaWidgets(TestCase):
             }
         }
 
+        # sad path, no tags
         self.get_function_2 = {
             'Configuration': {
                 'FunctionName': self.valid_function_name_2
-            },
-            'Tags': {
-                'wma:organization': 'IOW'
             }
         }
 
+        # sad path, no wma:organization key
         self.get_function_3 = {
             'Configuration': {
                 'FunctionName': self.valid_function_name_3
             },
             'Tags': {
-                'wma:organization': 'IOW'
+                'wma:notTheRightTagKey': 'IOW'
+            }
+        }
+
+        # sad path, no 'IOW' value in the wma:organization tag
+        self.get_function_4 = {
+            'Configuration': {
+                'FunctionName': self.valid_function_name_4
+            },
+            'Tags': {
+                'wma:organization': 'notIOWTag'
             }
         }
 
@@ -108,7 +133,10 @@ class TestCreateLambdaWidgets(TestCase):
         mock_lambda_client.list_functions.return_value = self.function_list_no_page_marker
 
         # noinspection PyPackageRequirements
-        get_all_lambda_metadata(self.region)
+        self.assertDictEqual(
+            get_all_lambda_metadata(self.region),
+            self.function_list_no_page_marker
+        )
 
         # assert the boto3 lambda client was called with expected params
         m_client.assert_called_with('lambda', region_name=self.region)
@@ -132,8 +160,12 @@ class TestCreateLambdaWidgets(TestCase):
             mock.call(MaxItems=self.max_items, Marker=self.marker)
         ]
 
+        # Assert we get the expected function list after 1 pagination iteration
         # noinspection PyPackageRequirements
-        get_all_lambda_metadata(self.region)
+        self.assertDictEqual(
+            get_all_lambda_metadata(self.region),
+            self.function_list_after_successful_pagination
+        )
 
         # assert the boto3 lambda client was called with expected params
         m_client.assert_called_with('lambda', region_name=self.region)
@@ -142,18 +174,77 @@ class TestCreateLambdaWidgets(TestCase):
         mock_lambda_client.list_functions.assert_has_calls(expected, any_order=False)
 
     @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
-    def test_is_iow_asset_filter(self, m_client):
-        mock_lambda_client = mock.MagicMock()
+    def test_is_iow_asset_filter_happy_path(self, m_client):
+        mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
+        mock_lambda_client.get_function.return_value = self.get_function_1
 
+        # assert the return value is true, since get_function returned a valid response
         # noinspection PyPackageRequirements
-        is_iow_asset_filter(self.valid_function_1, self.deploy_stage, self.region)
+        self.assertTrue(
+            is_iow_asset_filter(self.valid_function_1, self.deploy_stage, self.region)
+        )
 
         # assert the boto3 lambda client was called with expected params
         m_client.assert_called_with('lambda', region_name=self.region)
 
         # assert the lambda client called get_function with expected arguments
         mock_lambda_client.get_function.assert_called_with(FunctionName=self.valid_function_name_1)
+
+    @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
+    def test_is_iow_asset_filter_no_tags(self, m_client):
+        mock_lambda_client = mock.Mock()
+        m_client.return_value = mock_lambda_client
+        mock_lambda_client.get_function.return_value = self.get_function_2
+
+        # assert the return value is False, since get_function returned a response with no 'Tags' key
+        # noinspection PyPackageRequirements
+        self.assertFalse(
+            is_iow_asset_filter(self.valid_function_2, self.deploy_stage, self.region)
+        )
+
+        # assert the boto3 lambda client was called with expected params
+        m_client.assert_called_with('lambda', region_name=self.region)
+
+        # assert the lambda client called get_function with expected arguments
+        mock_lambda_client.get_function.assert_called_with(FunctionName=self.valid_function_name_2)
+
+    @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
+    def test_is_iow_asset_filter_no_wma_organization_key(self, m_client):
+        mock_lambda_client = mock.Mock()
+        m_client.return_value = mock_lambda_client
+        mock_lambda_client.get_function.return_value = self.get_function_3
+
+        # assert the return value is False, since get_function returned a response with no wma:organizatoin key
+        # noinspection PyPackageRequirements
+        self.assertFalse(
+            is_iow_asset_filter(self.valid_function_3, self.deploy_stage, self.region)
+        )
+
+        # assert the boto3 lambda client was called with expected params
+        m_client.assert_called_with('lambda', region_name=self.region)
+
+        # assert the lambda client called get_function with expected arguments
+        mock_lambda_client.get_function.assert_called_with(FunctionName=self.valid_function_name_3)
+
+    @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
+    def test_is_iow_asset_filter_no_iow_value_for_wma_organization_key(self, m_client):
+        mock_lambda_client = mock.Mock()
+        m_client.return_value = mock_lambda_client
+        mock_lambda_client.get_function.return_value = self.get_function_4
+
+        # assert the return value is False, since get_function returned a response with no 'IOW' value in the
+        # wma:organization key
+        # noinspection PyPackageRequirements
+        self.assertFalse(
+            is_iow_asset_filter(self.valid_function_4, self.deploy_stage, self.region)
+        )
+
+        # assert the boto3 lambda client was called with expected params
+        m_client.assert_called_with('lambda', region_name=self.region)
+
+        # assert the lambda client called get_function with expected arguments
+        mock_lambda_client.get_function.assert_called_with(FunctionName=self.valid_function_name_4)
 
     @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
     @mock.patch('cloudwatch_monitoring.lambdas.is_iow_asset_filter', autospec=True)

@@ -4,7 +4,7 @@ module for creating lambda widgets
 """
 
 import boto3
-from .lookups import (dashboard_lambdas, custom_lambda_widgets, error_handler_activity)
+from .lookups import (dashboard_lambdas, custom_lambda_widgets)
 
 
 
@@ -161,9 +161,7 @@ def create_lambda_widgets(region, deploy_stage):
         'width': lambda_widget_width,
         'properties': {
             "metrics": [
-                ["AWS/Lambda", "ConcurrentExecutions", "FunctionName",
-                 "aqts-capture-error-handler-" + deploy_stage + "-aqtsErrorHandler", "Resource",
-                 "aqts-capture-error-handler-" + deploy_stage + "-aqtsErrorHandler"],
+                ["AWS/Lambda", "ConcurrentExecutions", "FunctionName", f"aqts-capture-error-handler-{deploy_stage}-aqtsErrorHandler", "Resource", f"aqts-capture-error-handler-{deploy_stage}-aqtsErrorHandler"],
                 [".", "Invocations", ".", ".", {"stat": "Sum"}]
             ],
             "view": "timeSeries",
@@ -183,6 +181,7 @@ def create_lambda_widgets(region, deploy_stage):
 
 def lambda_properties(lookup_name, deploy_stage):
     """
+    Uses the supplied lookup name to generate lambda name and label key values.
 
     :param lookup_name: the name of the lookup object containing lambda properties
     :param deploy_stage: the deploy stage (DEV, TEST, QA, PROD-EXTERNAL)
@@ -197,6 +196,13 @@ def lambda_properties(lookup_name, deploy_stage):
 
 
 def generate_concurrent_lambdas_metrics(deploy_stage):
+    """
+    Generates concurrent lambda widget's metrics.
+
+    :param deploy_stage: The deployment tier
+    :return: The list of generated metrics
+    :rtype: list
+    """
 
     metrics_list = []
     count = 0
