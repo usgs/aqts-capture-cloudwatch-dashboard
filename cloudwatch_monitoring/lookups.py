@@ -108,39 +108,49 @@ error_handler_activity = {
     'error_handler_activity': 'error_handler'
 }
 
-# May not need lookups for this, but we do sometimes change the database name and deviate from convention,
-# for example: 'observations-prod-external-2'
+# May not need lookups for this, but we do sometimes change the database properties from tier to tier, and those
+# properties sometimes deviate from convention.
+# for example: 'observations-prod-external-2' vs. 'nwcapture-prod-external'
+# Add tier/db specific properties here
 rds_instances = {
     'DEV': {
         'nwcapture': {
-            'db_instance_identifier': 'nwcapture-dev'
+            'identifier': 'nwcapture-dev',
+            'identifier_type': 'DBClusterIdentifier'
         },
         'observations': {
-            'db_instance_identifier': 'observations-dev',
+            'identifier': 'observations-dev',
+            'identifier_type': 'DBInstanceIdentifier'
         }
     },
     'TEST': {
         'nwcapture': {
-            'db_instance_identifier': 'nwcapture-test'
+            'identifier': 'nwcapture-test',
+            'identifier_type': 'DBClusterIdentifier'
         },
         'observations': {
-            'db_instance_identifier': 'observations-test'
+            'identifier': 'observations-test',
+            'identifier_type': 'DBInstanceIdentifier'
         }
     },
     'QA': {
         'nwcapture': {
-            'db_instance_identifier': 'nwcapture-qa'
+            'identifier': 'nwcapture-qa',
+            'identifier_type': 'DBClusterIdentifier'
         },
         'observations': {
-            'db_instance_identifier': 'observations-qa'
+            'identifier': 'observations-qa',
+            'identifier_type': 'DBInstanceIdentifier'
         }
     },
     'PROD-EXTERNAL': {
         'nwcapture': {
-            'db_instance_identifier': 'nwcapture-prod-external'
+            'identifier': 'nwcapture-prod-external',
+            'identifier_type': 'DBClusterIdentifier'
         },
         'observations': {
-            'db_instance_identifier': 'observations-prod-external-2'
+            'identifier': 'observations-prod-external-2',
+            'identifier_type': 'DBInstanceIdentifier'
         }
     }
 }

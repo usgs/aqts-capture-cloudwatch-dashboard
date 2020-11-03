@@ -6,10 +6,13 @@ module for creating rds widgets
 import boto3
 from .lookups import (rds_instances)
 
+observations = 'observations'
+nwcapture = 'nwcapture'
+
 def create_rds_widgets(region, deploy_stage, positioning):
 
-    observations = 'observations'
-    nwcapture = 'nwcapture'
+    # observations = 'observations'
+    # nwcapture = 'nwcapture'
 
     rds_widgets = []
 
@@ -17,9 +20,7 @@ def create_rds_widgets(region, deploy_stage, positioning):
     nwcapture_db_status_widget = generate_db_status_widget(region, deploy_stage, positioning, nwcapture)
 
     rds_widgets.append(observations_db_status_widget)
-    positioning.iterate_positioning()
     rds_widgets.append(nwcapture_db_status_widget)
-    positioning.iterate_positioning()
 
     # TODO more custom widgets to follow
 
@@ -38,9 +39,9 @@ def generate_db_status_widget(region, deploy_stage, positioning, db_name):
         'width': positioning.width,
         'properties': {
             "metrics": [
-                ["AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", db_properties['db_instance_identifier']],
+                ["AWS/RDS", "CPUUtilization", db_properties['identifier_type'], db_properties['identifier']],
                 [".", "DatabaseConnections", ".", ".", {"yAxis": "right"}],
-                ["...", db_properties['db_instance_identifier'], {"yAxis": "right"}],
+                ["...", db_properties['identifier'], {"yAxis": "right"}],
                 [".", "CPUUtilization", ".", "."]
             ],
             "view": "timeSeries",
@@ -52,4 +53,5 @@ def generate_db_status_widget(region, deploy_stage, positioning, db_name):
         }
     }
 
+    positioning.iterate_positioning()
     return db_status_widget
