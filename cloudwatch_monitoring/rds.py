@@ -27,7 +27,7 @@ def create_rds_widgets(region, deploy_stage):
 
     rds_metadata = rds_client.describe_db_instances(
         Filters=[{
-            'Name': 'wma:organization',
+            'Name': 'tag:wma:organization',
             'Values': [
                 'IOW'
             ]
