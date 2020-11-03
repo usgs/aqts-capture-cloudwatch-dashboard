@@ -48,7 +48,7 @@ def generate_db_status_widget(region, deploy_stage, positioning, db_name):
         'x': positioning.x,
         'y': positioning.y,
         'height': positioning.height + 3,
-        'width': positioning.max_width / 2,
+        'width': positioning.max_width,
         'properties': {
             "metrics": [
                 ["AWS/RDS", "CPUUtilization", db_identifier_type, db_properties['identifier']],
