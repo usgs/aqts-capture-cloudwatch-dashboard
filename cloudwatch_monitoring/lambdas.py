@@ -124,12 +124,7 @@ def create_lambda_widgets(region, deploy_stage, positioning):
             }
 
             lambda_widgets.append(widget)
-
-            # iterate the position on the dashboard for the next widget
-            positioning.x += positioning.width
-            if positioning.x + positioning.width > positioning.max_width:
-                positioning.x = 0
-                positioning.y += positioning.height
+            positioning.iterate_positioning()
 
     # Custom widget for monitoring concurrency of lambdas specifically involved in the ETL
     concurrent_lambdas = {
@@ -173,7 +168,9 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     }
 
     lambda_widgets.append(concurrent_lambdas)
+    positioning.iterate_positioning()
     lambda_widgets.append(error_handler_activity)
+    positioning.iterate_positioning()
 
     return lambda_widgets
 

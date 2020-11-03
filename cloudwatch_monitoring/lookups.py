@@ -107,3 +107,40 @@ custom_lambda_widgets = {
 error_handler_activity = {
     'error_handler_activity': 'error_handler'
 }
+
+# May not need lookups for this, but we do sometimes change the database name and deviate from convention,
+# for example: 'observations-prod-external-2'
+rds_instances = {
+    'DEV': {
+        'nwcapture': {
+            'db_instance_identifier': 'nwcapture-dev'
+        },
+        'observations': {
+            'db_instance_identifier': 'observations-dev'
+        }
+    },
+    'TEST': {
+        'nwcapture': {
+            'db_instance_identifier': 'nwcapture-test'
+        },
+        'observations': {
+            'db_instance_identifier': 'observations-test'
+        }
+    },
+    'QA': {
+        'nwcapture': {
+            'db_instance_identifier': 'nwcapture-qa'
+        },
+        'observations': {
+            'db_instance_identifier': 'observations-qa'
+        }
+    },
+    'PROD-EXTERNAL': {
+        'nwcapture': {
+            'db_instance_identifier': 'nwcapture-prod-external'
+        },
+        'observations': {
+            'db_instance_identifier': 'observations-prod-external-2'
+        }
+    }
+}

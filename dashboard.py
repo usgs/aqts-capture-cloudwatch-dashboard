@@ -20,7 +20,7 @@ if __name__ == '__main__':
 
     # add widgets per asset type
     widgets.extend(create_lambda_widgets(region, deploy_stage, positioning))
-    widgets.extend(create_rds_widgets(region, deploy_stage))
+    widgets.extend(create_rds_widgets(region, deploy_stage, positioning))
     # TODO other widget iterations to follow (ec2, fargate, rds, custom widgets, etc.)
 
     # create the dashboard when the widget list is complete
