@@ -116,7 +116,7 @@ rds_instances = {
             'db_instance_identifier': 'nwcapture-dev'
         },
         'observations': {
-            'db_instance_identifier': 'observations-dev'
+            'db_instance_identifier': 'observations-dev',
         }
     },
     'TEST': {
