@@ -46,7 +46,7 @@ def generate_db_status_widget(region, deploy_stage, positioning, db_name):
             "view": "timeSeries",
             "stacked": False,
             "region": region,
-            "title": f"{db_name.capwords()} DB Status",
+            "title": f"{db_name.capitalize()} DB Status",
             "period": 300,
             "stat": "Average",
         }
