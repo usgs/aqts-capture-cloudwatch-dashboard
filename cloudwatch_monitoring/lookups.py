@@ -113,21 +113,6 @@ error_handler_activity = {
 # for example: 'observations-prod-external-2' vs. 'nwcapture-prod-external'
 # Add tier/db specific properties here
 rds_instances = {
-    'observations': {
-        'identifier_type': 'DBInstanceIdentifier',
-        'DEV': {
-            'identifier': 'observations-dev',
-        },
-        'TEST': {
-            'identifier': 'observations-test',
-        },
-        'QA': {
-            'identifier': 'observations-qa',
-        },
-        'PROD-EXTERNAL': {
-            'identifier': 'observations-prod-external-2',
-        }
-    },
     'nwcapture': {
         'identifier_type': 'DBClusterIdentifier',
         'DEV': {
@@ -141,6 +126,21 @@ rds_instances = {
         },
         'PROD-EXTERNAL': {
             'identifier': 'nwcapture-prod-external',
+        }
+    },
+    'observations': {
+        'identifier_type': 'DBInstanceIdentifier',
+        'DEV': {
+            'identifier': 'observations-dev',
+        },
+        'TEST': {
+            'identifier': 'observations-test',
+        },
+        'QA': {
+            'identifier': 'observations-qa',
+        },
+        'PROD-EXTERNAL': {
+            'identifier': 'observations-prod-external-2',
         }
     }
 }
