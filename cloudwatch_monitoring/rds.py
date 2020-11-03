@@ -23,8 +23,6 @@ def create_rds_widgets(region, deploy_stage, positioning):
     for db_name in rds_instances:
         rds_widgets.append(generate_db_status_widget(region, deploy_stage, positioning, db_name))
 
-    # TODO more custom widgets to follow
-
     return rds_widgets
 
 
