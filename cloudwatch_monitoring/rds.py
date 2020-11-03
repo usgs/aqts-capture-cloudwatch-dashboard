@@ -52,9 +52,7 @@ def generate_db_status_widget(region, deploy_stage, positioning, db_name):
         'properties': {
             "metrics": [
                 ["AWS/RDS", "CPUUtilization", db_identifier_type, db_properties['identifier']],
-                [".", "DatabaseConnections", ".", ".", {"yAxis": "right"}],
-                ["...", db_properties['identifier'], {"yAxis": "right"}],
-                [".", "CPUUtilization", ".", "."]
+                [".", "DatabaseConnections", ".", ".", {"yAxis": "right"}]
             ],
             "view": "timeSeries",
             "stacked": False,
