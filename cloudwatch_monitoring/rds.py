@@ -6,21 +6,22 @@ module for creating rds widgets
 import boto3
 from .lookups import (rds_instances)
 
-observations = 'observations'
-nwcapture = 'nwcapture'
 
 def create_rds_widgets(region, deploy_stage, positioning):
+    """
+    Creates the list of RDS widgets.
 
-    # observations = 'observations'
-    # nwcapture = 'nwcapture'
-
+    :param region: Typically 'us-west-2'
+    :param deploy_stage: The deploy tier, DEV, TEST, QA, PROD-EXTERNAL
+    :param positioning: The x, y, height, width coordinates and dimensions on the dashboard
+    :return: list of RDS widgets
+    :rtype: list
+    """
     rds_widgets = []
 
-    observations_db_status_widget = generate_db_status_widget(region, deploy_stage, positioning, observations)
-    nwcapture_db_status_widget = generate_db_status_widget(region, deploy_stage, positioning, nwcapture)
-
-    rds_widgets.append(observations_db_status_widget)
-    rds_widgets.append(nwcapture_db_status_widget)
+    # db status widgets, cpu utilization and number of db connections
+    for db_name in rds_instances:
+        rds_widgets.append(generate_db_status_widget(region, deploy_stage, positioning, db_name))
 
     # TODO more custom widgets to follow
 
@@ -28,6 +29,16 @@ def create_rds_widgets(region, deploy_stage, positioning):
 
 
 def generate_db_status_widget(region, deploy_stage, positioning, db_name):
+    """
+    Generates database status widgets, specifically for cpu utilization and number of database connections.
+
+    :param region: Typically 'us-west-2'
+    :param deploy_stage: The deploy tier, DEV, TEST, QA, PROD-EXTERNAL
+    :param positioning: The x, y, height, width coordinates and dimensions on the dashboard
+    :param db_name: observations or nwcapture
+    :return: A db status widget
+    :rtype: dict
+    """
 
     db_properties = rds_instances[db_name][deploy_stage]
     db_identifier_type = rds_instances[db_name]['identifier_type']
