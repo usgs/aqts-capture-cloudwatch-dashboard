@@ -5,7 +5,7 @@
 This tool uses the AWS Python SDK (boto3) to create, update, and deploy a cloudwatch dashboard for the purpose of monitoring the aqts-capture etl assets.
 
 ### Unit testing
-Make sure you have python version 3.8 (or later) and pip installed, then run:
+Make sure you have python version 3.8 (or later), pip, and venv installed, then run:
 
 ```shell script
 python3 -m venv env
