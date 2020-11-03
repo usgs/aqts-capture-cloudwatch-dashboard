@@ -29,7 +29,8 @@ def create_rds_widgets(region, deploy_stage, positioning):
 
 def generate_db_status_widget(region, deploy_stage, positioning, db_name):
 
-    db_properties = rds_instances[deploy_stage][db_name]
+    db_properties = rds_instances[db_name][deploy_stage]
+    db_identifier_type = rds_instances[db_name]['identifier_type']
 
     db_status_widget = {
         'type': 'metric',
@@ -39,7 +40,7 @@ def generate_db_status_widget(region, deploy_stage, positioning, db_name):
         'width': positioning.width,
         'properties': {
             "metrics": [
-                ["AWS/RDS", "CPUUtilization", db_properties['identifier_type'], db_properties['identifier']],
+                ["AWS/RDS", "CPUUtilization", db_identifier_type, db_properties['identifier']],
                 [".", "DatabaseConnections", ".", ".", {"yAxis": "right"}],
                 ["...", db_properties['identifier'], {"yAxis": "right"}],
                 [".", "CPUUtilization", ".", "."]

@@ -113,44 +113,34 @@ error_handler_activity = {
 # for example: 'observations-prod-external-2' vs. 'nwcapture-prod-external'
 # Add tier/db specific properties here
 rds_instances = {
-    'DEV': {
-        'nwcapture': {
-            'identifier': 'nwcapture-dev',
-            'identifier_type': 'DBClusterIdentifier'
-        },
-        'observations': {
+    'observations': {
+        'identifier_type': 'DBInstanceIdentifier',
+        'DEV': {
             'identifier': 'observations-dev',
-            'identifier_type': 'DBInstanceIdentifier'
-        }
-    },
-    'TEST': {
-        'nwcapture': {
-            'identifier': 'nwcapture-test',
-            'identifier_type': 'DBClusterIdentifier'
         },
-        'observations': {
+        'TEST': {
             'identifier': 'observations-test',
-            'identifier_type': 'DBInstanceIdentifier'
-        }
-    },
-    'QA': {
-        'nwcapture': {
-            'identifier': 'nwcapture-qa',
-            'identifier_type': 'DBClusterIdentifier'
         },
-        'observations': {
+        'QA': {
             'identifier': 'observations-qa',
-            'identifier_type': 'DBInstanceIdentifier'
+        },
+        'PROD-EXTERNAL': {
+            'identifier': 'observations-prod-external-2',
         }
     },
-    'PROD-EXTERNAL': {
-        'nwcapture': {
-            'identifier': 'nwcapture-prod-external',
-            'identifier_type': 'DBClusterIdentifier'
+    'nwcapture': {
+        'identifier_type': 'DBClusterIdentifier',
+        'DEV': {
+            'identifier': 'nwcapture-dev',
         },
-        'observations': {
-            'identifier': 'observations-prod-external-2',
-            'identifier_type': 'DBInstanceIdentifier'
+        'TEST': {
+            'identifier': 'nwcapture-test',
+        },
+        'QA': {
+            'identifier': 'nwcapture-qa',
+        },
+        'PROD-EXTERNAL': {
+            'identifier': 'nwcapture-prod-external',
         }
     }
 }
