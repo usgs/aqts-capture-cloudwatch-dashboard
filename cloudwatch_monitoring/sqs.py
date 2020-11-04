@@ -22,7 +22,7 @@ def create_sqs_widgets(region, deploy_stage, positioning):
     all_sqs_queue_urls_response = get_all_sqs_queue_urls(region)
 
     # iterate over the list of queue urls and create widgets for the assets we care about based on filters
-    for queue_url in all_sqs_queue_urls_response:
+    for queue_url in all_sqs_queue_urls_response['QueueUrls']:
         if is_iow_queue_filter(queue_url, deploy_stage, region):
             print(queue_url)
 
@@ -83,12 +83,9 @@ def is_iow_queue_filter(queue_url, deploy_stage, region):
         # launch API call to grab the tags for the queue
         queue_tags = sqs_client.list_queue_tags(QueueUrl=queue_url)
 
-        print(queue_tags)
         # we only want queues that are tagged as 'IOW'
         if 'Tags' in queue_tags:
-            print("has tags")
             if 'wma:organization' in queue_tags['Tags']:
-                print("has wma:organization")
                 if 'IOW' == queue_tags['Tags']['wma:organization']:
                     is_iow_queue = True
 
