@@ -59,8 +59,8 @@ def create_sqs_widgets(region, deploy_stage, positioning):
                 }
             }
 
-        sqs_widgets.append(queue_widget)
-        positioning.iterate_positioning()
+            sqs_widgets.append(queue_widget)
+            positioning.iterate_positioning()
 
     return sqs_widgets
 
