@@ -42,10 +42,10 @@ def create_sqs_widgets(region, deploy_stage, positioning):
                 'width': positioning.max_width,
                 'properties': {
                     "metrics": [
-                        [ "AWS/SQS", "ApproximateNumberOfMessagesVisible", "QueueName", queue_name],
-                        [ ".", "ApproximateAgeOfOldestMessage", ".", ".", {"yAxis": "right"}],
-                        [ ".", "NumberOfMessagesReceived", ".", ".", {"stat": "Sum"}],
-                        [ ".", "NumberOfMessagesSent", ".", ".", {"stat": "Sum"}],
+                        ["AWS/SQS", "ApproximateNumberOfMessagesVisible", "QueueName", queue_name],
+                        [".", "ApproximateAgeOfOldestMessage", ".", ".", {"yAxis": "right"}],
+                        [".", "NumberOfMessagesReceived", ".", ".", {"stat": "Sum"}],
+                        [".", "NumberOfMessagesSent", ".", ".", {"stat": "Sum"}],
                         [".", "NumberOfMessagesDeleted", ".", "."],
                         [".", "ApproximateNumberOfMessagesDelayed", ".", "."]
                     ],
@@ -76,6 +76,8 @@ def get_all_sqs_queue_urls(region):
     sqs_client = boto3.client("sqs", region_name=region)
 
     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sqs.html#SQS.Client.list_queues
+    # TODO this pagination logic exists in the lambdas module as well, consider moving it into its own utility
+    # TODO module or trying to get a proper boto3 paginator to work...
     response = {}
     next_token = None
     while True:

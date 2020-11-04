@@ -22,6 +22,8 @@ def get_all_lambda_metadata(region):
     # allows us to paginate. boto3 does have pagination tools, but I have found the documentation generally unhelpful,
     # so below is a more manual approach.
     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lambda.html#Lambda.Client.list_functions
+    # TODO this pagination logic exists in the sqs module as well, consider moving it into its own utility
+    # TODO module or trying to get a proper boto3 paginator to work...
     response = {}
     marker = None
     while True:
