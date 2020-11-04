@@ -54,6 +54,7 @@ def get_all_sqs_queue_urls(region):
                     MaxResults=10
             )
             response.update(response_iterator)
+        print(response)
         try:
             next_token = response_iterator['NextToken']
         except KeyError:
