@@ -107,3 +107,40 @@ custom_lambda_widgets = {
 error_handler_activity = {
     'error_handler_activity': 'error_handler'
 }
+
+# May not need lookups for this, but we do sometimes change the database properties from tier to tier, and those
+# properties sometimes deviate from convention.
+# for example: 'observations-prod-external-2' vs. 'nwcapture-prod-external'
+# Add tier/db specific properties here
+rds_instances = {
+    'nwcapture': {
+        'identifier_type': 'DBClusterIdentifier',
+        'DEV': {
+            'identifier': 'nwcapture-dev',
+        },
+        'TEST': {
+            'identifier': 'nwcapture-test',
+        },
+        'QA': {
+            'identifier': 'nwcapture-qa',
+        },
+        'PROD-EXTERNAL': {
+            'identifier': 'nwcapture-prod-external',
+        }
+    },
+    'observations': {
+        'identifier_type': 'DBInstanceIdentifier',
+        'DEV': {
+            'identifier': 'observations-dev',
+        },
+        'TEST': {
+            'identifier': 'observations-test',
+        },
+        'QA': {
+            'identifier': 'observations-qa',
+        },
+        'PROD-EXTERNAL': {
+            'identifier': 'observations-prod-external-2',
+        }
+    }
+}

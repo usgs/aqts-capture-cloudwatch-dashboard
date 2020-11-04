@@ -7,7 +7,6 @@ import boto3
 from .lookups import (dashboard_lambdas, custom_lambda_widgets)
 
 
-
 def get_all_lambda_metadata(region):
     """
     Using the AWS python sdk (boto3), grab all the lambda functions for the specified account for a given region.
@@ -78,19 +77,17 @@ def is_iow_asset_filter(function, deploy_stage, region):
     return is_iow_lambda
 
 
-def create_lambda_widgets(region, deploy_stage):
+def create_lambda_widgets(region, deploy_stage, positioning):
     """
     Iterate over an account's list of lambdas and create generic widgets for those with
     wma:organization = 'IOW' tags.  It also creates some custom widgets.
 
+    :param region: The region, for us that's usually us-west-2
+    :param deploy_stage: The specified deployment environment (DEV, TEST, QA, PROD-EXTERNAL)
+    :param positioning: The x, y coordinates and height, width dimensions of the widget
     :return: List of lambda widgets
     :rtype: list
     """
-
-    # set starting and default values for lambda widget positioning and dimensions
-    x, y = [0, 0]
-    lambda_widget_width, lambda_widget_height = [24, 3]
-    lambda_widget_max_width = 24
 
     lambda_widgets = []
 
@@ -105,10 +102,10 @@ def create_lambda_widgets(region, deploy_stage):
 
             widget = {
                 'type': 'metric',
-                'x': x,
-                'y': y,
-                'height': lambda_widget_height,
-                'width': lambda_widget_width,
+                'x': positioning.x,
+                'y': positioning.y,
+                'height': positioning.height,
+                'width': positioning.width,
                 'properties': {
                     "metrics": [
                         ["AWS/Lambda", "ConcurrentExecutions", "FunctionName", function_name],
@@ -127,20 +124,15 @@ def create_lambda_widgets(region, deploy_stage):
             }
 
             lambda_widgets.append(widget)
-
-            # iterate the position on the dashboard for the next widget
-            x += lambda_widget_width
-            if x + lambda_widget_width > lambda_widget_max_width:
-                x = 0
-                y += lambda_widget_height
+            positioning.iterate_positioning()
 
     # Custom widget for monitoring concurrency of lambdas specifically involved in the ETL
     concurrent_lambdas = {
         'type': 'metric',
-        'x': x,
-        'y': y,
-        'height': lambda_widget_height + 3,
-        'width': lambda_widget_width,
+        'x': positioning.x,
+        'y': positioning.y,
+        'height': positioning.height + 3,
+        'width': positioning.width,
         'properties': {
             "metrics": generate_concurrent_lambdas_metrics(deploy_stage),
             "view": "timeSeries",
@@ -155,10 +147,10 @@ def create_lambda_widgets(region, deploy_stage):
     # Custom widget for monitoring error handler invocation counts over time
     error_handler_activity = {
         'type': 'metric',
-        'x': x,
-        'y': y,
-        'height': lambda_widget_height + 3,
-        'width': lambda_widget_width,
+        'x': positioning.x,
+        'y': positioning.y,
+        'height': positioning.height + 3,
+        'width': positioning.width,
         'properties': {
             "metrics": [
                 ["AWS/Lambda", "ConcurrentExecutions", "FunctionName",
@@ -176,7 +168,9 @@ def create_lambda_widgets(region, deploy_stage):
     }
 
     lambda_widgets.append(concurrent_lambdas)
+    positioning.iterate_positioning()
     lambda_widgets.append(error_handler_activity)
+    positioning.iterate_positioning()
 
     return lambda_widgets
 

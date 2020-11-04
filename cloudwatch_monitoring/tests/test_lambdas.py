@@ -4,6 +4,7 @@ Tests for the lambdas module.
 """
 from unittest import TestCase, mock
 
+from ..positioning import Positioning
 from ..lambdas import (
     create_lambda_widgets, get_all_lambda_metadata, is_iow_asset_filter, lambda_properties,
     generate_concurrent_lambdas_metrics
@@ -412,10 +413,11 @@ class TestCreateLambdaWidgets(TestCase):
             }
         ]
 
+        positioning = Positioning()
         # Make sure the resultant widget list is correct
         # noinspection PyPackageRequirements
         self.assertListEqual(
-            create_lambda_widgets(self.region, self.deploy_stage),
+            create_lambda_widgets(self.region, self.deploy_stage, positioning),
             expected_widget_list
         )
 
