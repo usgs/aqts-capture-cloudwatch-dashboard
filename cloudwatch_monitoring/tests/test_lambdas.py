@@ -314,6 +314,41 @@ class TestCreateLambdaWidgets(TestCase):
                 'type': 'metric',
                 'x': 0,
                 'y': 0,
+                'height': 6,
+                'width': 24,
+                'properties': {
+                    'metrics': [
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', 'Resource', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', ],
+                        ['.', 'Invocations', '.', '.', {'stat': 'Sum'}]
+                    ],
+                    'view': 'timeSeries',
+                    'stacked': False,
+                    'region': 'us-south-10',
+                    'title': 'Error Handler Activity',
+                    'period': 60,
+                    'stat': 'Average',
+                },
+            },
+            {
+                'type': 'metric',
+                'x': 0,
+                'y': 0,
+                'height': 6,
+                'width': 24,
+                'properties': {
+                    'metrics': self.concurrent_lambdas_metrics_list,
+                    'view': 'timeSeries',
+                    'stacked': True,
+                    'region': 'us-south-10',
+                    'period': 60,
+                    'stat': 'Average',
+                    'title': 'Concurrent Lambdas (Average per minute)',
+                },
+            },
+            {
+                'type': 'metric',
+                'x': 0,
+                'y': 6,
                 'height': 3,
                 'width': 24,
                 'properties': {
@@ -335,7 +370,7 @@ class TestCreateLambdaWidgets(TestCase):
             {
                 'type': 'metric',
                 'x': 0,
-                'y': 3,
+                'y': 9,
                 'height': 3,
                 'width': 24,
                 'properties': {
@@ -357,7 +392,7 @@ class TestCreateLambdaWidgets(TestCase):
             {
                 'type': 'metric',
                 'x': 0,
-                'y': 6,
+                'y': 12,
                 'height': 3,
                 'width': 24,
                 'properties': {
@@ -373,41 +408,6 @@ class TestCreateLambdaWidgets(TestCase):
                     'title': 'lambda-function-in-DEV-account',
                     'period': 300,
                     'stacked': False,
-                    'stat': 'Average',
-                },
-            },
-            {
-                'type': 'metric',
-                'x': 0,
-                'y': 9,
-                'height': 6,
-                'width': 24,
-                'properties': {
-                    'metrics': self.concurrent_lambdas_metrics_list,
-                    'view': 'timeSeries',
-                    'stacked': True,
-                    'region': 'us-south-10',
-                    'period': 60,
-                    'stat': 'Average',
-                    'title': 'Concurrent Lambdas (Average per minute)',
-                },
-            },
-            {
-                'type': 'metric',
-                'x': 0,
-                'y': 9,
-                'height': 6,
-                'width': 24,
-                'properties': {
-                    'metrics': [
-                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', 'Resource', 'aqts-capture-error-handler-DEV-aqtsErrorHandler',],
-                        ['.', 'Invocations', '.', '.', {'stat': 'Sum'}]
-                    ],
-                    'view': 'timeSeries',
-                    'stacked': False,
-                    'region': 'us-south-10',
-                    'title': 'Error Handler Activity',
-                    'period': 60,
                     'stat': 'Average',
                 },
             }
