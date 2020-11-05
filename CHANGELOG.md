@@ -9,5 +9,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Initial implementation
 - Added widgets for monitoring lambda assets
 - Added widgets for monitoring RDS assets
+- Added widgets for monitoring SQS assets
 
 ## [Unreleased]
