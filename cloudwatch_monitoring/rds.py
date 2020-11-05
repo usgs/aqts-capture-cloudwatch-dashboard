@@ -41,6 +41,8 @@ def generate_db_status_widget(region, deploy_stage, positioning, db_name):
     db_properties = rds_instances[db_name][deploy_stage]
     db_identifier_type = rds_instances[db_name]['identifier_type']
 
+    positioning.height = 6
+
     db_status_widget = {
         'type': 'metric',
         'x': positioning.x,

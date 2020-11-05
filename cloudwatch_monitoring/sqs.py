@@ -34,14 +34,15 @@ def create_sqs_widgets(region, deploy_stage, positioning):
             tier_agnostic_queue_name = queue_name.replace(f"-{deploy_stage}", '')
             queue_title = sqs_queues[tier_agnostic_queue_name]['title']
 
-            # sqs queues take up half the 24 column grid
+            # sqs queues take up half the 24 column grid and are 6 columns tall
             positioning.width = 12
+            positioning.height = 6
 
             queue_widget = {
                 'type': 'metric',
                 'x': positioning.x,
                 'y': positioning.y,
-                'height': positioning.height + 3,
+                'height': positioning.height,
                 'width': positioning.width,
                 'properties': {
                     "metrics": [
