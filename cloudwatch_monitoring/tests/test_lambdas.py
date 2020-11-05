@@ -315,7 +315,7 @@ class TestCreateLambdaWidgets(TestCase):
                 'x': 0,
                 'y': 0,
                 'height': 6,
-                'width': 24,
+                'width': 12,
                 'properties': {
                     'metrics': [
                         ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', 'Resource', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', ],
@@ -331,10 +331,10 @@ class TestCreateLambdaWidgets(TestCase):
             },
             {
                 'type': 'metric',
-                'x': 0,
+                'x': 12,
                 'y': 0,
                 'height': 6,
-                'width': 24,
+                'width': 12,
                 'properties': {
                     'metrics': self.concurrent_lambdas_metrics_list,
                     'view': 'timeSeries',

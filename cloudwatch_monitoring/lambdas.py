@@ -93,12 +93,16 @@ def create_lambda_widgets(region, deploy_stage, positioning):
 
     lambda_widgets = []
 
+    # set dimensions for custom lambda widgets
+    positioning.width = 12
+    positioning.height = 6
+
     # Custom widget for monitoring error handler invocation counts over time
     error_handler_activity = {
         'type': 'metric',
         'x': positioning.x,
         'y': positioning.y,
-        'height': positioning.height + 3,
+        'height': positioning.height,
         'width': positioning.width,
         'properties': {
             "metrics": [
@@ -116,12 +120,15 @@ def create_lambda_widgets(region, deploy_stage, positioning):
         }
     }
 
+    lambda_widgets.append(error_handler_activity)
+    positioning.iterate_positioning()
+
     # Custom widget for monitoring concurrency of lambdas specifically involved in the ETL
     concurrent_lambdas = {
         'type': 'metric',
         'x': positioning.x,
         'y': positioning.y,
-        'height': positioning.height + 3,
+        'height': positioning.height,
         'width': positioning.width,
         'properties': {
             "metrics": generate_concurrent_lambdas_metrics(deploy_stage),
@@ -134,8 +141,6 @@ def create_lambda_widgets(region, deploy_stage, positioning):
         }
     }
 
-    lambda_widgets.append(error_handler_activity)
-    positioning.iterate_positioning()
     lambda_widgets.append(concurrent_lambdas)
     positioning.iterate_positioning()
 
@@ -147,6 +152,10 @@ def create_lambda_widgets(region, deploy_stage, positioning):
 
         if is_iow_asset_filter(function, deploy_stage, region):
             function_name = function['FunctionName']
+
+            # set dimensions for generic lambda widgets
+            positioning.width = positioning.max_width
+            positioning.height = 3
 
             widget = {
                 'type': 'metric',
