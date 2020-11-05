@@ -39,7 +39,7 @@ def create_sqs_widgets(region, deploy_stage, positioning):
                 'x': positioning.x,
                 'y': positioning.y,
                 'height': positioning.height + 3,
-                'width': positioning.max_width,
+                'width': positioning.max_width - 12,
                 'properties': {
                     "metrics": [
                         ["AWS/SQS", "ApproximateNumberOfMessagesVisible", "QueueName", queue_name],
