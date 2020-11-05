@@ -144,3 +144,13 @@ rds_instances = {
         }
     }
 }
+
+# sqs queues
+sqs_queues = {
+    'aqts-capture-error-queue': {
+        'title': 'Error Queue'
+    },
+    'aqts-capture-trigger-queue': {
+        'title': 'Capture Trigger Queue'
+    }
+}
