@@ -25,7 +25,7 @@ if __name__ == '__main__':
     widgets.extend(create_rds_widgets(region, deploy_stage, positioning))
     widgets.extend(create_state_machine_widgets(region, deploy_stage, positioning))
     widgets.extend(create_lambda_widgets(region, deploy_stage, positioning))
-    # TODO other widget iterations to follow (ec2, fargate, state machine, etc.)
+    # TODO other widget iterations to follow (ec2, fargate, etc.)
 
     # create the dashboard when the widget list is complete
     cloudwatch_client = boto3.client("cloudwatch", region_name=region)

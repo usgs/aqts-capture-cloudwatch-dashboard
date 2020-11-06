@@ -138,8 +138,9 @@ def is_iow_state_machine_filter(state_machine_arn, deploy_stage, region):
         # we only want state machines that are tagged as 'IOW'
         if 'tags' in state_machine_tags:
             for tag in state_machine_tags['tags']:
-                if 'wma:organization' in tag['key']:
-                    if 'IOW' == tag['value']:
-                        is_iow_state_machine = True
+                if 'key' in tag:
+                    if 'wma:organization' in tag['key']:
+                        if 'IOW' == tag['value']:
+                            is_iow_state_machine = True
 
     return is_iow_state_machine

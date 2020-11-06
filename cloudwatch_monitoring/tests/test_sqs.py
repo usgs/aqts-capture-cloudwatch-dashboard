@@ -152,7 +152,7 @@ class TestCreateSQSWidgets(TestCase):
         )
 
     @mock.patch('cloudwatch_monitoring.sqs.boto3.client', autospec=True)
-    def test_is_iow_queue_filter_no_tags_response(self, m_client):
+    def test_is_iow_queue_filter_no_wma_org_key_response(self, m_client):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
         mock_sqs_client.list_queue_tags.return_value = self.tags_list_no_wma_org_key
@@ -165,7 +165,7 @@ class TestCreateSQSWidgets(TestCase):
         )
 
     @mock.patch('cloudwatch_monitoring.sqs.boto3.client', autospec=True)
-    def test_is_iow_queue_filter_no_tags_response(self, m_client):
+    def test_is_iow_queue_filter_no_iow_value_response(self, m_client):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
         mock_sqs_client.list_queue_tags.return_value = self.tags_list_no_iow_value
