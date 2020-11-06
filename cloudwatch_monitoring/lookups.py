@@ -158,21 +158,21 @@ sqs_queues = {
 # State machine properties
 state_machines = {
     'aqts-capture-state-machine': {
-        'title': 'ETL State Machine Execution Time'
+        'title': 'ETL State Machine'
     },
     'aqts-ecosystem-switch-shrink-capture-db': {
-        'title': 'Shrink Capture DB'
+        'title': 'Shrink Capture DB State Machine'
     },
     'aqts-ecosystem-switch-grow-capture-db': {
-        'title': 'Grow Capture DB'
+        'title': 'Grow Capture DB State Machine'
     },
     'aqts-capture-ecosystem-switch-create-capture-db': {
-        'title': 'Create Capture DB'
+        'title': 'Create Capture DB State Machine'
     },
     'aqts-capture-ecosystem-switch-create-obs-db': {
-        'title': 'Create Observations DB'
+        'title': 'Create Observations DB State Machine'
     },
     'aqts-capture-load-test': {
-        'title': 'ETL Load Test State Machine Execution Time'
+        'title': 'ETL Load Test State Machine'
     }
 }
