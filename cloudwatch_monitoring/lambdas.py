@@ -157,6 +157,10 @@ def create_lambda_widgets(region, deploy_stage, positioning):
             positioning.width = positioning.max_width
             positioning.height = 3
 
+            # TODO add a lookup for each lambda, including a title property.  See sqs and state machine
+            # modules for examples, where we use our specified title if we have it, or default to the lambda name if we
+            # do not.
+
             widget = {
                 'type': 'metric',
                 'x': positioning.x,

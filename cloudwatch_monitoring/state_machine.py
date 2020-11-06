@@ -40,7 +40,7 @@ def create_state_machine_widgets(region, deploy_stage, positioning):
             try:
                 widget_title = state_machines[tier_agnostic_state_machine_name]['title']
             except KeyError:
-                # no title and/or lookup created for this resource
+                # no title in the lookup for this resource
                 widget_title = state_machine_name
 
             # set dimensions of the state machine widgets
