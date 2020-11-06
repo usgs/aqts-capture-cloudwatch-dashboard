@@ -133,6 +133,7 @@ def is_iow_state_machine_filter(state_machine_arn, deploy_stage, region):
         state_machine_tags = sfn_client.list_tags_for_resource(resourceArn=state_machine_arn)
 
         print(state_machine_arn)
+        print(state_machine_tags)
 
         # we only want state machines that are tagged as 'IOW'
         if 'tags' in state_machine_tags:
