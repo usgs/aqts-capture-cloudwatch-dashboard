@@ -33,8 +33,6 @@ def create_state_machine_widgets(region, deploy_stage, positioning):
             # we want the state machine name after the last "/"
             state_machine_name = state_machine['name']
 
-            print(state_machine_name)
-
             tier_agnostic_state_machine_name = state_machine_name.replace(f"-{deploy_stage}", '')
             
             try:
@@ -102,7 +100,6 @@ def get_all_state_machines(region):
                     maxResults=10
             )
             response.update(response_iterator)
-            print(response)
         try:
             next_token = response_iterator['nextToken']
         except KeyError:
@@ -131,9 +128,6 @@ def is_iow_state_machine_filter(state_machine_arn, deploy_stage, region):
         # launch API call to grab the tags for the state machine
         # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/stepfunctions.html#SFN.Client.list_tags_for_resource
         state_machine_tags = sfn_client.list_tags_for_resource(resourceArn=state_machine_arn)
-
-        print(state_machine_arn)
-        print(state_machine_tags)
 
         # we only want state machines that are tagged as 'IOW'
         if 'tags' in state_machine_tags:
