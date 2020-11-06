@@ -174,8 +174,5 @@ state_machines = {
     },
     'aqts-capture-load-test': {
         'title': 'ETL Load Test State Machine'
-    },
-    'aqts-capture-ecosystem-switch-create-db': {
-        'title': 'Create DB State Machine'
     }
 }

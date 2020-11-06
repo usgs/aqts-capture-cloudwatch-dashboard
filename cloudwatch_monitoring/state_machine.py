@@ -36,7 +36,12 @@ def create_state_machine_widgets(region, deploy_stage, positioning):
             print(state_machine_name)
 
             tier_agnostic_state_machine_name = state_machine_name.replace(f"-{deploy_stage}", '')
-            state_machine_title = state_machines[tier_agnostic_state_machine_name]['title']
+            
+            try:
+                widget_title = state_machines[tier_agnostic_state_machine_name]['title']
+            except KeyError:
+                # no title and/or lookup created for this resource
+                widget_title = state_machine_name
 
             # set dimensions of the state machine widgets
             positioning.width = 12
@@ -60,7 +65,7 @@ def create_state_machine_widgets(region, deploy_stage, positioning):
                         "region": region,
                         "stat": "Sum",
                         "period": 60,
-                        "title": state_machine_title
+                        "title": widget_title
                 }
             }
 
