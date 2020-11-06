@@ -49,7 +49,6 @@ def create_state_machine_widgets(region, deploy_stage, positioning):
                 'height': positioning.height,
                 'width': positioning.width,
                 'properties': {
-                    {
                         "metrics": [
                             ["AWS/States", "ExecutionsStarted", "StateMachineArn", state_machine_arn],
                             [".", "ExecutionsSucceeded", ".", "."],
@@ -62,7 +61,6 @@ def create_state_machine_widgets(region, deploy_stage, positioning):
                         "stat": "Sum",
                         "period": 60,
                         "title": state_machine_title
-                    }
                 }
             }
 
