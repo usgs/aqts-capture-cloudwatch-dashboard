@@ -93,6 +93,57 @@ def create_lambda_widgets(region, deploy_stage, positioning):
 
     lambda_widgets = []
 
+    # set dimensions for custom lambda widgets
+    positioning.width = 12
+    positioning.height = 6
+
+    # Custom widget for monitoring error handler invocation counts over time
+    error_handler_activity = {
+        'type': 'metric',
+        'x': positioning.x,
+        'y': positioning.y,
+        'height': positioning.height,
+        'width': positioning.width,
+        'properties': {
+            "metrics": [
+                ["AWS/Lambda", "ConcurrentExecutions", "FunctionName",
+                    lambda_properties('error_handler', deploy_stage)['name'], "Resource",
+                    lambda_properties('error_handler', deploy_stage)['name']],
+                [".", "Invocations", ".", ".", {"stat": "Sum"}]
+            ],
+            "view": "timeSeries",
+            "stacked": False,
+            "region": region,
+            "title": "Error Handler Activity",
+            "period": 60,
+            "stat": "Average"
+        }
+    }
+
+    lambda_widgets.append(error_handler_activity)
+    positioning.iterate_positioning()
+
+    # Custom widget for monitoring concurrency of lambdas specifically involved in the ETL
+    concurrent_lambdas = {
+        'type': 'metric',
+        'x': positioning.x,
+        'y': positioning.y,
+        'height': positioning.height,
+        'width': positioning.width,
+        'properties': {
+            "metrics": generate_concurrent_lambdas_metrics(deploy_stage),
+            "view": "timeSeries",
+            "stacked": True,
+            "region": region,
+            "period": 60,
+            "stat": "Average",
+            "title": "Concurrent Lambdas (Average per minute)",
+        }
+    }
+
+    lambda_widgets.append(concurrent_lambdas)
+    positioning.iterate_positioning()
+
     # grab all the lambdas in the account/region
     all_lambda_metadata_response = get_all_lambda_metadata(region)
 
@@ -101,6 +152,10 @@ def create_lambda_widgets(region, deploy_stage, positioning):
 
         if is_iow_asset_filter(function, deploy_stage, region):
             function_name = function['FunctionName']
+
+            # set dimensions for generic lambda widgets
+            positioning.width = positioning.max_width
+            positioning.height = 3
 
             widget = {
                 'type': 'metric',
@@ -127,52 +182,6 @@ def create_lambda_widgets(region, deploy_stage, positioning):
 
             lambda_widgets.append(widget)
             positioning.iterate_positioning()
-
-    # Custom widget for monitoring concurrency of lambdas specifically involved in the ETL
-    concurrent_lambdas = {
-        'type': 'metric',
-        'x': positioning.x,
-        'y': positioning.y,
-        'height': positioning.height + 3,
-        'width': positioning.width,
-        'properties': {
-            "metrics": generate_concurrent_lambdas_metrics(deploy_stage),
-            "view": "timeSeries",
-            "stacked": True,
-            "region": region,
-            "period": 60,
-            "stat": "Average",
-            "title": "Concurrent Lambdas (Average per minute)",
-        }
-    }
-
-    # Custom widget for monitoring error handler invocation counts over time
-    error_handler_activity = {
-        'type': 'metric',
-        'x': positioning.x,
-        'y': positioning.y,
-        'height': positioning.height + 3,
-        'width': positioning.width,
-        'properties': {
-            "metrics": [
-                ["AWS/Lambda", "ConcurrentExecutions", "FunctionName",
-                    lambda_properties('error_handler', deploy_stage)['name'], "Resource",
-                    lambda_properties('error_handler', deploy_stage)['name']],
-                [".", "Invocations", ".", ".", {"stat": "Sum"}]
-            ],
-            "view": "timeSeries",
-            "stacked": False,
-            "region": region,
-            "title": "Error Handler Activity",
-            "period": 60,
-            "stat": "Average"
-        }
-    }
-
-    lambda_widgets.append(concurrent_lambdas)
-    positioning.iterate_positioning()
-    lambda_widgets.append(error_handler_activity)
-    positioning.iterate_positioning()
 
     return lambda_widgets
 

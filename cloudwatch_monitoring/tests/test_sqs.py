@@ -204,7 +204,7 @@ class TestCreateSQSWidgets(TestCase):
                 'x': 0,
                 'y': 0,
                 'height': 6,
-                'width': 24,
+                'width': 12,
                 'properties': {
                     "metrics": [
                         ["AWS/SQS", "ApproximateNumberOfMessagesVisible", "QueueName", self.valid_queue_name_2],
@@ -225,10 +225,10 @@ class TestCreateSQSWidgets(TestCase):
             },
             {
                 'type': 'metric',
-                'x': 0,
-                'y': 3,
+                'x': 12,
+                'y': 0,
                 'height': 6,
-                'width': 24,
+                'width': 12,
                 'properties': {
                     "metrics": [
                         ["AWS/SQS", "ApproximateNumberOfMessagesVisible", "QueueName", self.valid_queue_name_1],

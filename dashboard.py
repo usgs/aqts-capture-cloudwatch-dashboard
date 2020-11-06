@@ -20,9 +20,9 @@ if __name__ == '__main__':
     positioning = Positioning()
 
     # add widgets per asset type
-    widgets.extend(create_lambda_widgets(region, deploy_stage, positioning))
-    widgets.extend(create_rds_widgets(region, deploy_stage, positioning))
     widgets.extend(create_sqs_widgets(region, deploy_stage, positioning))
+    widgets.extend(create_rds_widgets(region, deploy_stage, positioning))
+    widgets.extend(create_lambda_widgets(region, deploy_stage, positioning))
     # TODO other widget iterations to follow (ec2, fargate, state machine, etc.)
 
     # create the dashboard when the widget list is complete

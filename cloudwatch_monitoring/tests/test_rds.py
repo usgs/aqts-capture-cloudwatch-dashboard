@@ -19,7 +19,7 @@ class TestCreateRDSWidgets(TestCase):
             'x': 0,
             'y': 0,
             'height': 6,
-            'width': 24,
+            'width': 12,
             'properties': {
                 'metrics': [
                     ['AWS/RDS','CPUUtilization', 'DBClusterIdentifier', 'nwcapture-dev'],
@@ -39,7 +39,7 @@ class TestCreateRDSWidgets(TestCase):
             'x': 0,
             'y': 0,
             'height': 6,
-            'width': 24,
+            'width': 12,
             'properties': {
                 'metrics': [
                     ['AWS/RDS', 'CPUUtilization', 'DBInstanceIdentifier', 'observations-dev'],
@@ -60,7 +60,7 @@ class TestCreateRDSWidgets(TestCase):
                  'x': 0,
                  'y': 0,
                  'height': 6,
-                 'width': 24,
+                 'width': 12,
                 'properties': {
                     'metrics': [
                         ['AWS/RDS', 'CPUUtilization', 'DBClusterIdentifier', 'nwcapture-dev'],
@@ -76,10 +76,10 @@ class TestCreateRDSWidgets(TestCase):
             },
             {
                 'type': 'metric',
-                'x': 0,
-                'y': 3,
+                'x': 12,
+                'y': 0,
                 'height': 6,
-                'width': 24,
+                'width': 12,
                 'properties': {
                     'metrics': [
                         ['AWS/RDS', 'CPUUtilization', 'DBInstanceIdentifier', 'observations-dev'],
