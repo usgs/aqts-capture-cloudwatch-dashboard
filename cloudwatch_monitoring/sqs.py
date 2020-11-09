@@ -32,7 +32,12 @@ def create_sqs_widgets(region, deploy_stage, positioning):
             queue_name = url_parts[-1]
 
             tier_agnostic_queue_name = queue_name.replace(f"-{deploy_stage}", '')
-            queue_title = sqs_queues[tier_agnostic_queue_name]['title']
+
+            try:
+                widget_title = sqs_queues[tier_agnostic_queue_name]['title']
+            except KeyError:
+                # no title in the lookup for this resource
+                widget_title = queue_name
 
             # set dimensions of the queue widgets
             positioning.width = 12
@@ -57,7 +62,7 @@ def create_sqs_widgets(region, deploy_stage, positioning):
                     "stacked": False,
                     "region": region,
                     "period": 60,
-                    "title": queue_title,
+                    "title": widget_title,
                     "stat": "Average",
 
                 }
