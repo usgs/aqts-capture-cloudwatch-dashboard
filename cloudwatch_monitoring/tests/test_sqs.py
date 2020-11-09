@@ -78,7 +78,7 @@ class TestCreateSQSWidgets(TestCase):
         )
 
         # assert the boto3 sqs client was called with expected params
-        m_client.assert_called_with('sqs', region_name=self.region)
+        m_client.assert_called_with(self.client_type, region_name=self.region)
 
         # assert the sqs client called list_queues with expected arguments
         mock_sqs_client.list_queues.assert_called_with(MaxResults=self.max_results)
@@ -108,7 +108,7 @@ class TestCreateSQSWidgets(TestCase):
         )
 
         # assert the boto3 sqs client was called with expected params
-        m_client.assert_called_with('sqs', region_name=self.region)
+        m_client.assert_called_with(self.client_type, region_name=self.region)
 
         # assert the list_queues calls were called, and in the expected order
         mock_sqs_client.list_queues.assert_has_calls(expected, any_order=False)
@@ -127,7 +127,7 @@ class TestCreateSQSWidgets(TestCase):
         )
 
         # assert the boto3 sqs client was called with expected params
-        m_client.assert_called_with('sqs', region_name=self.region)
+        m_client.assert_called_with(self.client_type, region_name=self.region)
 
         # assert the sqs client called list_queue_tags with expected arguments
         mock_sqs_client.list_queue_tags.assert_called_with(QueueUrl=self.valid_queue_url_1)
