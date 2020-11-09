@@ -216,12 +216,8 @@ class TestCreateStateMachineWidgets(TestCase):
             api_calls.is_iow_state_machine_filter(self.valid_state_machine_arn_1)
         )
 
-    @mock.patch('cloudwatch_monitoring.api_calls.boto3.client', autospec=True)
     @mock.patch('cloudwatch_monitoring.state_machine.APICalls', autospec=True)
-    def test_create_state_machine_widgets(self, m_api_calls, m_client):
-        mock_stepfunctions_client = mock.Mock()
-        m_client.return_value = mock_stepfunctions_client
-
+    def test_create_state_machine_widgets(self, m_api_calls):
         # return values
         m_api_calls.return_value.get_all_state_machines.return_value = self.state_machine_list_after_successful_pagination
         m_api_calls.return_value.is_iow_state_machine_filter.side_effect = [

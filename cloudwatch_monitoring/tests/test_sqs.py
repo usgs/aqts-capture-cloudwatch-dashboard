@@ -186,12 +186,8 @@ class TestCreateSQSWidgets(TestCase):
             api_calls.is_iow_queue_filter(self.valid_queue_url_1)
         )
 
-    @mock.patch('cloudwatch_monitoring.api_calls.boto3.client', autospec=True)
     @mock.patch('cloudwatch_monitoring.sqs.APICalls', autospec=True)
-    def test_create_sqs_widgets(self, m_api_calls, m_client):
-        mock_sqs_client = mock.Mock()
-        m_client.return_value = mock_sqs_client
-
+    def test_create_sqs_widgets(self, m_api_calls):
         # return values
         m_api_calls.return_value.get_all_sqs_queue_urls.return_value = self.queue_list_after_successful_pagination
         m_api_calls.return_value.is_iow_queue_filter.side_effect = [
