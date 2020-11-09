@@ -191,14 +191,8 @@ class LambdaAPICalls:
         :return: response: metadata about each lambda in the account.
         :rtype: dict
         """
-
-        # Currently you cannot get more than 50 functions from the list_functions call in a single request.  Thus, we need
-        # to iterate over the entire list of available functions in the account using the provided NextMarker string, which
-        # allows us to paginate. boto3 does have pagination tools, but I have found the documentation generally unhelpful,
-        # so below is a more manual approach.
+        # TODO maybe get a paginator to work instead of 'manual' iteration
         # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lambda.html#Lambda.Client.list_functions
-        # TODO this pagination logic exists in the sqs module as well, consider moving it into its own utility
-        # TODO module or trying to get a proper boto3 paginator to work...
         response = {}
         marker = None
         while True:
@@ -236,6 +230,7 @@ class LambdaAPICalls:
         if self.deploy_stage.upper() in function_name:
 
             # launch API call to grab metadata for a specific function, we are interested in the tags
+            # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/lambda.html#Lambda.Client.get_function
             function_metadata = self.lambda_client.get_function(FunctionName=function_name)
 
             # we only want lambdas that are tagged as 'IOW'

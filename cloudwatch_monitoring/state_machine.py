@@ -94,9 +94,8 @@ class StepFunctionAPICalls:
         :rtype: dict
         """
 
+        # TODO maybe get a paginator to work instead of 'manual' iteration
         # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/stepfunctions.html#SFN.Client.list_state_machines
-        # TODO this pagination logic exists in other modules as well, consider moving it into its own utility
-        # TODO module or trying to get a proper boto3 paginator to work...
         response = {}
         next_token = None
         while True:

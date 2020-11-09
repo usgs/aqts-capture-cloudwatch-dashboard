@@ -95,9 +95,8 @@ class SQSAPICalls:
         :rtype: dict
         """
 
+        # TODO maybe get a paginator to work instead of 'manual' iteration
         # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sqs.html#SQS.Client.list_queues
-        # TODO this pagination logic exists in the lambdas module as well, consider moving it into its own utility
-        # TODO module or trying to get a proper boto3 paginator to work...
         response = {}
         next_token = None
         while True:
@@ -133,6 +132,7 @@ class SQSAPICalls:
         # filtering on deploy tier, which we capitalize
         if self.deploy_stage.upper() in queue_url:
             # launch API call to grab the tags for the queue
+            # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sqs.html#SQS.Client.list_queue_tags
             queue_tags = self.sqs_client.list_queue_tags(QueueUrl=queue_url)
 
             # we only want queues that are tagged as 'IOW'
