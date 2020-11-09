@@ -3,7 +3,7 @@ module for creating sqs widgets
 
 """
 from .lookups import sqs_queues
-from .api_calls import APICalls
+from .sqs_api_calls import SQSAPICalls
 
 
 def create_sqs_widgets(region, deploy_stage, positioning):
@@ -16,7 +16,7 @@ def create_sqs_widgets(region, deploy_stage, positioning):
     :return: list of SQS widgets
     :rtype: list
     """
-    api_calls = APICalls(region, 'sqs', deploy_stage)
+    api_calls = SQSAPICalls(region, deploy_stage)
     sqs_widgets = []
 
     # grab all the sqs queue urls in the account/region

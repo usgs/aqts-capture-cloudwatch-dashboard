@@ -6,7 +6,7 @@ from unittest import TestCase, mock
 
 from ..positioning import Positioning
 from ..lambdas import (create_lambda_widgets, lambda_properties, generate_concurrent_lambdas_metrics)
-from ..api_calls import APICalls
+from ..lambda_api_calls import LambdaAPICalls
 
 
 class TestCreateLambdaWidgets(TestCase):
@@ -163,11 +163,11 @@ class TestCreateLambdaWidgets(TestCase):
             self.concurrent_lambdas_metrics_list
         )
 
-    @mock.patch('cloudwatch_monitoring.api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.lambda_api_calls.boto3.client', autospec=True)
     def test_get_all_lambda_metadata(self, m_client):
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
-        api_calls = APICalls(self.region, self.client_type, self.deploy_stage)
+        api_calls = LambdaAPICalls(self.region, self.deploy_stage)
 
         # only one function returned from list_functions
         mock_lambda_client.list_functions.return_value = self.function_list_no_page_marker
@@ -184,11 +184,11 @@ class TestCreateLambdaWidgets(TestCase):
         # assert the lambda client called list_functions with expected arguments
         mock_lambda_client.list_functions.assert_called_with(MaxItems=self.max_items)
 
-    @mock.patch('cloudwatch_monitoring.api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.lambda_api_calls.boto3.client', autospec=True)
     def test_get_all_lambda_metadata_next_marker_pagination(self, m_client):
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
-        api_calls = APICalls(self.region, self.client_type, self.deploy_stage)
+        api_calls = LambdaAPICalls(self.region, self.deploy_stage)
 
         # 2 functions returned, the first function has the key Marker that causes us to begin iterating through pages
         # of list_function responses
@@ -214,12 +214,12 @@ class TestCreateLambdaWidgets(TestCase):
         # assert the list_function calls were called, and in the expected order
         mock_lambda_client.list_functions.assert_has_calls(expected, any_order=False)
 
-    @mock.patch('cloudwatch_monitoring.api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.lambda_api_calls.boto3.client', autospec=True)
     def test_is_iow_lambda_filter_happy_path(self, m_client):
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
         mock_lambda_client.get_function.return_value = self.get_function_1
-        api_calls = APICalls(self.region, self.client_type, self.deploy_stage)
+        api_calls = LambdaAPICalls(self.region, self.deploy_stage)
 
         # assert the return value is true, since get_function returned a valid response
         # noinspection PyPackageRequirements
@@ -227,12 +227,12 @@ class TestCreateLambdaWidgets(TestCase):
             api_calls.is_iow_lambda_filter(self.valid_function_1)
         )
 
-    @mock.patch('cloudwatch_monitoring.api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.lambda_api_calls.boto3.client', autospec=True)
     def test_is_iow_lambda_filter_no_tags(self, m_client):
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
         mock_lambda_client.get_function.return_value = self.get_function_2
-        api_calls = APICalls(self.region, self.client_type, self.deploy_stage)
+        api_calls = LambdaAPICalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since get_function returned a response with no 'Tags' key
         # noinspection PyPackageRequirements
@@ -240,12 +240,12 @@ class TestCreateLambdaWidgets(TestCase):
             api_calls.is_iow_lambda_filter(self.valid_function_2)
         )
 
-    @mock.patch('cloudwatch_monitoring.api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.lambda_api_calls.boto3.client', autospec=True)
     def test_is_iow_lambda_filter_no_wma_organization_key(self, m_client):
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
         mock_lambda_client.get_function.return_value = self.get_function_3
-        api_calls = APICalls(self.region, self.client_type, self.deploy_stage)
+        api_calls = LambdaAPICalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since get_function returned a response with no wma:organizatoin key
         # noinspection PyPackageRequirements
@@ -253,12 +253,12 @@ class TestCreateLambdaWidgets(TestCase):
             api_calls.is_iow_lambda_filter(self.valid_function_3)
         )
 
-    @mock.patch('cloudwatch_monitoring.api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.lambda_api_calls.boto3.client', autospec=True)
     def test_is_iow_lambda_filter_no_iow_value_for_wma_organization_key(self, m_client):
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
         mock_lambda_client.get_function.return_value = self.get_function_4
-        api_calls = APICalls(self.region, self.client_type, self.deploy_stage)
+        api_calls = LambdaAPICalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since get_function returned a response with no 'IOW' value in the
         # wma:organization key
@@ -267,7 +267,7 @@ class TestCreateLambdaWidgets(TestCase):
             api_calls.is_iow_lambda_filter(self.valid_function_4)
         )
 
-    @mock.patch('cloudwatch_monitoring.lambdas.APICalls', autospec=True)
+    @mock.patch('cloudwatch_monitoring.lambdas.LambdaAPICalls', autospec=True)
     def test_create_lambda_widgets(self, m_api_calls):
         # return values
         m_api_calls.return_value.get_all_lambda_metadata.return_value = self.function_list_after_successful_pagination_2

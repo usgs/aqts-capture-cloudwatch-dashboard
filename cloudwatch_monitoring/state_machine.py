@@ -3,7 +3,7 @@ module for creating state machine widgets
 
 """
 from .lookups import state_machines
-from .api_calls import APICalls
+from .step_function_api_calls import StepFunctionAPICalls
 
 
 def create_state_machine_widgets(region, deploy_stage, positioning):
@@ -16,7 +16,7 @@ def create_state_machine_widgets(region, deploy_stage, positioning):
     :return: list of state machine widgets
     :rtype: list
     """
-    api_calls = APICalls(region, 'stepfunctions', deploy_stage)
+    api_calls = StepFunctionAPICalls(region, deploy_stage)
     state_machine_widgets = []
 
     # grab all the state machines in the account/region

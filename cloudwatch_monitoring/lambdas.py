@@ -3,7 +3,7 @@ module for creating lambda widgets
 
 """
 from .lookups import (dashboard_lambdas, custom_lambda_widgets)
-from .api_calls import APICalls
+from .lambda_api_calls import LambdaAPICalls
 
 
 def create_lambda_widgets(region, deploy_stage, positioning):
@@ -71,7 +71,7 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     lambda_widgets.append(concurrent_lambdas)
     positioning.iterate_positioning()
 
-    api_calls = APICalls(region, 'lambda', deploy_stage)
+    api_calls = LambdaAPICalls(region, deploy_stage)
     # grab all the lambdas in the account/region
     all_lambda_metadata_response = api_calls.get_all_lambda_metadata()
 
