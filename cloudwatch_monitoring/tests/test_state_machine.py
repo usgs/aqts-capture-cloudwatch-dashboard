@@ -5,8 +5,7 @@ Tests for the state machine module.
 from unittest import TestCase, mock
 
 from ..positioning import Positioning
-from ..state_machine import create_state_machine_widgets
-from ..step_function_api_calls import StepFunctionAPICalls
+from ..state_machine import (StepFunctionAPICalls, create_state_machine_widgets)
 
 
 class TestCreateStateMachineWidgets(TestCase):
@@ -90,7 +89,7 @@ class TestCreateStateMachineWidgets(TestCase):
             ]
         }
 
-    @mock.patch('cloudwatch_monitoring.step_function_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.state_machine.boto3.client', autospec=True)
     def test_get_all_state_machines(self, m_client):
         mock_stepfunctions_client = mock.Mock()
         m_client.return_value = mock_stepfunctions_client
@@ -111,7 +110,7 @@ class TestCreateStateMachineWidgets(TestCase):
         # assert the stepfunctions client called list_state_machines with expected arguments
         mock_stepfunctions_client.list_state_machines.assert_called_with(maxResults=self.max_results)
 
-    @mock.patch('cloudwatch_monitoring.step_function_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.state_machine.boto3.client', autospec=True)
     def test_get_all_state_machines_next_token_pagination(self, m_client):
         mock_stepfunctions_client = mock.Mock()
         m_client.return_value = mock_stepfunctions_client
@@ -141,7 +140,7 @@ class TestCreateStateMachineWidgets(TestCase):
         # assert the list_state_machines calls were called, and in the expected order
         mock_stepfunctions_client.list_state_machines.assert_has_calls(expected, any_order=False)
 
-    @mock.patch('cloudwatch_monitoring.step_function_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.state_machine.boto3.client', autospec=True)
     def test_is_iow_state_machine_filter_happy_path(self, m_client):
         mock_stepfunctions_client = mock.Mock()
         m_client.return_value = mock_stepfunctions_client
@@ -160,7 +159,7 @@ class TestCreateStateMachineWidgets(TestCase):
         # assert the stepfunctions client called list_tags_for_resource with expected arguments
         mock_stepfunctions_client.list_tags_for_resource.assert_called_with(resourceArn=self.valid_state_machine_arn_1)
 
-    @mock.patch('cloudwatch_monitoring.step_function_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.state_machine.boto3.client', autospec=True)
     def test_is_iow_state_machine_filter_empty_tags_response(self, m_client):
         mock_stepfunctions_client = mock.Mock()
         m_client.return_value = mock_stepfunctions_client
@@ -173,7 +172,7 @@ class TestCreateStateMachineWidgets(TestCase):
             api_calls.is_iow_state_machine_filter(self.valid_state_machine_arn_1)
         )
 
-    @mock.patch('cloudwatch_monitoring.step_function_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.state_machine.boto3.client', autospec=True)
     def test_is_iow_state_machine_filter_no_tags_response(self, m_client):
         mock_stepfunctions_client = mock.Mock()
         m_client.return_value = mock_stepfunctions_client
@@ -187,7 +186,7 @@ class TestCreateStateMachineWidgets(TestCase):
             api_calls.is_iow_state_machine_filter(self.valid_state_machine_arn_1)
         )
 
-    @mock.patch('cloudwatch_monitoring.step_function_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.state_machine.boto3.client', autospec=True)
     def test_is_iow_state_machine_filter_no_wma_org_key_response(self, m_client):
         mock_stepfunctions_client = mock.Mock()
         m_client.return_value = mock_stepfunctions_client
@@ -202,7 +201,7 @@ class TestCreateStateMachineWidgets(TestCase):
             api_calls.is_iow_state_machine_filter(self.valid_state_machine_arn_1)
         )
 
-    @mock.patch('cloudwatch_monitoring.step_function_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.state_machine.boto3.client', autospec=True)
     def test_is_iow_state_machine_filter_no_iow_value_response(self, m_client):
         mock_stepfunctions_client = mock.Mock()
         m_client.return_value = mock_stepfunctions_client

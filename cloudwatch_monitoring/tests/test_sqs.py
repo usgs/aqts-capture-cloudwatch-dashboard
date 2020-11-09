@@ -5,8 +5,7 @@ Tests for the sqs module.
 from unittest import TestCase, mock
 
 from ..positioning import Positioning
-from ..sqs import create_sqs_widgets
-from ..sqs_api_calls import SQSAPICalls
+from ..sqs import (SQSAPICalls, create_sqs_widgets)
 
 
 class TestCreateSQSWidgets(TestCase):
@@ -62,7 +61,7 @@ class TestCreateSQSWidgets(TestCase):
             }
         }
 
-    @mock.patch('cloudwatch_monitoring.sqs_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.sqs.boto3.client', autospec=True)
     def test_get_all_sqs_queue_urls(self, m_client):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
@@ -83,7 +82,7 @@ class TestCreateSQSWidgets(TestCase):
         # assert the sqs client called list_queues with expected arguments
         mock_sqs_client.list_queues.assert_called_with(MaxResults=self.max_results)
 
-    @mock.patch('cloudwatch_monitoring.sqs_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.sqs.boto3.client', autospec=True)
     def test_get_all_sqs_queue_urls_next_token_pagination(self, m_client):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
@@ -113,7 +112,7 @@ class TestCreateSQSWidgets(TestCase):
         # assert the list_queues calls were called, and in the expected order
         mock_sqs_client.list_queues.assert_has_calls(expected, any_order=False)
 
-    @mock.patch('cloudwatch_monitoring.sqs_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.sqs.boto3.client', autospec=True)
     def test_is_iow_queue_filter_happy_path(self, m_client):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
@@ -132,7 +131,7 @@ class TestCreateSQSWidgets(TestCase):
         # assert the sqs client called list_queue_tags with expected arguments
         mock_sqs_client.list_queue_tags.assert_called_with(QueueUrl=self.valid_queue_url_1)
 
-    @mock.patch('cloudwatch_monitoring.sqs_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.sqs.boto3.client', autospec=True)
     def test_is_iow_queue_filter_empty_tags_response(self, m_client):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
@@ -145,7 +144,7 @@ class TestCreateSQSWidgets(TestCase):
             api_calls.is_iow_queue_filter(self.valid_queue_url_1)
         )
 
-    @mock.patch('cloudwatch_monitoring.sqs_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.sqs.boto3.client', autospec=True)
     def test_is_iow_queue_filter_no_tags_response(self, m_client):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
@@ -158,7 +157,7 @@ class TestCreateSQSWidgets(TestCase):
             api_calls.is_iow_queue_filter(self.valid_queue_url_1)
         )
 
-    @mock.patch('cloudwatch_monitoring.sqs_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.sqs.boto3.client', autospec=True)
     def test_is_iow_queue_filter_no_wma_org_key_response(self, m_client):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
@@ -172,7 +171,7 @@ class TestCreateSQSWidgets(TestCase):
             api_calls.is_iow_queue_filter(self.valid_queue_url_1)
         )
 
-    @mock.patch('cloudwatch_monitoring.sqs_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.sqs.boto3.client', autospec=True)
     def test_is_iow_queue_filter_no_iow_value_response(self, m_client):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client

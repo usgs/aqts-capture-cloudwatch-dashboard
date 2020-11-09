@@ -5,8 +5,7 @@ Tests for the lambdas module.
 from unittest import TestCase, mock
 
 from ..positioning import Positioning
-from ..lambdas import (create_lambda_widgets, lambda_properties, generate_concurrent_lambdas_metrics)
-from ..lambda_api_calls import LambdaAPICalls
+from ..lambdas import (LambdaAPICalls, create_lambda_widgets, lambda_properties, generate_concurrent_lambdas_metrics)
 
 
 class TestCreateLambdaWidgets(TestCase):
@@ -163,7 +162,7 @@ class TestCreateLambdaWidgets(TestCase):
             self.concurrent_lambdas_metrics_list
         )
 
-    @mock.patch('cloudwatch_monitoring.lambda_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
     def test_get_all_lambda_metadata(self, m_client):
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
@@ -184,7 +183,7 @@ class TestCreateLambdaWidgets(TestCase):
         # assert the lambda client called list_functions with expected arguments
         mock_lambda_client.list_functions.assert_called_with(MaxItems=self.max_items)
 
-    @mock.patch('cloudwatch_monitoring.lambda_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
     def test_get_all_lambda_metadata_next_marker_pagination(self, m_client):
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
@@ -214,7 +213,7 @@ class TestCreateLambdaWidgets(TestCase):
         # assert the list_function calls were called, and in the expected order
         mock_lambda_client.list_functions.assert_has_calls(expected, any_order=False)
 
-    @mock.patch('cloudwatch_monitoring.lambda_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
     def test_is_iow_lambda_filter_happy_path(self, m_client):
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
@@ -227,7 +226,7 @@ class TestCreateLambdaWidgets(TestCase):
             api_calls.is_iow_lambda_filter(self.valid_function_1)
         )
 
-    @mock.patch('cloudwatch_monitoring.lambda_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
     def test_is_iow_lambda_filter_no_tags(self, m_client):
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
@@ -240,7 +239,7 @@ class TestCreateLambdaWidgets(TestCase):
             api_calls.is_iow_lambda_filter(self.valid_function_2)
         )
 
-    @mock.patch('cloudwatch_monitoring.lambda_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
     def test_is_iow_lambda_filter_no_wma_organization_key(self, m_client):
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
@@ -253,7 +252,7 @@ class TestCreateLambdaWidgets(TestCase):
             api_calls.is_iow_lambda_filter(self.valid_function_3)
         )
 
-    @mock.patch('cloudwatch_monitoring.lambda_api_calls.boto3.client', autospec=True)
+    @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
     def test_is_iow_lambda_filter_no_iow_value_for_wma_organization_key(self, m_client):
         mock_lambda_client = mock.Mock()
         m_client.return_value = mock_lambda_client
