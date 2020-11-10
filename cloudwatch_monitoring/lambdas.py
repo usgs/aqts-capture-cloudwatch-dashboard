@@ -88,9 +88,9 @@ def create_lambda_widgets(region, deploy_stage, positioning):
 
             try:
                 for lookup in dashboard_lambdas:
-                    print(lookup)
-                    if tier_agnostic_function_name == lookup['repo_name'] and function_descriptor == lookup['descriptor']:
-                        widget_title = lookup['label']
+                    if tier_agnostic_function_name == dashboard_lambdas[lookup]['repo_name'] and function_descriptor == dashboard_lambdas[lookup]['descriptor']:
+                        widget_title = dashboard_lambdas[lookup]['label']
+                        print(widget_title)
             except KeyError:
                 widget_title = function_name
 
