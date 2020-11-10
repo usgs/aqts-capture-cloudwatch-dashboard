@@ -226,6 +226,21 @@ custom_lambda_widgets = {
         'raw_load_medium',
         'raw_load_small',
         'raw_load_extra_small'
+    ],
+    'duration_of_transform_db_lambdas': [
+        'dvstat_transform',
+        'raw_load',
+        'ts_corrected',
+        'ts_description',
+        'ts_type_router',
+        'ts_loader',
+        'ts_field_visit',
+        'field_visit_transform',
+        'discrete_loader',
+        'field_visit_metadata',
+        'raw_load_medium',
+        'raw_load_small',
+        'raw_load_extra_small'
     ]
 }
 
