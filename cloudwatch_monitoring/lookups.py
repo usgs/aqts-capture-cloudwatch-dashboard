@@ -80,6 +80,131 @@ dashboard_lambdas = {
         'repo_name': 'aqts-capture-raw-load',
         'descriptor': 'iowCaptureExtraSmall',
         'label': 'Raw Load Extra Small'
+    },
+    'grow_observations_db': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'growObsDb',
+        'label': 'Grow Obs DB'
+    },
+    'restore_db_cluster': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'restoreDbCluster',
+        'label': 'Restore DB Cluster'
+    },
+    'grow_db': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'growDb',
+        'label': 'Grow DB'
+    },
+    'shrink_observations_db': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'shrinkObsDb',
+        'label': 'Shrink Obs Db'
+    },
+    'execute_grow': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'executeGrow',
+        'label': 'Execute Grow'
+    },
+    'execute_shrink': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'executeShrink',
+        'label': 'Execute Shrink'
+    },
+    'stop_capture_db': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'StopCaptureDb',
+        'label': 'Stop Capture DB'
+    },
+    'start_capture_db': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'StartCaptureDb',
+        'label': 'Start Capture DB'
+    },
+    'modify_schema_owner': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'modifySchemaOwner',
+        'label': 'Modify Schema Owner'
+    },
+    'troubleshoot': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'troubleshoot',
+        'label': 'Troubleshoot'
+    },
+    'control_db_utilization': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'ControlDbUtil',
+        'label': 'Control DB CPU Utilization'
+    },
+    'modify_postgres': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'modifyPostgres',
+        'label': 'Modify Postgres'
+    },
+    'create_observations_db': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'createObservationsDb',
+        'label': 'Create Observations DB'
+    },
+    'prune_data': {
+        'repo_name': 'aqts-capture-pruner',
+        'descriptor': 'pruneTimeSeries',
+        'label': 'Prune Old Data'
+    },
+    'shrink_db': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'shrinkDb',
+        'label': 'Shrink DB'
+    },
+    'delete_observations_db': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'deleteObservationsDb',
+        'label': 'Delete Observations DB'
+    },
+    'modify_obs_postgres': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'modifyObPostgres',
+        'label': 'Modify Observations DB Postgres'
+    },
+    'delete_capture_db': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'deleteCaptureDb',
+        'label': 'Delete Capture DB'
+    },
+    'start_observations_db': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'StartObservationsDb',
+        'label': 'Start Observations DB'
+    },
+    'modify_obs_passwords': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'modifyObPasswords',
+        'label': 'Modify Observations DB Passwords'
+    },
+    'enable_trigger': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'enableTrigger',
+        'label': 'Enable Trigger'
+    },
+    'create_db_instance': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'createDbInstance',
+        'label': 'Create DB Instance'
+    },
+    'copy_obs_db_snapshot': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'copyObDbSnapshot',
+        'label': 'Copy Observations DB Snapshot'
+    },
+    'stop_observations_db': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'StopObservationsDb',
+        'label': 'Stop Observations DB'
+    },
+    'etl_discrete_gw_rdb': {
+        'repo_name': 'etl-discrete-groundwater-rdb',
+        'descriptor': 'loadRdb',
+        'label': 'Load RDB Files'
     }
 }
 
