@@ -86,13 +86,12 @@ def create_lambda_widgets(region, deploy_stage, positioning):
             function_descriptor = function_name_parts[-1]
             tier_agnostic_function_name = function_name_without_deploy_stage.replace(f"-{function_descriptor}", '')
 
-            try:
-                for lookup in dashboard_lambdas:
-                    if tier_agnostic_function_name == dashboard_lambdas[lookup]['repo_name'] and function_descriptor == dashboard_lambdas[lookup]['descriptor']:
-                        widget_title = dashboard_lambdas[lookup]['label']
-                        print(widget_title)
-            except KeyError:
-                widget_title = function_name
+            widget_title = function_name
+
+            for lookup in dashboard_lambdas:
+                if tier_agnostic_function_name == dashboard_lambdas[lookup]['repo_name'] and function_descriptor == dashboard_lambdas[lookup]['descriptor']:
+                    widget_title = dashboard_lambdas[lookup]['label']
+                    print(widget_title)
 
             # set dimensions for generic lambda widgets
             positioning.width = positioning.max_width
