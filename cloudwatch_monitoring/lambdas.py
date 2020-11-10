@@ -81,6 +81,18 @@ def create_lambda_widgets(region, deploy_stage, positioning):
         if api_calls.is_iow_lambda_filter(function):
             function_name = function['FunctionName']
 
+            function_name_without_deploy_stage = function_name.replace(f"-{deploy_stage}", '')
+            function_name_parts = function_name_without_deploy_stage.split('-')
+            function_descriptor = function_name_parts[-1]
+            tier_agnostic_function_name = function_name_without_deploy_stage.replace(f"-{function_descriptor}", '')
+
+            try:
+                for lookup in dashboard_lambdas:
+                    if tier_agnostic_function_name == lookup['repo_name'] and function_descriptor == lookup['descriptor']:
+                        widget_title = lookup['label']
+            except KeyError:
+                widget_title = function_name
+
             # set dimensions for generic lambda widgets
             positioning.width = positioning.max_width
             positioning.height = 3
@@ -105,7 +117,7 @@ def create_lambda_widgets(region, deploy_stage, positioning):
                     ],
                     "view": "singleValue",
                     "region": region,
-                    "title": function_name,
+                    "title": widget_title,
                     "period": 300,
                     "stacked": False,
                     "stat": "Average"
