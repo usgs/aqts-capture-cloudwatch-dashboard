@@ -79,17 +79,19 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     for function in all_lambda_metadata_response['Functions']:
 
         if api_calls.is_iow_lambda_filter(function):
+
             function_name = function['FunctionName']
-            function_name_without_deploy_stage = function_name.replace(f"-{deploy_stage}", '')
-            function_name_parts = function_name_without_deploy_stage.split('-')
-            function_descriptor = function_name_parts[-1]
-            function_name_parts_without_descriptor = function_name_parts[:-1]
-            tier_agnostic_function_name = '-'.join(function_name_parts_without_descriptor)
 
+            # hack apart the function name to get the repo name and the descriptor
+            function_name_parts = function_name.split('-')
+            descriptor = function_name_parts[-1]
+            function_name_parts_without_tier_or_descriptor = function_name_parts[:-2]
+            repo_name = '-'.join(function_name_parts_without_tier_or_descriptor)
+
+            # set the widget title based on the label in our lookups, defaults to the original function name
             widget_title = function_name
-
             for lookup in dashboard_lambdas:
-                if tier_agnostic_function_name == dashboard_lambdas[lookup]['repo_name'] and function_descriptor == dashboard_lambdas[lookup]['descriptor']:
+                if repo_name == dashboard_lambdas[lookup]['repo_name'] and descriptor == dashboard_lambdas[lookup]['descriptor']:
                     widget_title = dashboard_lambdas[lookup]['label']
 
             # set dimensions for generic lambda widgets
