@@ -5,7 +5,7 @@ Tests for the sqs module.
 from unittest import TestCase, mock
 
 from ..positioning import Positioning
-from ..sqs import (create_sqs_widgets, get_all_sqs_queue_urls, is_iow_queue_filter)
+from ..sqs import (SQSAPICalls, create_sqs_widgets)
 
 
 class TestCreateSQSWidgets(TestCase):
@@ -13,6 +13,7 @@ class TestCreateSQSWidgets(TestCase):
     def setUp(self):
         self.deploy_stage = 'DEV'
         self.region = 'us-south-10'
+        self.client_type = 'sqs'
         self.max_results = 10
         self.next_token = 'some huge string'
         self.valid_queue_url_1 = "https://us-west-2.queue.amazonaws.com/579777464052/aqts-capture-error-queue-DEV"
@@ -64,18 +65,19 @@ class TestCreateSQSWidgets(TestCase):
     def test_get_all_sqs_queue_urls(self, m_client):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
+        api_calls = SQSAPICalls(self.region, self.deploy_stage)
 
         # only one queue returned from list_queues
         mock_sqs_client.list_queues.return_value = self.queue_list_no_next_token
 
         # noinspection PyPackageRequirements
         self.assertDictEqual(
-            get_all_sqs_queue_urls(self.region),
+            api_calls.get_all_sqs_queue_urls(),
             self.queue_list_no_next_token
         )
 
         # assert the boto3 sqs client was called with expected params
-        m_client.assert_called_with('sqs', region_name=self.region)
+        m_client.assert_called_with(self.client_type, region_name=self.region)
 
         # assert the sqs client called list_queues with expected arguments
         mock_sqs_client.list_queues.assert_called_with(MaxResults=self.max_results)
@@ -84,6 +86,7 @@ class TestCreateSQSWidgets(TestCase):
     def test_get_all_sqs_queue_urls_next_token_pagination(self, m_client):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
+        api_calls = SQSAPICalls(self.region, self.deploy_stage)
 
         # 2 queues returned, the first queue has the key NextToken that causes us to begin iterating through pages
         # of list_queues responses
@@ -99,12 +102,12 @@ class TestCreateSQSWidgets(TestCase):
         # Assert we get the expected queue list after 1 pagination iteration
         # noinspection PyPackageRequirements
         self.assertDictEqual(
-            get_all_sqs_queue_urls(self.region),
+            api_calls.get_all_sqs_queue_urls(),
             self.queue_list_after_successful_pagination
         )
 
         # assert the boto3 sqs client was called with expected params
-        m_client.assert_called_with('sqs', region_name=self.region)
+        m_client.assert_called_with(self.client_type, region_name=self.region)
 
         # assert the list_queues calls were called, and in the expected order
         mock_sqs_client.list_queues.assert_has_calls(expected, any_order=False)
@@ -114,15 +117,16 @@ class TestCreateSQSWidgets(TestCase):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
         mock_sqs_client.list_queue_tags.return_value = self.tags_list_for_valid_queue_url_1
+        api_calls = SQSAPICalls(self.region, self.deploy_stage)
 
         # assert the return value is true, since list_queue_tags returned a valid response
         # noinspection PyPackageRequirements
         self.assertTrue(
-            is_iow_queue_filter(self.valid_queue_url_1, self.deploy_stage, self.region)
+            api_calls.is_iow_queue_filter(self.valid_queue_url_1)
         )
 
         # assert the boto3 sqs client was called with expected params
-        m_client.assert_called_with('sqs', region_name=self.region)
+        m_client.assert_called_with(self.client_type, region_name=self.region)
 
         # assert the sqs client called list_queue_tags with expected arguments
         mock_sqs_client.list_queue_tags.assert_called_with(QueueUrl=self.valid_queue_url_1)
@@ -132,11 +136,12 @@ class TestCreateSQSWidgets(TestCase):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
         mock_sqs_client.list_queue_tags.return_value = self.tags_list_empty_tags
+        api_calls = SQSAPICalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since list_queue_tags returned a response with no 'Tags' key
         # noinspection PyPackageRequirements
         self.assertFalse(
-            is_iow_queue_filter(self.valid_queue_url_1, self.deploy_stage, self.region)
+            api_calls.is_iow_queue_filter(self.valid_queue_url_1)
         )
 
     @mock.patch('cloudwatch_monitoring.sqs.boto3.client', autospec=True)
@@ -144,11 +149,12 @@ class TestCreateSQSWidgets(TestCase):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
         mock_sqs_client.list_queue_tags.return_value = self.tags_list_no_tags
+        api_calls = SQSAPICalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since list_queue_tags returned a response with no tags in the Tags dict
         # noinspection PyPackageRequirements
         self.assertFalse(
-            is_iow_queue_filter(self.valid_queue_url_1, self.deploy_stage, self.region)
+            api_calls.is_iow_queue_filter(self.valid_queue_url_1)
         )
 
     @mock.patch('cloudwatch_monitoring.sqs.boto3.client', autospec=True)
@@ -156,12 +162,13 @@ class TestCreateSQSWidgets(TestCase):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
         mock_sqs_client.list_queue_tags.return_value = self.tags_list_no_wma_org_key
+        api_calls = SQSAPICalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since list_queue_tags returned a response with no wma:organization key in
         # the Tags dict
         # noinspection PyPackageRequirements
         self.assertFalse(
-            is_iow_queue_filter(self.valid_queue_url_1, self.deploy_stage, self.region)
+            api_calls.is_iow_queue_filter(self.valid_queue_url_1)
         )
 
     @mock.patch('cloudwatch_monitoring.sqs.boto3.client', autospec=True)
@@ -169,32 +176,28 @@ class TestCreateSQSWidgets(TestCase):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
         mock_sqs_client.list_queue_tags.return_value = self.tags_list_no_iow_value
+        api_calls = SQSAPICalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since list_queue_tags returned a response with a valid wma:organization
         # key, but the value is not "IOW"
         # noinspection PyPackageRequirements
         self.assertFalse(
-            is_iow_queue_filter(self.valid_queue_url_1, self.deploy_stage, self.region)
+            api_calls.is_iow_queue_filter(self.valid_queue_url_1)
         )
 
-    @mock.patch('cloudwatch_monitoring.sqs.boto3.client', autospec=True)
-    @mock.patch('cloudwatch_monitoring.sqs.is_iow_queue_filter', autospec=True)
-    @mock.patch('cloudwatch_monitoring.sqs.get_all_sqs_queue_urls', autospec=True)
-    def test_create_sqs_widgets(self, m_all_queues, m_filter, m_client):
-        mock_sqs_client = mock.Mock()
-        m_client.return_value = mock_sqs_client
-
+    @mock.patch('cloudwatch_monitoring.sqs.SQSAPICalls', autospec=True)
+    def test_create_sqs_widgets(self, m_api_calls):
         # return values
-        m_all_queues.return_value = self.queue_list_after_successful_pagination
-        m_filter.side_effect = [
+        m_api_calls.return_value.get_all_sqs_queue_urls.return_value = self.queue_list_after_successful_pagination
+        m_api_calls.return_value.is_iow_queue_filter.side_effect = [
             True, False, True
         ]
 
         # expected calls
         expected_is_iow_queue_filter_calls = [
-            mock.call(self.valid_queue_url_2, self.deploy_stage, self.region),
-            mock.call(self.invalid_queue_url_1, self.deploy_stage, self.region),
-            mock.call(self.valid_queue_url_1, self.deploy_stage, self.region)
+            mock.call(self.valid_queue_url_2),
+            mock.call(self.invalid_queue_url_1),
+            mock.call(self.valid_queue_url_1)
         ]
 
         # we do not expect the invalid queue name would have resulted in a widget
@@ -258,5 +261,5 @@ class TestCreateSQSWidgets(TestCase):
         )
 
         # assert our helper methods were called the expected number of times and in the proper order
-        m_all_queues.assert_called_once_with(self.region)
-        m_filter.assert_has_calls(expected_is_iow_queue_filter_calls, any_order=False)
+        m_api_calls.return_value.get_all_sqs_queue_urls.assert_called_once()
+        m_api_calls.return_value.is_iow_queue_filter.assert_has_calls(expected_is_iow_queue_filter_calls, any_order=False)

@@ -2,8 +2,6 @@
 module for creating rds widgets
 
 """
-
-import boto3
 from .lookups import (rds_instances)
 
 

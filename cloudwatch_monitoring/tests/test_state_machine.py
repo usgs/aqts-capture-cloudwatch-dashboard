@@ -5,7 +5,7 @@ Tests for the state machine module.
 from unittest import TestCase, mock
 
 from ..positioning import Positioning
-from ..state_machine import (create_state_machine_widgets, get_all_state_machines, is_iow_state_machine_filter)
+from ..state_machine import (StepFunctionAPICalls, create_state_machine_widgets)
 
 
 class TestCreateStateMachineWidgets(TestCase):
@@ -13,6 +13,7 @@ class TestCreateStateMachineWidgets(TestCase):
     def setUp(self):
         self.deploy_stage = 'DEV'
         self.region = 'us-south-10'
+        self.client_type = 'stepfunctions'
         self.max_results = 10
         self.next_token = 'some huge string'
         self.valid_state_machine_arn_1 = 'arn:aws:states:us-west-2:807615458658:stateMachine:aqts-ecosystem-switch-grow-capture-db-DEV'
@@ -92,18 +93,19 @@ class TestCreateStateMachineWidgets(TestCase):
     def test_get_all_state_machines(self, m_client):
         mock_stepfunctions_client = mock.Mock()
         m_client.return_value = mock_stepfunctions_client
+        api_calls = StepFunctionAPICalls(self.region, self.deploy_stage)
 
         # only one state machine returned from list_state_machines
         mock_stepfunctions_client.list_state_machines.return_value = self.state_machine_list_no_next_token
 
         # noinspection PyPackageRequirements
         self.assertDictEqual(
-            get_all_state_machines(self.region),
+            api_calls.get_all_state_machines(),
             self.state_machine_list_no_next_token
         )
 
         # assert the boto3 stepfunctions client was called with expected params
-        m_client.assert_called_with('stepfunctions', region_name=self.region)
+        m_client.assert_called_with(self.client_type, region_name=self.region)
 
         # assert the stepfunctions client called list_state_machines with expected arguments
         mock_stepfunctions_client.list_state_machines.assert_called_with(maxResults=self.max_results)
@@ -112,6 +114,7 @@ class TestCreateStateMachineWidgets(TestCase):
     def test_get_all_state_machines_next_token_pagination(self, m_client):
         mock_stepfunctions_client = mock.Mock()
         m_client.return_value = mock_stepfunctions_client
+        api_calls = StepFunctionAPICalls(self.region, self.deploy_stage)
 
         # 2 state machines returned, the first state machine has the key nextToken that causes us to begin iterating 
         # through pages of list_state_machines responses
@@ -127,12 +130,12 @@ class TestCreateStateMachineWidgets(TestCase):
         # Assert we get the expected state machine list after 1 pagination iteration
         # noinspection PyPackageRequirements
         self.assertDictEqual(
-            get_all_state_machines(self.region),
+            api_calls.get_all_state_machines(),
             self.state_machine_list_after_successful_pagination
         )
 
         # assert the boto3 stepfunctions client was called with expected params
-        m_client.assert_called_with('stepfunctions', region_name=self.region)
+        m_client.assert_called_with(self.client_type, region_name=self.region)
 
         # assert the list_state_machines calls were called, and in the expected order
         mock_stepfunctions_client.list_state_machines.assert_has_calls(expected, any_order=False)
@@ -142,15 +145,16 @@ class TestCreateStateMachineWidgets(TestCase):
         mock_stepfunctions_client = mock.Mock()
         m_client.return_value = mock_stepfunctions_client
         mock_stepfunctions_client.list_tags_for_resource.return_value = self.tags_list_for_valid_state_machine_arn_1
+        api_calls = StepFunctionAPICalls(self.region, self.deploy_stage)
 
         # assert the return value is true, since list_tags_for_resource returned a valid response
         # noinspection PyPackageRequirements
         self.assertTrue(
-            is_iow_state_machine_filter(self.valid_state_machine_arn_1, self.deploy_stage, self.region)
+            api_calls.is_iow_state_machine_filter(self.valid_state_machine_arn_1)
         )
 
         # assert the boto3 stepfunctions client was called with expected params
-        m_client.assert_called_with('stepfunctions', region_name=self.region)
+        m_client.assert_called_with(self.client_type, region_name=self.region)
 
         # assert the stepfunctions client called list_tags_for_resource with expected arguments
         mock_stepfunctions_client.list_tags_for_resource.assert_called_with(resourceArn=self.valid_state_machine_arn_1)
@@ -160,11 +164,12 @@ class TestCreateStateMachineWidgets(TestCase):
         mock_stepfunctions_client = mock.Mock()
         m_client.return_value = mock_stepfunctions_client
         mock_stepfunctions_client.list_tags_for_resource.return_value = self.tags_list_empty_tags
+        api_calls = StepFunctionAPICalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since list_tags_for_resource returned a response with no 'Tags' key
         # noinspection PyPackageRequirements
         self.assertFalse(
-            is_iow_state_machine_filter(self.valid_state_machine_arn_1, self.deploy_stage, self.region)
+            api_calls.is_iow_state_machine_filter(self.valid_state_machine_arn_1)
         )
 
     @mock.patch('cloudwatch_monitoring.state_machine.boto3.client', autospec=True)
@@ -172,11 +177,13 @@ class TestCreateStateMachineWidgets(TestCase):
         mock_stepfunctions_client = mock.Mock()
         m_client.return_value = mock_stepfunctions_client
         mock_stepfunctions_client.list_tags_for_resource.return_value = self.tags_list_no_tags
+        api_calls = StepFunctionAPICalls(self.region, self.deploy_stage)
 
-        # assert the return value is False, since list_tags_for_resource returned a response with no tags in the Tags dict
+        # assert the return value is False, since list_tags_for_resource returned a response with no
+        # tags in the Tags dict
         # noinspection PyPackageRequirements
         self.assertFalse(
-            is_iow_state_machine_filter(self.valid_state_machine_arn_1, self.deploy_stage, self.region)
+            api_calls.is_iow_state_machine_filter(self.valid_state_machine_arn_1)
         )
 
     @mock.patch('cloudwatch_monitoring.state_machine.boto3.client', autospec=True)
@@ -184,12 +191,14 @@ class TestCreateStateMachineWidgets(TestCase):
         mock_stepfunctions_client = mock.Mock()
         m_client.return_value = mock_stepfunctions_client
         mock_stepfunctions_client.list_tags_for_resource.return_value = self.tags_list_no_wma_org_key
+        api_calls = StepFunctionAPICalls(self.region, self.deploy_stage)
 
-        # assert the return value is False, since list_tags_for_resource returned a response with no wma:organization key in
-        # the Tags dict
+        # assert the return value is False, since list_tags_for_resource returned a response with no
+        # wma:organization key in the Tags dict
         # noinspection PyPackageRequirements
         self.assertFalse(
-            is_iow_state_machine_filter(self.valid_state_machine_arn_1, self.deploy_stage, self.region)
+            # is_iow_state_machine_filter(self.valid_state_machine_arn_1, self.deploy_stage, self.region)
+            api_calls.is_iow_state_machine_filter(self.valid_state_machine_arn_1)
         )
 
     @mock.patch('cloudwatch_monitoring.state_machine.boto3.client', autospec=True)
@@ -197,32 +206,28 @@ class TestCreateStateMachineWidgets(TestCase):
         mock_stepfunctions_client = mock.Mock()
         m_client.return_value = mock_stepfunctions_client
         mock_stepfunctions_client.list_tags_for_resource.return_value = self.tags_list_no_iow_value
+        api_calls = StepFunctionAPICalls(self.region, self.deploy_stage)
 
-        # assert the return value is False, since list_tags_for_resource returned a response with a valid wma:organization
-        # key, but the value is not "IOW"
+        # assert the return value is False, since list_tags_for_resource returned a response with a valid
+        # wma:organization key, but the value is not "IOW"
         # noinspection PyPackageRequirements
         self.assertFalse(
-            is_iow_state_machine_filter(self.valid_state_machine_arn_1, self.deploy_stage, self.region)
+            api_calls.is_iow_state_machine_filter(self.valid_state_machine_arn_1)
         )
 
-    @mock.patch('cloudwatch_monitoring.state_machine.boto3.client', autospec=True)
-    @mock.patch('cloudwatch_monitoring.state_machine.is_iow_state_machine_filter', autospec=True)
-    @mock.patch('cloudwatch_monitoring.state_machine.get_all_state_machines', autospec=True)
-    def test_create_state_machine_widgets(self, m_all_state_machines, m_filter, m_client):
-        mock_stepfunctions_client = mock.Mock()
-        m_client.return_value = mock_stepfunctions_client
-
+    @mock.patch('cloudwatch_monitoring.state_machine.StepFunctionAPICalls', autospec=True)
+    def test_create_state_machine_widgets(self, m_api_calls):
         # return values
-        m_all_state_machines.return_value = self.state_machine_list_after_successful_pagination
-        m_filter.side_effect = [
+        m_api_calls.return_value.get_all_state_machines.return_value = self.state_machine_list_after_successful_pagination
+        m_api_calls.return_value.is_iow_state_machine_filter.side_effect = [
             True, False, True
         ]
 
         # expected calls
         expected_is_iow_state_machine_filter_calls = [
-            mock.call(self.valid_state_machine_arn_2, self.deploy_stage, self.region),
-            mock.call(self.invalid_state_machine_arn, self.deploy_stage, self.region),
-            mock.call(self.valid_state_machine_arn_1, self.deploy_stage, self.region)
+            mock.call(self.valid_state_machine_arn_2),
+            mock.call(self.invalid_state_machine_arn),
+            mock.call(self.valid_state_machine_arn_1)
         ]
 
         # we do not expect the invalid state machine would have resulted in a widget
@@ -280,5 +285,5 @@ class TestCreateStateMachineWidgets(TestCase):
         )
 
         # assert our helper methods were called the expected number of times and in the proper order
-        m_all_state_machines.assert_called_once_with(self.region)
-        m_filter.assert_has_calls(expected_is_iow_state_machine_filter_calls, any_order=False)
+        m_api_calls.return_value.get_all_state_machines.assert_called_once()
+        m_api_calls.return_value.is_iow_state_machine_filter.assert_has_calls(expected_is_iow_state_machine_filter_calls, any_order=False)
