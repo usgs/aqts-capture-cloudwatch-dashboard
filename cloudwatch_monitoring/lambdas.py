@@ -159,6 +159,7 @@ def create_lambda_widgets(region, deploy_stage, positioning):
             # TODO iterating the positioning among a bunch of lists that are consolidated later doesn't work...
             # positioning.iterate_positioning()
 
+    # TODO widgets come out in exact opposite order
     # add the generic widget groups so they appear together in the dashboard
     # lambda_widgets.extend(error_widgets)
     # lambda_widgets.extend(data_in_widgets)
@@ -169,14 +170,19 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     # lambda_widgets.extend(environment_management_widgets)
     # lambda_widgets.extend(misc_widgets)
 
-    lambda_widgets.extend(misc_widgets)
-    lambda_widgets.extend(environment_management_widgets)
-    lambda_widgets.extend(data_purge_widgets)
-    lambda_widgets.extend(nwis_web_widgets)
-    lambda_widgets.extend(sv_widgets)
-    lambda_widgets.extend(dv_widgets)
-    lambda_widgets.extend(data_in_widgets)
-    lambda_widgets.extend(error_widgets)
+    # TODO this works, though seemingly in the wrong order
+    # lambda_widgets.extend(misc_widgets)
+    # lambda_widgets.extend(environment_management_widgets)
+    # lambda_widgets.extend(data_purge_widgets)
+    # lambda_widgets.extend(nwis_web_widgets)
+    # lambda_widgets.extend(sv_widgets)
+    # lambda_widgets.extend(dv_widgets)
+    # lambda_widgets.extend(data_in_widgets)
+    # lambda_widgets.extend(error_widgets)
+
+    # TODO does this work?
+    lambda_widgets = lambda_widgets + error_widgets + data_in_widgets + dv_widgets + sv_widgets + nwis_web_widgets + data_purge_widgets + environment_management_widgets + misc_widgets
+
     return lambda_widgets
 
 
