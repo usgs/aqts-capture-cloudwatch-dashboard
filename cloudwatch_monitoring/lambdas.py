@@ -160,15 +160,23 @@ def create_lambda_widgets(region, deploy_stage, positioning):
             # positioning.iterate_positioning()
 
     # add the generic widget groups so they appear together in the dashboard
-    lambda_widgets.extend(error_widgets)
-    lambda_widgets.extend(data_in_widgets)
-    lambda_widgets.extend(dv_widgets)
-    lambda_widgets.extend(sv_widgets)
-    lambda_widgets.extend(nwis_web_widgets)
-    lambda_widgets.extend(data_purge_widgets)
-    lambda_widgets.extend(environment_management_widgets)
-    lambda_widgets.extend(misc_widgets)
+    # lambda_widgets.extend(error_widgets)
+    # lambda_widgets.extend(data_in_widgets)
+    # lambda_widgets.extend(dv_widgets)
+    # lambda_widgets.extend(sv_widgets)
+    # lambda_widgets.extend(nwis_web_widgets)
+    # lambda_widgets.extend(data_purge_widgets)
+    # lambda_widgets.extend(environment_management_widgets)
+    # lambda_widgets.extend(misc_widgets)
 
+    lambda_widgets.extend(misc_widgets)
+    lambda_widgets.extend(environment_management_widgets)
+    lambda_widgets.extend(data_purge_widgets)
+    lambda_widgets.extend(nwis_web_widgets)
+    lambda_widgets.extend(sv_widgets)
+    lambda_widgets.extend(dv_widgets)
+    lambda_widgets.extend(data_in_widgets)
+    lambda_widgets.extend(error_widgets)
     return lambda_widgets
 
 
