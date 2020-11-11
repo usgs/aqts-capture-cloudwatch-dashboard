@@ -76,6 +76,16 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     all_lambda_metadata_response = api_calls.get_all_lambda_metadata()
 
     # iterate over the list of lambda metadata and create widgets for the assets we care about based on filters
+
+    dv_widgets = []
+    sv_widgets = []
+    data_in_widgets = []
+    data_purge_widgets = []
+    error_widgets = []
+    environment_management_widgets = []
+    nwis_web_widgets = []
+    misc_widgets = []
+
     for function in all_lambda_metadata_response['Functions']:
 
         if api_calls.is_iow_lambda_filter(function):
@@ -89,10 +99,12 @@ def create_lambda_widgets(region, deploy_stage, positioning):
             repo_name = '-'.join(function_name_parts_without_tier_or_descriptor)
 
             # set the widget title based on the label in our lookups, defaults to the original function name
+
             widget_title = function_name
             for lookup in dashboard_lambdas:
                 if repo_name == dashboard_lambdas[lookup]['repo_name'] and descriptor == dashboard_lambdas[lookup]['descriptor']:
                     widget_title = dashboard_lambdas[lookup]['label']
+                    widget_etl_branch = dashboard_lambdas[lookup]['etl_branch']
 
             # set dimensions for generic lambda widgets
             positioning.width = positioning.max_width
@@ -125,8 +137,34 @@ def create_lambda_widgets(region, deploy_stage, positioning):
                 }
             }
 
-            lambda_widgets.append(widget)
+            if 'dv' == widget_etl_branch:
+                dv_widgets.append(widget)
+            elif 'sv' == widget_etl_branch:
+                sv_widgets.append(widget)
+            elif 'environment_management' == widget_etl_branch:
+                environment_management_widgets.append(widget)
+            elif 'error_handling' == widget_etl_branch:
+                error_widgets.append(widget)
+            elif 'data_ingest' == widget_etl_branch:
+                data_in_widgets.append(widget)
+            elif 'data_purging' == widget_etl_branch:
+                data_purge_widgets.append(widget)
+            elif 'nwis_web' == widget_etl_branch:
+                nwis_web_widgets.append(widget)
+            else:
+                misc_widgets.append(widget)
+
             positioning.iterate_positioning()
+
+    # add the generic widget groups so they appear together in the dashboard
+    lambda_widgets.extend(error_widgets)
+    lambda_widgets.extend(data_in_widgets)
+    lambda_widgets.extend(dv_widgets)
+    lambda_widgets.extend(sv_widgets)
+    lambda_widgets.extend(nwis_web_widgets)
+    lambda_widgets.extend(data_purge_widgets)
+    lambda_widgets.extend(environment_management_widgets)
+    lambda_widgets.extend(misc_widgets)
 
     return lambda_widgets
 
