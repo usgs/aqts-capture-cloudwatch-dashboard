@@ -100,6 +100,7 @@ def create_lambda_widgets(region, deploy_stage, positioning):
 
             # set the widget title based on the label in our lookups, defaults to the original function name
 
+            widget_etl_branch = 'not defined'
             widget_title = function_name
             for lookup in dashboard_lambdas:
                 if repo_name == dashboard_lambdas[lookup]['repo_name'] and descriptor == dashboard_lambdas[lookup]['descriptor']:
