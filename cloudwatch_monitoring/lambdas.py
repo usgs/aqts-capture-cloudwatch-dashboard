@@ -108,7 +108,7 @@ def create_lambda_widgets(region, deploy_stage, positioning):
                     widget_etl_branch = dashboard_lambdas[lookup]['etl_branch']
 
             # set dimensions for generic lambda widgets
-            positioning.width = positioning.max_width
+            positioning.width = 24
             positioning.height = 3
 
             # TODO add a lookup for each lambda, including a title property.  See sqs and state machine
@@ -159,11 +159,7 @@ def create_lambda_widgets(region, deploy_stage, positioning):
 
     # add the generic widget groups so they appear together in the dashboard
     lambda_widgets.extend(error_widgets)
-    print(error_widgets)
-    print(lambda_widgets)
     lambda_widgets.extend(data_in_widgets)
-    print(data_in_widgets)
-    print(lambda_widgets)
     lambda_widgets.extend(dv_widgets)
     lambda_widgets.extend(sv_widgets)
     lambda_widgets.extend(nwis_web_widgets)
