@@ -139,20 +139,28 @@ def create_lambda_widgets(region, deploy_stage, positioning):
             }
 
             if 'dv' == widget_etl_branch:
+                print(f"dv branch + {widget_etl_branch}")
                 dv_widgets.append(widget)
             elif 'sv' == widget_etl_branch:
+                print(f"sv branch + {widget_etl_branch}")
                 sv_widgets.append(widget)
             elif 'environment_management' == widget_etl_branch:
+                print(f"environment branch + {widget_etl_branch}")
                 environment_management_widgets.append(widget)
             elif 'error_handling' == widget_etl_branch:
+                print(f"error branch + {widget_etl_branch}")
                 error_widgets.append(widget)
             elif 'data_ingest' == widget_etl_branch:
+                print(f"data in branch + {widget_etl_branch}")
                 data_in_widgets.append(widget)
             elif 'data_purging' == widget_etl_branch:
+                print(f"data purge branch + {widget_etl_branch}")
                 data_purge_widgets.append(widget)
             elif 'nwis_web' == widget_etl_branch:
+                print(f"nwis web branch + {widget_etl_branch}")
                 nwis_web_widgets.append(widget)
             else:
+                print(f"misc branch + {widget_etl_branch}")
                 misc_widgets.append(widget)
 
             positioning.iterate_positioning()
