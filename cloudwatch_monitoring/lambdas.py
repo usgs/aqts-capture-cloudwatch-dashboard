@@ -155,7 +155,8 @@ def create_lambda_widgets(region, deploy_stage, positioning):
             else:
                 misc_widgets.append(widget)
 
-            positioning.iterate_positioning()
+            # TODO iterating the positioning among a bunch of lists that are consolidated later doesn't work...
+            # positioning.iterate_positioning()
 
     # add the generic widget groups so they appear together in the dashboard
     lambda_widgets.extend(error_widgets)
