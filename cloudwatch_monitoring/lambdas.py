@@ -71,7 +71,7 @@ def create_lambda_widgets(region, deploy_stage, positioning):
         'height': positioning.height,
         'width': positioning.width,
         'properties': {
-            "metrics": generate_duration_of_transform_db_lambdas_average_metrics(deploy_stage),
+            "metrics": generate_duration_of_transform_db_lambdas_average_metrics(deploy_stage, 'Duration'),
             "view": "timeSeries",
             "stacked": False,
             "region": region,
@@ -82,6 +82,24 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     }
 
     lambda_widgets.append(duration_of_transform_db_lambdas_average)
+
+    # Custom widget for monitoring max duration of transform db lambdas
+    duration_of_transform_db_lambdas_max = {
+        'type': 'metric',
+        'height': positioning.height,
+        'width': positioning.width,
+        'properties': {
+            "metrics": generate_duration_of_transform_db_lambdas_average_metrics(deploy_stage, 'Duration'),
+            "view": "timeSeries",
+            "stacked": False,
+            "region": region,
+            "period": 300,
+            "stat": "Maximum",
+            "title": "Duration of Transformation DB Lambdas (Maximum)"
+        }
+    }
+
+    lambda_widgets.append(duration_of_transform_db_lambdas_max)
 
     api_calls = LambdaAPICalls(region, deploy_stage)
     # grab all the lambdas in the account/region
@@ -230,11 +248,12 @@ def generate_concurrent_lambdas_metrics(deploy_stage):
     return metrics_list
 
 
-def generate_duration_of_transform_db_lambdas_average_metrics(deploy_stage):
+def generate_duration_of_transform_db_lambdas_average_metrics(deploy_stage, metric_name):
     """
     Generates "duration of transformation db lambdas (average)" widget's metrics.
 
     :param deploy_stage: The deployment tier
+    :param metric_name: the name of the metric - "Duration" for example"
     :return: The list of generated metrics
     :rtype: list
     """
@@ -249,21 +268,12 @@ def generate_duration_of_transform_db_lambdas_average_metrics(deploy_stage):
             # the first metric in the list has some additional stuff
             first_metric = [
                 "AWS/Lambda",
-                "Duration",
+                metric_name,
                 "FunctionName",
                 lambda_attributes['name'],
                 {"label": lambda_attributes['label']}
             ]
             metrics_list.append(first_metric)
-        # elif count == 1:
-        #     second_metric = [
-        #         ".",
-        #         ".",
-        #         ".",
-        #         lambda_attributes['name'],
-        #         {"label": lambda_attributes['label']}
-        #     ]
-        #     metrics_list.append(second_metric)
         else:
             metric = [
                 "...",
