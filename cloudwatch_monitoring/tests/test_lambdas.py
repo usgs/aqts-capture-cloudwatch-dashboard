@@ -5,7 +5,7 @@ Tests for the lambdas module.
 from unittest import TestCase, mock
 
 from ..positioning import Positioning
-from ..lambdas import (LambdaAPICalls, create_lambda_widgets, lambda_properties, generate_concurrent_lambdas_metrics)
+from ..lambdas import (LambdaAPICalls, create_lambda_widgets, lambda_properties, generate_custom_lambda_metrics)
 
 
 class TestCreateLambdaWidgets(TestCase):
@@ -156,9 +156,9 @@ class TestCreateLambdaWidgets(TestCase):
             expected_properties
         )
 
-    def test_generate_concurrent_lambdas_metrics(self):
+    def test_generate_custom_lambda_metrics(self):
         self.assertListEqual(
-            generate_concurrent_lambdas_metrics(self.deploy_stage),
+            generate_custom_lambda_metrics(self.deploy_stage),
             self.concurrent_lambdas_metrics_list
         )
 

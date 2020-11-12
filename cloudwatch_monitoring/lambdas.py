@@ -53,7 +53,7 @@ def create_lambda_widgets(region, deploy_stage, positioning):
         'height': positioning.height,
         'width': positioning.width,
         'properties': {
-            "metrics": generate_concurrent_lambdas_metrics(deploy_stage),
+            "metrics": generate_custom_lambda_metrics(deploy_stage, 'ConcurrentExecutions', 'concurrent_lambdas'),
             "view": "timeSeries",
             "stacked": True,
             "region": region,
@@ -71,7 +71,7 @@ def create_lambda_widgets(region, deploy_stage, positioning):
         'height': positioning.height,
         'width': positioning.width,
         'properties': {
-            "metrics": generate_duration_of_transform_db_lambdas_average_metrics(deploy_stage, 'Duration'),
+            "metrics": generate_custom_lambda_metrics(deploy_stage, 'Duration', 'duration_of_transform_db_lambdas'),
             "view": "timeSeries",
             "stacked": False,
             "region": region,
@@ -89,7 +89,7 @@ def create_lambda_widgets(region, deploy_stage, positioning):
         'height': positioning.height,
         'width': positioning.width,
         'properties': {
-            "metrics": generate_duration_of_transform_db_lambdas_average_metrics(deploy_stage, 'Duration'),
+            "metrics": generate_custom_lambda_metrics(deploy_stage, 'Duration', 'duration_of_transform_db_lambdas'),
             "view": "timeSeries",
             "stacked": False,
             "region": region,
@@ -210,11 +210,13 @@ def lambda_properties(lookup_name, deploy_stage):
     return {'name': name, 'label': label}
 
 
-def generate_concurrent_lambdas_metrics(deploy_stage):
+def generate_custom_lambda_metrics(deploy_stage, metric_name, lookup_list_name):
     """
-    Generates concurrent lambda widget's metrics.
+    Generates custom lambda widget metrics.
 
     :param deploy_stage: The deployment tier
+    :param metric_name: The name of the metric, like "Duration" or "ConcurrentExecutions"
+    :param lookup_list_name: the lookup list containing the lambdas we wish to monitor
     :return: The list of generated metrics
     :rtype: list
     """
@@ -222,46 +224,7 @@ def generate_concurrent_lambdas_metrics(deploy_stage):
     metrics_list = []
     count = 0
 
-    for name in custom_lambda_widgets['concurrent_lambdas']:
-        lambda_attributes = lambda_properties(name, deploy_stage)
-
-        if count < 1:
-            # the first metric in the list has some additional stuff
-            first_metric = [
-                "AWS/Lambda",
-                "ConcurrentExecutions",
-                "FunctionName",
-                lambda_attributes['name'],
-                {"label": lambda_attributes['label']}
-            ]
-            metrics_list.append(first_metric)
-        else:
-            metric = [
-                "...",
-                lambda_attributes['name'],
-                {"label": lambda_attributes['label']}
-            ]
-            metrics_list.append(metric)
-
-        count += 1
-
-    return metrics_list
-
-
-def generate_duration_of_transform_db_lambdas_average_metrics(deploy_stage, metric_name):
-    """
-    Generates "duration of transformation db lambdas (average)" widget's metrics.
-
-    :param deploy_stage: The deployment tier
-    :param metric_name: the name of the metric - "Duration" for example"
-    :return: The list of generated metrics
-    :rtype: list
-    """
-
-    metrics_list = []
-    count = 0
-
-    for name in custom_lambda_widgets['duration_of_transform_db_lambdas']:
+    for name in custom_lambda_widgets[lookup_list_name]:
         lambda_attributes = lambda_properties(name, deploy_stage)
 
         if count < 1:
