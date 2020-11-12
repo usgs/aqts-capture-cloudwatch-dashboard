@@ -87,9 +87,10 @@ def create_lambda_widgets(region, deploy_stage, positioning):
             function_name = function['FunctionName']
 
             # hack apart the function name to get the repo name and the descriptor
-            function_name_parts = function_name.split('-')
+            function_name_without_tier = function_name.replace(f"-{deploy_stage}")
+            function_name_parts = function_name_without_tier.split('-')
             descriptor = function_name_parts[-1]
-            function_name_parts_without_tier_or_descriptor = function_name_parts[:-2]
+            function_name_parts_without_tier_or_descriptor = function_name_parts[:-1]
             repo_name = '-'.join(function_name_parts_without_tier_or_descriptor)
 
             # set the widget title based on the label in our lookups, defaults to the original function name
