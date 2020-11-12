@@ -87,7 +87,7 @@ def create_lambda_widgets(region, deploy_stage, positioning):
             function_name = function['FunctionName']
 
             # hack apart the function name to get the repo name and the descriptor
-            function_name_without_tier = function_name.replace(f"-{deploy_stage}")
+            function_name_without_tier = function_name.replace(f"-{deploy_stage}", '')
             function_name_parts = function_name_without_tier.split('-')
             descriptor = function_name_parts[-1]
             function_name_parts_without_tier_or_descriptor = function_name_parts[:-1]
