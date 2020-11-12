@@ -48,8 +48,8 @@ def create_state_machine_widgets(region, deploy_stage, positioning):
 
             state_machine_widget = {
                 'type': 'metric',
-                'x': positioning.x,
-                'y': positioning.y,
+                # 'x': positioning.x,
+                # 'y': positioning.y,
                 'height': positioning.height,
                 'width': positioning.width,
                 'properties': {
@@ -69,7 +69,7 @@ def create_state_machine_widgets(region, deploy_stage, positioning):
             }
 
             state_machine_widgets.append(state_machine_widget)
-            positioning.iterate_positioning()
+            # positioning.iterate_positioning()
 
     return state_machine_widgets
 

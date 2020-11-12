@@ -27,8 +27,8 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     # Custom widget for monitoring error handler invocation counts over time
     error_handler_activity = {
         'type': 'metric',
-        'x': positioning.x,
-        'y': positioning.y,
+        # 'x': positioning.x,
+        # 'y': positioning.y,
         'height': positioning.height,
         'width': positioning.width,
         'properties': {
@@ -48,13 +48,13 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     }
 
     lambda_widgets.append(error_handler_activity)
-    positioning.iterate_positioning()
+    # positioning.iterate_positioning()
 
     # Custom widget for monitoring concurrency of lambdas specifically involved in the ETL
     concurrent_lambdas = {
         'type': 'metric',
-        'x': positioning.x,
-        'y': positioning.y,
+        # 'x': positioning.x,
+        # 'y': positioning.y,
         'height': positioning.height,
         'width': positioning.width,
         'properties': {
@@ -69,7 +69,8 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     }
 
     lambda_widgets.append(concurrent_lambdas)
-    positioning.iterate_positioning()
+    # TODO this lambda is displayed after the generic widgets somehow
+    # positioning.iterate_positioning()
 
     api_calls = LambdaAPICalls(region, deploy_stage)
     # grab all the lambdas in the account/region
@@ -107,19 +108,16 @@ def create_lambda_widgets(region, deploy_stage, positioning):
                     widget_title = dashboard_lambdas[lookup]['label']
                     widget_etl_branch = dashboard_lambdas[lookup]['etl_branch']
 
+            # TODO this positioning is kind of borked
             # set dimensions for generic lambda widgets
-            positioning.x = 0
+            # positioning.x = 0
             positioning.width = 24
             positioning.height = 3
 
-            # TODO add a lookup for each lambda, including a title property.  See sqs and state machine
-            # modules for examples, where we use our specified title if we have it, or default to the lambda name if we
-            # do not.
-
             widget = {
                 'type': 'metric',
-                'x': positioning.x,
-                'y': positioning.y,
+                # 'x': positioning.x,
+                # 'y': positioning.y,
                 'height': positioning.height,
                 'width': positioning.width,
                 'properties': {
