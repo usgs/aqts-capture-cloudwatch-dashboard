@@ -71,7 +71,7 @@ def create_lambda_widgets(region, deploy_stage, positioning):
         'height': positioning.height,
         'width': positioning.width,
         'properties': {
-            "metrics": generate_duration_of_transform_db_lambdas_average_metrics(),
+            "metrics": generate_duration_of_transform_db_lambdas_average_metrics(deploy_stage),
             "view": "timeSeries",
             "stacked": False,
             "region": region,
