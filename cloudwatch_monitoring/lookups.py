@@ -245,6 +245,12 @@ dashboard_lambdas = {
         'descriptor': 'loadRdb',
         'label': 'Load RDB Files',
         'etl_branch': 'nwis_web'
+    },
+    'disable_trigger': {
+        'repo_name': 'aqts-capture-ecosystem-switch',
+        'descriptor': 'disableTrigger',
+        'label': 'Disable Capture Trigger',
+        'etl_branch': 'environment_management'
     }
 }
 
