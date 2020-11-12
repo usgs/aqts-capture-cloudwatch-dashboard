@@ -252,7 +252,6 @@ def generate_duration_of_transform_db_lambdas_average_metrics(deploy_stage):
                 "Duration",
                 "FunctionName",
                 lambda_attributes['name'],
-                "Resource",
                 {"label": lambda_attributes['label']}
             ]
             metrics_list.append(first_metric)
