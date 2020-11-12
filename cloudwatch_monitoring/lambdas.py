@@ -65,6 +65,24 @@ def create_lambda_widgets(region, deploy_stage, positioning):
 
     lambda_widgets.append(concurrent_lambdas)
 
+    # Custom widget for monitoring average duration of transform db lambdas
+    duration_of_transform_db_lambdas_average = {
+        'type': 'metric',
+        'height': positioning.height,
+        'width': positioning.width,
+        'properties': {
+            "metrics": generate_duration_of_transform_db_lambdas_average_metrics(),
+            "view": "timeSeries",
+            "stacked": False,
+            "region": region,
+            "period": 300,
+            "stat": "Average",
+            "title": "Duration of Transformation DB Lambdas (Average)"
+        }
+    }
+
+    lambda_widgets.append(duration_of_transform_db_lambdas_average)
+
     api_calls = LambdaAPICalls(region, deploy_stage)
     # grab all the lambdas in the account/region
     all_lambda_metadata_response = api_calls.get_all_lambda_metadata()
@@ -94,7 +112,7 @@ def create_lambda_widgets(region, deploy_stage, positioning):
             repo_name = '-'.join(function_name_parts_without_tier_or_descriptor)
 
             # set the widget title based on the label in our lookups, defaults to the original function name
-
+            # set the etl branch so we can group the generic lambdas together by their purpose in the etl.
             widget_etl_branch = 'not defined'
             widget_title = function_name
             for lookup in dashboard_lambdas:
@@ -152,6 +170,7 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     lambda_widgets.extend(nwis_web_widgets)
     lambda_widgets.extend(data_purge_widgets)
     lambda_widgets.extend(environment_management_widgets)
+    # When we don't have a lookup defined for the lambda yet, it will appear at the bottom of the list
     lambda_widgets.extend(misc_widgets)
 
     return lambda_widgets
@@ -195,6 +214,45 @@ def generate_concurrent_lambdas_metrics(deploy_stage):
                 "ConcurrentExecutions",
                 "FunctionName",
                 lambda_attributes['name'],
+                {"label": lambda_attributes['label']}
+            ]
+            metrics_list.append(first_metric)
+        else:
+            metric = [
+                "...",
+                lambda_attributes['name'],
+                {"label": lambda_attributes['label']}
+            ]
+            metrics_list.append(metric)
+
+        count += 1
+
+    return metrics_list
+
+
+def generate_duration_of_transform_db_lambdas_average_metrics(deploy_stage):
+    """
+    Generates "duration of transformation db lambdas (average)" widget's metrics.
+
+    :param deploy_stage: The deployment tier
+    :return: The list of generated metrics
+    :rtype: list
+    """
+
+    metrics_list = []
+    count = 0
+
+    for name in custom_lambda_widgets['duration_of_transform_db_lambdas']:
+        lambda_attributes = lambda_properties(name, deploy_stage)
+
+        if count < 1:
+            # the first metric in the list has some additional stuff
+            first_metric = [
+                "AWS/Lambda",
+                "Duration",
+                "FunctionName",
+                lambda_attributes['name'],
+                "Resource",
                 {"label": lambda_attributes['label']}
             ]
             metrics_list.append(first_metric)
