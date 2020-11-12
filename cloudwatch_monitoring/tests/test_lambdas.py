@@ -145,6 +145,23 @@ class TestCreateLambdaWidgets(TestCase):
             ['...', 'aqts-capture-raw-load-DEV-iowCaptureExtraSmall', {'label': 'Raw Load Extra Small'}]
         ]
 
+        self.duration_of_transform_db_lambdas_metrics_list = [
+             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-dvstat-transform-DEV-transform',
+              {'label': 'DV stat Transformer'}],
+             ['...', 'aqts-capture-raw-load-DEV-iowCapture', {'label': 'Raw Loader'}],
+             ['...', 'aqts-capture-ts-corrected-DEV-preProcess', {'label': 'TS corrected preprocessor'}],
+             ['...', 'aqts-capture-ts-description-DEV-processTsDescription', {'label': 'TS descriptions preprocessor'}],
+             ['...', 'aqts-ts-type-router-DEV-determineRoute', {'label': 'TS type router'}],
+             ['...', 'aqts-capture-ts-loader-DEV-loadTimeSeries', {'label': 'DV TS loader'}],
+             ['...', 'aqts-capture-ts-field-visit-DEV-preProcess', {'label': 'Field visit preprocessor'}],
+             ['...', 'aqts-capture-field-visit-transform-DEV-transform', {'label': 'Field visit transformer'}],
+             ['...', 'aqts-capture-discrete-loader-DEV-loadDiscrete', {'label': 'Discrete GW loader'}],
+             ['...', 'aqts-capture-field-visit-metadata-DEV-preProcess',
+              {'label': 'Field visit metadata preprocessor'}],
+             ['...', 'aqts-capture-raw-load-DEV-iowCaptureMedium', {'label': 'Raw Load Medium'}],
+             ['...', 'aqts-capture-raw-load-DEV-iowCaptureSmall', {'label': 'Raw Load Small'}],
+             ['...', 'aqts-capture-raw-load-DEV-iowCaptureExtraSmall', {'label': 'Raw Load Extra Small'}]]
+
     def test_lambda_properties(self):
         expected_properties = {
             'name': 'aqts-capture-dvstat-transform-DEV-transform',
@@ -156,10 +173,16 @@ class TestCreateLambdaWidgets(TestCase):
             expected_properties
         )
 
-    def test_generate_custom_lambda_metrics(self):
+    def test_generate_custom_lambda_metrics_concurrent_lambdas(self):
         self.assertListEqual(
-            generate_custom_lambda_metrics(self.deploy_stage),
+            generate_custom_lambda_metrics(self.deploy_stage, 'ConcurrentExecutions', 'concurrent_lambdas'),
             self.concurrent_lambdas_metrics_list
+        )
+
+    def test_generate_custom_lambda_metrics_duration_of_transform_db_lambdas(self):
+        self.assertListEqual(
+            generate_custom_lambda_metrics(self.deploy_stage, 'Duration', 'duration_of_transform_db_lambdas'),
+            self.duration_of_transform_db_lambdas_metrics_list
         )
 
     @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
@@ -315,6 +338,30 @@ class TestCreateLambdaWidgets(TestCase):
                     'stat': 'Average',
                     'title': 'Concurrent Lambdas (Average per minute)',
                 },
+            },
+            {
+                'type': 'metric',
+                'height': 6,
+                'width': 12,
+                'properties': {
+                    'metrics': self.duration_of_transform_db_lambdas_metrics_list,
+                    'view': 'timeSeries', 'stacked': False,
+                    'region': 'us-south-10', 'period': 300,
+                    'stat': 'Average',
+                    'title': 'Duration of Transformation DB Lambdas (Average)'
+                }
+            },
+            {
+                'type': 'metric',
+                'height': 6,
+                'width': 12,
+                'properties': {
+                    'metrics': self.duration_of_transform_db_lambdas_metrics_list,
+                    'view': 'timeSeries', 'stacked': False,
+                    'region': 'us-south-10', 'period': 300,
+                    'stat': 'Maximum',
+                    'title': 'Duration of Transformation DB Lambdas (Maximum)'
+                }
             },
             {
                 'type': 'metric',
