@@ -255,15 +255,15 @@ def generate_duration_of_transform_db_lambdas_average_metrics(deploy_stage):
                 {"label": lambda_attributes['label']}
             ]
             metrics_list.append(first_metric)
-        elif count == 1:
-            second_metric = [
-                ".",
-                ".",
-                ".",
-                lambda_attributes['name'],
-                {"label": lambda_attributes['label']}
-            ]
-            metrics_list.append(second_metric)
+        # elif count == 1:
+        #     second_metric = [
+        #         ".",
+        #         ".",
+        #         ".",
+        #         lambda_attributes['name'],
+        #         {"label": lambda_attributes['label']}
+        #     ]
+        #     metrics_list.append(second_metric)
         else:
             metric = [
                 "...",
