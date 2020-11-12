@@ -16,8 +16,6 @@ class TestCreateRDSWidgets(TestCase):
 
         self.expected_nwcapture_db_status_widget = {
             'type': 'metric',
-            'x': 0,
-            'y': 0,
             'height': 6,
             'width': 12,
             'properties': {
@@ -36,8 +34,6 @@ class TestCreateRDSWidgets(TestCase):
 
         self.expected_observations_db_status_widget = {
             'type': 'metric',
-            'x': 0,
-            'y': 0,
             'height': 6,
             'width': 12,
             'properties': {
@@ -57,10 +53,8 @@ class TestCreateRDSWidgets(TestCase):
         self.expected_status_db_widget_list = [
             {
                 'type': 'metric',
-                 'x': 0,
-                 'y': 0,
-                 'height': 6,
-                 'width': 12,
+                'height': 6,
+                'width': 12,
                 'properties': {
                     'metrics': [
                         ['AWS/RDS', 'CPUUtilization', 'DBClusterIdentifier', 'nwcapture-dev'],
@@ -76,8 +70,6 @@ class TestCreateRDSWidgets(TestCase):
             },
             {
                 'type': 'metric',
-                'x': 12,
-                'y': 0,
                 'height': 6,
                 'width': 12,
                 'properties': {

@@ -234,8 +234,6 @@ class TestCreateStateMachineWidgets(TestCase):
         expected_state_machine_list = [
             {
                 'type': 'metric',
-                'x': 0,
-                'y': 0,
                 'height': 6,
                 'width': 12,
                 'properties': {
@@ -255,8 +253,6 @@ class TestCreateStateMachineWidgets(TestCase):
             },
             {
                 'type': 'metric',
-                'x': 12,
-                'y': 0,
                 'height': 6,
                 'width': 12,
                 'properties': {

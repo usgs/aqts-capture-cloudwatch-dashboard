@@ -30,8 +30,6 @@ def create_state_machine_widgets(region, deploy_stage, positioning):
 
         if api_calls.is_iow_state_machine_filter(state_machine_arn):
 
-            # incoming state machine: TODO put example here
-            # we want the state machine name after the last "/"
             state_machine_name = state_machine['name']
 
             tier_agnostic_state_machine_name = state_machine_name.replace(f"-{deploy_stage}", '')
@@ -48,8 +46,6 @@ def create_state_machine_widgets(region, deploy_stage, positioning):
 
             state_machine_widget = {
                 'type': 'metric',
-                # 'x': positioning.x,
-                # 'y': positioning.y,
                 'height': positioning.height,
                 'width': positioning.width,
                 'properties': {
@@ -69,7 +65,6 @@ def create_state_machine_widgets(region, deploy_stage, positioning):
             }
 
             state_machine_widgets.append(state_machine_widget)
-            # positioning.iterate_positioning()
 
     return state_machine_widgets
 

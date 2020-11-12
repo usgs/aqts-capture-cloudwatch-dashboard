@@ -46,8 +46,6 @@ def create_sqs_widgets(region, deploy_stage, positioning):
 
             queue_widget = {
                 'type': 'metric',
-                # 'x': positioning.x,
-                # 'y': positioning.y,
                 'height': positioning.height,
                 'width': positioning.width,
                 'properties': {
@@ -70,7 +68,6 @@ def create_sqs_widgets(region, deploy_stage, positioning):
             }
 
             sqs_widgets.append(queue_widget)
-            # positioning.iterate_positioning()
 
     return sqs_widgets
 

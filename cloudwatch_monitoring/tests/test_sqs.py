@@ -204,8 +204,6 @@ class TestCreateSQSWidgets(TestCase):
         expected_queue_list = [
             {
                 'type': 'metric',
-                'x': 0,
-                'y': 0,
                 'height': 6,
                 'width': 12,
                 'properties': {
@@ -228,8 +226,6 @@ class TestCreateSQSWidgets(TestCase):
             },
             {
                 'type': 'metric',
-                'x': 12,
-                'y': 0,
                 'height': 6,
                 'width': 12,
                 'properties': {

@@ -27,8 +27,6 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     # Custom widget for monitoring error handler invocation counts over time
     error_handler_activity = {
         'type': 'metric',
-        # 'x': positioning.x,
-        # 'y': positioning.y,
         'height': positioning.height,
         'width': positioning.width,
         'properties': {
@@ -48,13 +46,10 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     }
 
     lambda_widgets.append(error_handler_activity)
-    # positioning.iterate_positioning()
 
     # Custom widget for monitoring concurrency of lambdas specifically involved in the ETL
     concurrent_lambdas = {
         'type': 'metric',
-        # 'x': positioning.x,
-        # 'y': positioning.y,
         'height': positioning.height,
         'width': positioning.width,
         'properties': {
@@ -69,8 +64,6 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     }
 
     lambda_widgets.append(concurrent_lambdas)
-    # TODO this lambda is displayed after the generic widgets somehow
-    # positioning.iterate_positioning()
 
     api_calls = LambdaAPICalls(region, deploy_stage)
     # grab all the lambdas in the account/region
@@ -108,16 +101,12 @@ def create_lambda_widgets(region, deploy_stage, positioning):
                     widget_title = dashboard_lambdas[lookup]['label']
                     widget_etl_branch = dashboard_lambdas[lookup]['etl_branch']
 
-            # TODO this positioning is kind of borked
             # set dimensions for generic lambda widgets
-            # positioning.x = 0
             positioning.width = 24
             positioning.height = 3
 
             widget = {
                 'type': 'metric',
-                # 'x': positioning.x,
-                # 'y': positioning.y,
                 'height': positioning.height,
                 'width': positioning.width,
                 'properties': {
@@ -154,32 +143,15 @@ def create_lambda_widgets(region, deploy_stage, positioning):
             else:
                 misc_widgets.append(widget)
 
-            # TODO iterating the positioning among a bunch of lists that are consolidated later doesn't work...
-            # positioning.iterate_positioning()
-
-    # TODO widgets come out in exact opposite order
     # add the generic widget groups so they appear together in the dashboard
-    # lambda_widgets.extend(error_widgets)
-    # lambda_widgets.extend(data_in_widgets)
-    # lambda_widgets.extend(dv_widgets)
-    # lambda_widgets.extend(sv_widgets)
-    # lambda_widgets.extend(nwis_web_widgets)
-    # lambda_widgets.extend(data_purge_widgets)
-    # lambda_widgets.extend(environment_management_widgets)
-    # lambda_widgets.extend(misc_widgets)
-
-    # TODO this works, though seemingly in the wrong order
-    lambda_widgets.extend(misc_widgets)
-    lambda_widgets.extend(environment_management_widgets)
-    lambda_widgets.extend(data_purge_widgets)
-    lambda_widgets.extend(nwis_web_widgets)
-    lambda_widgets.extend(sv_widgets)
-    lambda_widgets.extend(dv_widgets)
-    lambda_widgets.extend(data_in_widgets)
     lambda_widgets.extend(error_widgets)
-
-    # TODO This also displays the widgets in the opposite order
-    # lambda_widgets = lambda_widgets + error_widgets + data_in_widgets + dv_widgets + sv_widgets + nwis_web_widgets + data_purge_widgets + environment_management_widgets + misc_widgets
+    lambda_widgets.extend(data_in_widgets)
+    lambda_widgets.extend(dv_widgets)
+    lambda_widgets.extend(sv_widgets)
+    lambda_widgets.extend(nwis_web_widgets)
+    lambda_widgets.extend(data_purge_widgets)
+    lambda_widgets.extend(environment_management_widgets)
+    lambda_widgets.extend(misc_widgets)
 
     return lambda_widgets
 

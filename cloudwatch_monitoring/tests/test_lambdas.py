@@ -287,8 +287,6 @@ class TestCreateLambdaWidgets(TestCase):
         expected_widget_list = [
             {
                 'type': 'metric',
-                'x': 0,
-                'y': 0,
                 'height': 6,
                 'width': 12,
                 'properties': {
@@ -306,8 +304,6 @@ class TestCreateLambdaWidgets(TestCase):
             },
             {
                 'type': 'metric',
-                'x': 12,
-                'y': 0,
                 'height': 6,
                 'width': 12,
                 'properties': {
@@ -322,8 +318,6 @@ class TestCreateLambdaWidgets(TestCase):
             },
             {
                 'type': 'metric',
-                'x': 0,
-                'y': 6,
                 'height': 3,
                 'width': 24,
                 'properties': {
@@ -344,8 +338,6 @@ class TestCreateLambdaWidgets(TestCase):
             },
             {
                 'type': 'metric',
-                'x': 0,
-                'y': 9,
                 'height': 3,
                 'width': 24,
                 'properties': {
@@ -366,8 +358,6 @@ class TestCreateLambdaWidgets(TestCase):
             },
             {
                 'type': 'metric',
-                'x': 0,
-                'y': 12,
                 'height': 3,
                 'width': 24,
                 'properties': {

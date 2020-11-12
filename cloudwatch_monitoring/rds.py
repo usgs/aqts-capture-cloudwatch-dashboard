@@ -45,8 +45,6 @@ def generate_db_status_widget(region, deploy_stage, positioning, db_name):
 
     db_status_widget = {
         'type': 'metric',
-        # 'x': positioning.x,
-        # 'y': positioning.y,
         'height': positioning.height,
         'width': positioning.width,
         'properties': {
@@ -63,5 +61,4 @@ def generate_db_status_widget(region, deploy_stage, positioning, db_name):
         }
     }
 
-    # positioning.iterate_positioning()
     return db_status_widget
