@@ -21,6 +21,21 @@ def create_lambda_widgets(region, deploy_stage):
     lambda_widgets = []
 
     # set dimensions for custom lambda widgets
+    positioning['width'] = 24
+    positioning['height'] = 1
+
+    custom_lambda_section_title_widget = {
+        'type': 'text',
+        'height': positioning['height'],
+        'width': positioning['width'],
+        'properties': {
+            "markdown": "# Lambda Status"
+        }
+    }
+
+    lambda_widgets.append(custom_lambda_section_title_widget)
+
+    # set dimensions for custom lambda widgets
     positioning['width'] = 12
     positioning['height'] = 6
 
