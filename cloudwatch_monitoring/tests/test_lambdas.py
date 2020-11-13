@@ -4,7 +4,7 @@ Tests for the lambdas module.
 """
 from unittest import TestCase, mock
 
-from ..positioning import Positioning
+from ..constants import positioning
 from ..lambdas import (LambdaAPICalls, create_lambda_widgets, lambda_properties, generate_custom_lambda_metrics)
 
 
@@ -565,11 +565,10 @@ class TestCreateLambdaWidgets(TestCase):
             }
         ]
 
-        positioning = Positioning()
         # Make sure the resultant widget list is correct
         # noinspection PyPackageRequirements
         self.assertListEqual(
-            create_lambda_widgets(self.region, self.deploy_stage, positioning),
+            create_lambda_widgets(self.region, self.deploy_stage),
             expected_widget_list
         )
 

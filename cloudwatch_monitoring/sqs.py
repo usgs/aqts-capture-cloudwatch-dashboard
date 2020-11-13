@@ -5,15 +5,15 @@ module for creating sqs widgets
 import boto3
 
 from .lookups import sqs_queues
+from .constants import positioning
 
 
-def create_sqs_widgets(region, deploy_stage, positioning):
+def create_sqs_widgets(region, deploy_stage):
     """
     Creates the list of SQS widgets.
 
     :param region: Typically 'us-west-2'
     :param deploy_stage: The deploy tier, DEV, TEST, QA, PROD-EXTERNAL
-    :param positioning: The x, y, height, width coordinates and dimensions on the dashboard
     :return: list of SQS widgets
     :rtype: list
     """
@@ -41,13 +41,13 @@ def create_sqs_widgets(region, deploy_stage, positioning):
                 widget_title = queue_name
 
             # set dimensions of the queue widgets
-            positioning.width = 12
-            positioning.height = 6
+            positioning['width'] = 12
+            positioning['height'] = 6
 
             queue_widget = {
                 'type': 'metric',
-                'height': positioning.height,
-                'width': positioning.width,
+                'height': positioning['height'],
+                'width': positioning['width'],
                 'properties': {
                     "metrics": [
                         ["AWS/SQS", "ApproximateNumberOfMessagesVisible", "QueueName", queue_name],

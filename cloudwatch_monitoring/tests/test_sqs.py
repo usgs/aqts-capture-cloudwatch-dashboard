@@ -4,7 +4,6 @@ Tests for the sqs module.
 """
 from unittest import TestCase, mock
 
-from ..positioning import Positioning
 from ..sqs import (SQSAPICalls, create_sqs_widgets)
 
 
@@ -280,11 +279,10 @@ class TestCreateSQSWidgets(TestCase):
             }
         ]
 
-        positioning = Positioning()
         # Make sure the resultant widget list is correct
         # noinspection PyPackageRequirements
         self.assertListEqual(
-            create_sqs_widgets(self.region, self.deploy_stage, positioning),
+            create_sqs_widgets(self.region, self.deploy_stage),
             expected_queue_list
         )
 

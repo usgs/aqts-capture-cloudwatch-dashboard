@@ -5,15 +5,15 @@ module for creating state machine widgets
 import boto3
 
 from .lookups import state_machines
+from .constants import positioning
 
 
-def create_state_machine_widgets(region, deploy_stage, positioning):
+def create_state_machine_widgets(region, deploy_stage):
     """
     Creates the list of state machine widgets.
 
     :param region: Typically 'us-west-2'
     :param deploy_stage: The deploy tier, DEV, TEST, QA, PROD-EXTERNAL
-    :param positioning: The x, y, height, width coordinates and dimensions on the dashboard
     :return: list of state machine widgets
     :rtype: list
     """
@@ -41,13 +41,13 @@ def create_state_machine_widgets(region, deploy_stage, positioning):
                 widget_title = state_machine_name
 
             # set dimensions of the state machine widgets
-            positioning.width = 12
-            positioning.height = 6
+            positioning['width'] = 12
+            positioning['height'] = 6
 
             state_machine_widget = {
                 'type': 'metric',
-                'height': positioning.height,
-                'width': positioning.width,
+                'height': positioning['height'],
+                'width': positioning['width'],
                 'properties': {
                         "metrics": [
                             ["AWS/States", "ExecutionsStarted", "StateMachineArn", state_machine_arn],

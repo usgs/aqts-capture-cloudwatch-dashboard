@@ -4,7 +4,6 @@ Tests for the state machine module.
 """
 from unittest import TestCase, mock
 
-from ..positioning import Positioning
 from ..state_machine import (StepFunctionAPICalls, create_state_machine_widgets)
 
 
@@ -315,11 +314,10 @@ class TestCreateStateMachineWidgets(TestCase):
             }
         ]
 
-        positioning = Positioning()
         # Make sure the resultant widget list is correct
         # noinspection PyPackageRequirements
         self.assertListEqual(
-            create_state_machine_widgets(self.region, self.deploy_stage, positioning),
+            create_state_machine_widgets(self.region, self.deploy_stage),
             expected_state_machine_list
         )
 
