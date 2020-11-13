@@ -15,9 +15,9 @@ class TestCreateLambdaWidgets(TestCase):
         self.region = 'us-south-10'
         self.client_type = 'lambda'
         self.max_items = 10
-        self.valid_function_name_1 = 'lambda-function-in-DEV-account'
+        self.valid_function_name_1 = 'aqts-capture-field-visit-transform-DEV-transform'
         self.valid_function_name_2 = 'aqts-capture-trigger-DEV-aqtsCaptureTrigger'
-        self.valid_function_name_3 = 'sweet_DEV_function_name'
+        self.valid_function_name_3 = 'aqts-capture-ecosystem-switch-DEV-growDb'
         self.valid_function_name_4 = 'cool_function_DEV_name'
         self.bad_function_name = 'some-function-name-with-no-valid-TIER-specified'
         self.marker = 'some huge string'
@@ -389,7 +389,7 @@ class TestCreateLambdaWidgets(TestCase):
                 'width': 24,
                 'properties': {
                     'metrics': [
-                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'sweet_DEV_function_name'],
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-transform'],
                         ['.', 'Invocations', '.', '.', {'stat': 'Sum'}],
                         ['.', 'Duration', '.', '.'],
                         ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
@@ -397,7 +397,7 @@ class TestCreateLambdaWidgets(TestCase):
                     ],
                     'view': 'singleValue',
                     'region': 'us-south-10',
-                    'title': 'sweet_DEV_function_name',
+                    'title': 'Field visit transformer',
                     'period': 300,
                     'stacked': False,
                     'stat': 'Average',
@@ -409,7 +409,7 @@ class TestCreateLambdaWidgets(TestCase):
                 'width': 24,
                 'properties': {
                     'metrics': [
-                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'lambda-function-in-DEV-account'],
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-ecosystem-switch-DEV-growDb'],
                         ['.', 'Invocations', '.', '.', {'stat': 'Sum'}],
                         ['.', 'Duration', '.', '.'],
                         ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
@@ -417,11 +417,11 @@ class TestCreateLambdaWidgets(TestCase):
                     ],
                     'view': 'singleValue',
                     'region': 'us-south-10',
-                    'title': 'lambda-function-in-DEV-account',
+                    'title': 'Grow DB',
                     'period': 300,
                     'stacked': False,
                     'stat': 'Average',
-                },
+                }
             }
         ]
 
