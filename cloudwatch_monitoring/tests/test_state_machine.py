@@ -4,7 +4,6 @@ Tests for the state machine module.
 """
 from unittest import TestCase, mock
 
-from ..positioning import Positioning
 from ..state_machine import (StepFunctionAPICalls, create_state_machine_widgets)
 
 
@@ -18,10 +17,12 @@ class TestCreateStateMachineWidgets(TestCase):
         self.next_token = 'some huge string'
         self.valid_state_machine_arn_1 = 'arn:aws:states:us-west-2:807615458658:stateMachine:aqts-ecosystem-switch-grow-capture-db-DEV'
         self.valid_state_machine_arn_2 = 'arn:aws:states:us-west-2:807615458658:stateMachine:aqts-ecosystem-switch-shrink-capture-db-DEV'
-        self.invalid_state_machine_arn = 'arn:aws:states:us-west-2:807615458658:stateMachine:some-state-machine-TEST'
+        self.valid_state_machine_arn_3 = 'arn:aws:states:us-west-2:807615458658:stateMachine:a-neat-state-machine-DEV'
+        self.invalid_state_machine_arn = 'arn:aws:states:us-west-2:807615458658:stateMachine:some-state-machine-not-a-valid-tier-TEST'
         self.valid_state_machine_name_1 = 'aqts-ecosystem-switch-grow-capture-db-DEV'
         self.valid_state_machine_name_2 = 'aqts-ecosystem-switch-shrink-capture-db-DEV'
-        self.invalid_state_machine_name = 'some-state-machine-TEST'
+        self.valid_state_machine_name_3 = 'a-neat-state-machine-DEV'
+        self.invalid_state_machine_name = 'some-state-machine-not-a-valid-tier-TEST'
         self.state_machine_list_no_next_token = {
             'stateMachines': [
                 {
@@ -57,6 +58,27 @@ class TestCreateStateMachineWidgets(TestCase):
                     'stateMachineArn': self.valid_state_machine_arn_1,
                     'name': self.valid_state_machine_name_1
                 },
+            ],
+            'nextToken': self.next_token
+        }
+        self.full_state_machine_list = {
+            'stateMachines': [
+                {
+                    'stateMachineArn': self.valid_state_machine_arn_2,
+                    'name': self.valid_state_machine_name_2
+                },
+                {
+                    'stateMachineArn': self.invalid_state_machine_arn,
+                    'name': self.invalid_state_machine_name
+                },
+                {
+                    'stateMachineArn': self.valid_state_machine_arn_1,
+                    'name': self.valid_state_machine_name_1
+                },
+                {
+                    'stateMachineArn': self.valid_state_machine_arn_3,
+                    'name': self.valid_state_machine_name_3
+                }
             ],
             'nextToken': self.next_token
         }
@@ -218,24 +240,23 @@ class TestCreateStateMachineWidgets(TestCase):
     @mock.patch('cloudwatch_monitoring.state_machine.StepFunctionAPICalls', autospec=True)
     def test_create_state_machine_widgets(self, m_api_calls):
         # return values
-        m_api_calls.return_value.get_all_state_machines.return_value = self.state_machine_list_after_successful_pagination
+        m_api_calls.return_value.get_all_state_machines.return_value = self.full_state_machine_list
         m_api_calls.return_value.is_iow_state_machine_filter.side_effect = [
-            True, False, True
+            True, False, True, True
         ]
 
         # expected calls
         expected_is_iow_state_machine_filter_calls = [
             mock.call(self.valid_state_machine_arn_2),
             mock.call(self.invalid_state_machine_arn),
-            mock.call(self.valid_state_machine_arn_1)
+            mock.call(self.valid_state_machine_arn_1),
+            mock.call(self.valid_state_machine_arn_3)
         ]
 
         # we do not expect the invalid state machine would have resulted in a widget
         expected_state_machine_list = [
             {
                 'type': 'metric',
-                'x': 0,
-                'y': 0,
                 'height': 6,
                 'width': 12,
                 'properties': {
@@ -255,8 +276,6 @@ class TestCreateStateMachineWidgets(TestCase):
             },
             {
                 'type': 'metric',
-                'x': 12,
-                'y': 0,
                 'height': 6,
                 'width': 12,
                 'properties': {
@@ -273,14 +292,32 @@ class TestCreateStateMachineWidgets(TestCase):
                     "period": 60,
                     "title": "Grow Capture DB State Machine"
                 }
+            },
+            {
+                'type': 'metric',
+                'height': 6,
+                'width': 12,
+                'properties': {
+                    "metrics": [
+                        ["AWS/States", "ExecutionsStarted", "StateMachineArn", self.valid_state_machine_arn_3],
+                        [".", "ExecutionsSucceeded", ".", "."],
+                        [".", "ExecutionsFailed", ".", "."],
+                        [".", "ExecutionsTimedOut", ".", "."]
+                    ],
+                    "view": "timeSeries",
+                    "stacked": False,
+                    "region": self.region,
+                    "stat": "Sum",
+                    "period": 60,
+                    "title": self.valid_state_machine_name_3
+                }
             }
         ]
 
-        positioning = Positioning()
         # Make sure the resultant widget list is correct
         # noinspection PyPackageRequirements
         self.assertListEqual(
-            create_state_machine_widgets(self.region, self.deploy_stage, positioning),
+            create_state_machine_widgets(self.region, self.deploy_stage),
             expected_state_machine_list
         )
 

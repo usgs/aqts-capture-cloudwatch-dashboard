@@ -4,7 +4,6 @@ Tests for the rds module.
 """
 from unittest import TestCase
 
-from ..positioning import Positioning
 from ..rds import (create_rds_widgets, generate_db_status_widget)
 
 
@@ -16,8 +15,6 @@ class TestCreateRDSWidgets(TestCase):
 
         self.expected_nwcapture_db_status_widget = {
             'type': 'metric',
-            'x': 0,
-            'y': 0,
             'height': 6,
             'width': 12,
             'properties': {
@@ -36,8 +33,6 @@ class TestCreateRDSWidgets(TestCase):
 
         self.expected_observations_db_status_widget = {
             'type': 'metric',
-            'x': 0,
-            'y': 0,
             'height': 6,
             'width': 12,
             'properties': {
@@ -57,10 +52,8 @@ class TestCreateRDSWidgets(TestCase):
         self.expected_status_db_widget_list = [
             {
                 'type': 'metric',
-                 'x': 0,
-                 'y': 0,
-                 'height': 6,
-                 'width': 12,
+                'height': 6,
+                'width': 12,
                 'properties': {
                     'metrics': [
                         ['AWS/RDS', 'CPUUtilization', 'DBClusterIdentifier', 'nwcapture-dev'],
@@ -76,8 +69,6 @@ class TestCreateRDSWidgets(TestCase):
             },
             {
                 'type': 'metric',
-                'x': 12,
-                'y': 0,
                 'height': 6,
                 'width': 12,
                 'properties': {
@@ -95,23 +86,20 @@ class TestCreateRDSWidgets(TestCase):
         ]
 
     def test_generate_db_status_widget_observations(self):
-        positioning = Positioning()
         self.assertDictEqual(
-            generate_db_status_widget(self.region, self.deploy_stage, positioning, 'observations'),
+            generate_db_status_widget(self.region, self.deploy_stage, 'observations'),
             self.expected_observations_db_status_widget
         )
 
     def test_generate_db_status_widget_nwcapture(self):
-        positioning = Positioning()
         self.assertDictEqual(
-            generate_db_status_widget(self.region, self.deploy_stage, positioning, 'nwcapture'),
+            generate_db_status_widget(self.region, self.deploy_stage, 'nwcapture'),
             self.expected_nwcapture_db_status_widget
         )
 
     def test_create_rds_widgets(self):
         # more of a test that positioning works
-        positioning = Positioning()
         self.assertListEqual(
-            create_rds_widgets(self.region, self.deploy_stage, positioning),
+            create_rds_widgets(self.region, self.deploy_stage),
             self.expected_status_db_widget_list
         )

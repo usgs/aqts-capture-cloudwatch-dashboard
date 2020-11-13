@@ -1,7 +1,7 @@
 import boto3
 import json
 import os
-from cloudwatch_monitoring.positioning import Positioning
+
 from cloudwatch_monitoring.lambdas import create_lambda_widgets
 from cloudwatch_monitoring.rds import create_rds_widgets
 from cloudwatch_monitoring.sqs import create_sqs_widgets
@@ -18,13 +18,12 @@ if __name__ == '__main__':
     deploy_stage = os.getenv('DEPLOY_STAGE')
 
     widgets = []
-    positioning = Positioning()
 
     # add widgets per asset type
-    widgets.extend(create_sqs_widgets(region, deploy_stage, positioning))
-    widgets.extend(create_rds_widgets(region, deploy_stage, positioning))
-    widgets.extend(create_state_machine_widgets(region, deploy_stage, positioning))
-    widgets.extend(create_lambda_widgets(region, deploy_stage, positioning))
+    widgets.extend(create_sqs_widgets(region, deploy_stage))
+    widgets.extend(create_rds_widgets(region, deploy_stage))
+    widgets.extend(create_state_machine_widgets(region, deploy_stage))
+    widgets.extend(create_lambda_widgets(region, deploy_stage))
     # TODO other widget iterations to follow (ec2, fargate, etc.)
 
     # create the dashboard when the widget list is complete

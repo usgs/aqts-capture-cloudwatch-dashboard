@@ -4,7 +4,6 @@ Tests for the sqs module.
 """
 from unittest import TestCase, mock
 
-from ..positioning import Positioning
 from ..sqs import (SQSAPICalls, create_sqs_widgets)
 
 
@@ -18,9 +17,11 @@ class TestCreateSQSWidgets(TestCase):
         self.next_token = 'some huge string'
         self.valid_queue_url_1 = "https://us-west-2.queue.amazonaws.com/579777464052/aqts-capture-error-queue-DEV"
         self.valid_queue_url_2 = "https://us-west-2.queue.amazonaws.com/579777464052/aqts-capture-trigger-queue-DEV"
+        self.valid_queue_url_3 = "https://us-west-2.queue.amazonaws.com/579777464052/a-neat-valid-queue-DEV"
         self.invalid_queue_url_1 = "https://us-west-2.queue.amazonaws.com/579777464052/some-queue-TEST"
         self.valid_queue_name_1 = "aqts-capture-error-queue-DEV"
         self.valid_queue_name_2 = "aqts-capture-trigger-queue-DEV"
+        self.valid_queue_name_3 = "a-neat-valid-queue-DEV"
         self.queue_list_no_next_token = {
             "QueueUrls": [
                 self.valid_queue_url_1
@@ -38,6 +39,15 @@ class TestCreateSQSWidgets(TestCase):
                 self.valid_queue_url_2,
                 self.invalid_queue_url_1,
                 self.valid_queue_url_1
+            ],
+            "NextToken": self.next_token
+        }
+        self.full_queue_list = {
+            "QueueUrls": [
+                self.valid_queue_url_2,
+                self.invalid_queue_url_1,
+                self.valid_queue_url_1,
+                self.valid_queue_url_3
             ],
             "NextToken": self.next_token
         }
@@ -188,24 +198,23 @@ class TestCreateSQSWidgets(TestCase):
     @mock.patch('cloudwatch_monitoring.sqs.SQSAPICalls', autospec=True)
     def test_create_sqs_widgets(self, m_api_calls):
         # return values
-        m_api_calls.return_value.get_all_sqs_queue_urls.return_value = self.queue_list_after_successful_pagination
+        m_api_calls.return_value.get_all_sqs_queue_urls.return_value = self.full_queue_list
         m_api_calls.return_value.is_iow_queue_filter.side_effect = [
-            True, False, True
+            True, False, True, True
         ]
 
         # expected calls
         expected_is_iow_queue_filter_calls = [
             mock.call(self.valid_queue_url_2),
             mock.call(self.invalid_queue_url_1),
-            mock.call(self.valid_queue_url_1)
+            mock.call(self.valid_queue_url_1),
+            mock.call(self.valid_queue_url_3)
         ]
 
         # we do not expect the invalid queue name would have resulted in a widget
         expected_queue_list = [
             {
                 'type': 'metric',
-                'x': 0,
-                'y': 0,
                 'height': 6,
                 'width': 12,
                 'properties': {
@@ -228,8 +237,6 @@ class TestCreateSQSWidgets(TestCase):
             },
             {
                 'type': 'metric',
-                'x': 12,
-                'y': 0,
                 'height': 6,
                 'width': 12,
                 'properties': {
@@ -247,16 +254,35 @@ class TestCreateSQSWidgets(TestCase):
                     "period": 60,
                     "title": "Error Queue",
                     "stat": "Average",
-
+                }
+            },
+            {
+                'type': 'metric',
+                'height': 6,
+                'width': 12,
+                'properties': {
+                    "metrics": [
+                        ["AWS/SQS", "ApproximateNumberOfMessagesVisible", "QueueName", self.valid_queue_name_3],
+                        [".", "ApproximateAgeOfOldestMessage", ".", ".", {"yAxis": "right"}],
+                        [".", "NumberOfMessagesReceived", ".", ".", {"stat": "Sum"}],
+                        [".", "NumberOfMessagesSent", ".", ".", {"stat": "Sum"}],
+                        [".", "NumberOfMessagesDeleted", ".", "."],
+                        [".", "ApproximateNumberOfMessagesDelayed", ".", "."]
+                    ],
+                    "view": "timeSeries",
+                    "stacked": False,
+                    "region": self.region,
+                    "period": 60,
+                    "title": self.valid_queue_name_3,
+                    "stat": "Average",
                 }
             }
         ]
 
-        positioning = Positioning()
         # Make sure the resultant widget list is correct
         # noinspection PyPackageRequirements
         self.assertListEqual(
-            create_sqs_widgets(self.region, self.deploy_stage, positioning),
+            create_sqs_widgets(self.region, self.deploy_stage),
             expected_queue_list
         )
 

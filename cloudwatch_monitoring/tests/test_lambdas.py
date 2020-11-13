@@ -4,8 +4,8 @@ Tests for the lambdas module.
 """
 from unittest import TestCase, mock
 
-from ..positioning import Positioning
-from ..lambdas import (LambdaAPICalls, create_lambda_widgets, lambda_properties, generate_concurrent_lambdas_metrics)
+from ..constants import positioning
+from ..lambdas import (LambdaAPICalls, create_lambda_widgets, lambda_properties, generate_custom_lambda_metrics)
 
 
 class TestCreateLambdaWidgets(TestCase):
@@ -15,10 +15,14 @@ class TestCreateLambdaWidgets(TestCase):
         self.region = 'us-south-10'
         self.client_type = 'lambda'
         self.max_items = 10
-        self.valid_function_name_1 = 'lambda-function-in-DEV-account'
-        self.valid_function_name_2 = 'another-lambda-function-in-DEV-account'
-        self.valid_function_name_3 = 'sweet_DEV_function_name'
-        self.valid_function_name_4 = 'cool_function_DEV_name'
+        self.valid_function_name_1 = 'aqts-capture-field-visit-transform-DEV-transform'
+        self.valid_function_name_2 = 'aqts-capture-trigger-DEV-aqtsCaptureTrigger'
+        self.valid_function_name_3 = 'aqts-capture-ecosystem-switch-DEV-growDb'
+        self.valid_function_name_4 = 'function_DEV_name_not_added_to_lookups_yet'
+        self.valid_function_name_5 = 'aqts-capture-dvstat-transform-DEV-transform'
+        self.valid_function_name_6 = 'aqts-capture-error-handler-DEV-aqtsErrorHandler'
+        self.valid_function_name_7 = 'aqts-capture-pruner-DEV-pruneTimeSeries'
+        self.valid_function_name_8 = 'etl-discrete-groundwater-rdb-DEV-loadRdb'
         self.bad_function_name = 'some-function-name-with-no-valid-TIER-specified'
         self.marker = 'some huge string'
 
@@ -67,6 +71,22 @@ class TestCreateLambdaWidgets(TestCase):
             'NextMarker': self.marker
         }
 
+        self.full_function_list = {
+            'Functions': [
+                {'FunctionName': self.valid_function_name_2},
+                {'FunctionName': self.bad_function_name},
+                {'FunctionName': self.valid_function_name_3},
+                {'FunctionName': self.bad_function_name},
+                {'FunctionName': self.valid_function_name_1},
+                {'FunctionName': self.valid_function_name_4},
+                {'FunctionName': self.valid_function_name_5},
+                {'FunctionName': self.valid_function_name_6},
+                {'FunctionName': self.valid_function_name_7},
+                {'FunctionName': self.valid_function_name_8},
+            ],
+            'NextMarker': self.marker
+        }
+
         self.valid_function_1 = {
             'FunctionName': self.valid_function_name_1
         }
@@ -81,6 +101,22 @@ class TestCreateLambdaWidgets(TestCase):
 
         self.valid_function_4 = {
             'FunctionName': self.valid_function_name_4
+        }
+
+        self.valid_function_5 = {
+            'FunctionName': self.valid_function_name_5
+        }
+
+        self.valid_function_6 = {
+            'FunctionName': self.valid_function_name_6
+        }
+
+        self.valid_function_7 = {
+            'FunctionName': self.valid_function_name_7
+        }
+
+        self.valid_function_8 = {
+            'FunctionName': self.valid_function_name_8
         }
 
         self.bad_function = {
@@ -129,7 +165,7 @@ class TestCreateLambdaWidgets(TestCase):
              {'label': 'DV stat Transformer'}],
             ['...', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', {'label': 'Error Handler'}],
             ['...', 'aqts-capture-raw-load-DEV-iowCapture', {'label': 'Raw Loader'}],
-            ['...', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', {'label': 'Capture trigger'}],
+            ['...', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', {'label': 'Capture Trigger'}],
             ['...', 'aqts-capture-ts-corrected-DEV-preProcess', {'label': 'TS corrected preprocessor'}],
             ['...', 'aqts-capture-ts-description-DEV-processTsDescription',
              {'label': 'TS descriptions preprocessor'}],
@@ -145,6 +181,23 @@ class TestCreateLambdaWidgets(TestCase):
             ['...', 'aqts-capture-raw-load-DEV-iowCaptureExtraSmall', {'label': 'Raw Load Extra Small'}]
         ]
 
+        self.duration_of_transform_db_lambdas_metrics_list = [
+             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-dvstat-transform-DEV-transform',
+              {'label': 'DV stat Transformer'}],
+             ['...', 'aqts-capture-raw-load-DEV-iowCapture', {'label': 'Raw Loader'}],
+             ['...', 'aqts-capture-ts-corrected-DEV-preProcess', {'label': 'TS corrected preprocessor'}],
+             ['...', 'aqts-capture-ts-description-DEV-processTsDescription', {'label': 'TS descriptions preprocessor'}],
+             ['...', 'aqts-ts-type-router-DEV-determineRoute', {'label': 'TS type router'}],
+             ['...', 'aqts-capture-ts-loader-DEV-loadTimeSeries', {'label': 'DV TS loader'}],
+             ['...', 'aqts-capture-ts-field-visit-DEV-preProcess', {'label': 'Field visit preprocessor'}],
+             ['...', 'aqts-capture-field-visit-transform-DEV-transform', {'label': 'Field visit transformer'}],
+             ['...', 'aqts-capture-discrete-loader-DEV-loadDiscrete', {'label': 'Discrete GW loader'}],
+             ['...', 'aqts-capture-field-visit-metadata-DEV-preProcess',
+              {'label': 'Field visit metadata preprocessor'}],
+             ['...', 'aqts-capture-raw-load-DEV-iowCaptureMedium', {'label': 'Raw Load Medium'}],
+             ['...', 'aqts-capture-raw-load-DEV-iowCaptureSmall', {'label': 'Raw Load Small'}],
+             ['...', 'aqts-capture-raw-load-DEV-iowCaptureExtraSmall', {'label': 'Raw Load Extra Small'}]]
+
     def test_lambda_properties(self):
         expected_properties = {
             'name': 'aqts-capture-dvstat-transform-DEV-transform',
@@ -156,10 +209,16 @@ class TestCreateLambdaWidgets(TestCase):
             expected_properties
         )
 
-    def test_generate_concurrent_lambdas_metrics(self):
+    def test_generate_custom_lambda_metrics_concurrent_lambdas(self):
         self.assertListEqual(
-            generate_concurrent_lambdas_metrics(self.deploy_stage),
+            generate_custom_lambda_metrics(self.deploy_stage, 'ConcurrentExecutions', 'concurrent_lambdas'),
             self.concurrent_lambdas_metrics_list
+        )
+
+    def test_generate_custom_lambda_metrics_duration_of_transform_db_lambdas(self):
+        self.assertListEqual(
+            generate_custom_lambda_metrics(self.deploy_stage, 'Duration', 'duration_of_transform_db_lambdas'),
+            self.duration_of_transform_db_lambdas_metrics_list
         )
 
     @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
@@ -269,9 +328,9 @@ class TestCreateLambdaWidgets(TestCase):
     @mock.patch('cloudwatch_monitoring.lambdas.LambdaAPICalls', autospec=True)
     def test_create_lambda_widgets(self, m_api_calls):
         # return values
-        m_api_calls.return_value.get_all_lambda_metadata.return_value = self.function_list_after_successful_pagination_2
+        m_api_calls.return_value.get_all_lambda_metadata.return_value = self.full_function_list
         m_api_calls.return_value.is_iow_lambda_filter.side_effect = [
-            True, False, True, False, True, False
+            True, False, True, False, True, True, True, True, True, True
         ]
 
         # expected calls
@@ -281,14 +340,16 @@ class TestCreateLambdaWidgets(TestCase):
             mock.call(self.valid_function_3),
             mock.call(self.bad_function),
             mock.call(self.valid_function_1),
-            mock.call(self.bad_function)
+            mock.call(self.valid_function_4),
+            mock.call(self.valid_function_5),
+            mock.call(self.valid_function_6),
+            mock.call(self.valid_function_7),
+            mock.call(self.valid_function_8),
         ]
 
         expected_widget_list = [
             {
                 'type': 'metric',
-                'x': 0,
-                'y': 0,
                 'height': 6,
                 'width': 12,
                 'properties': {
@@ -302,12 +363,10 @@ class TestCreateLambdaWidgets(TestCase):
                     'title': 'Error Handler Activity',
                     'period': 60,
                     'stat': 'Average',
-                },
+                }
             },
             {
                 'type': 'metric',
-                'x': 12,
-                'y': 0,
                 'height': 6,
                 'width': 12,
                 'properties': {
@@ -318,17 +377,39 @@ class TestCreateLambdaWidgets(TestCase):
                     'period': 60,
                     'stat': 'Average',
                     'title': 'Concurrent Lambdas (Average per minute)',
-                },
+                }
             },
             {
                 'type': 'metric',
-                'x': 0,
-                'y': 6,
+                'height': 6,
+                'width': 12,
+                'properties': {
+                    'metrics': self.duration_of_transform_db_lambdas_metrics_list,
+                    'view': 'timeSeries', 'stacked': False,
+                    'region': 'us-south-10', 'period': 300,
+                    'stat': 'Average',
+                    'title': 'Duration of Transformation DB Lambdas (Average)'
+                }
+            },
+            {
+                'type': 'metric',
+                'height': 6,
+                'width': 12,
+                'properties': {
+                    'metrics': self.duration_of_transform_db_lambdas_metrics_list,
+                    'view': 'timeSeries', 'stacked': False,
+                    'region': 'us-south-10', 'period': 300,
+                    'stat': 'Maximum',
+                    'title': 'Duration of Transformation DB Lambdas (Maximum)'
+                }
+            },
+            {
+                'type': 'metric',
                 'height': 3,
                 'width': 24,
                 'properties': {
                     'metrics': [
-                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'another-lambda-function-in-DEV-account'],
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-error-handler-DEV-aqtsErrorHandler'],
                         ['.', 'Invocations', '.', '.', {'stat': 'Sum'}],
                         ['.', 'Duration', '.', '.'],
                         ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
@@ -336,21 +417,19 @@ class TestCreateLambdaWidgets(TestCase):
                     ],
                     'view': 'singleValue',
                     'region': 'us-south-10',
-                    'title': 'another-lambda-function-in-DEV-account',
+                    'title': 'Error Handler',
                     'period': 300,
                     'stacked': False,
                     'stat': 'Average',
-                },
+                }
             },
             {
                 'type': 'metric',
-                'x': 0,
-                'y': 9,
                 'height': 3,
                 'width': 24,
                 'properties': {
                     'metrics': [
-                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'sweet_DEV_function_name'],
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger'],
                         ['.', 'Invocations', '.', '.', {'stat': 'Sum'}],
                         ['.', 'Duration', '.', '.'],
                         ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
@@ -358,21 +437,19 @@ class TestCreateLambdaWidgets(TestCase):
                     ],
                     'view': 'singleValue',
                     'region': 'us-south-10',
-                    'title': 'sweet_DEV_function_name',
+                    'title': 'Capture Trigger',
                     'period': 300,
                     'stacked': False,
                     'stat': 'Average',
-                },
+                }
             },
             {
                 'type': 'metric',
-                'x': 0,
-                'y': 12,
                 'height': 3,
                 'width': 24,
                 'properties': {
                     'metrics': [
-                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'lambda-function-in-DEV-account'],
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-dvstat-transform-DEV-transform'],
                         ['.', 'Invocations', '.', '.', {'stat': 'Sum'}],
                         ['.', 'Duration', '.', '.'],
                         ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
@@ -380,19 +457,118 @@ class TestCreateLambdaWidgets(TestCase):
                     ],
                     'view': 'singleValue',
                     'region': 'us-south-10',
-                    'title': 'lambda-function-in-DEV-account',
+                    'title': 'DV stat Transformer',
                     'period': 300,
                     'stacked': False,
                     'stat': 'Average',
-                },
+                }
+            },
+            {
+                'type': 'metric',
+                'height': 3,
+                'width': 24,
+                'properties': {
+                    'metrics': [
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-transform'],
+                        ['.', 'Invocations', '.', '.', {'stat': 'Sum'}],
+                        ['.', 'Duration', '.', '.'],
+                        ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
+                        ['.', 'Throttles', '.', '.']
+                    ],
+                    'view': 'singleValue',
+                    'region': 'us-south-10',
+                    'title': 'Field visit transformer',
+                    'period': 300,
+                    'stacked': False,
+                    'stat': 'Average',
+                }
+            },
+            {
+                'type': 'metric',
+                'height': 3,
+                'width': 24,
+                'properties': {
+                    'metrics': [
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'etl-discrete-groundwater-rdb-DEV-loadRdb'],
+                        ['.', 'Invocations', '.', '.', {'stat': 'Sum'}],
+                        ['.', 'Duration', '.', '.'],
+                        ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
+                        ['.', 'Throttles', '.', '.']
+                    ],
+                    'view': 'singleValue',
+                    'region': 'us-south-10',
+                    'title': 'Load RDB Files',
+                    'period': 300,
+                    'stacked': False,
+                    'stat': 'Average',
+                }
+            },
+            {
+                'type': 'metric',
+                'height': 3,
+                'width': 24,
+                'properties': {
+                    'metrics': [
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-pruner-DEV-pruneTimeSeries'],
+                        ['.', 'Invocations', '.', '.', {'stat': 'Sum'}],
+                        ['.', 'Duration', '.', '.'],
+                        ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
+                        ['.', 'Throttles', '.', '.']
+                    ],
+                    'view': 'singleValue',
+                    'region': 'us-south-10',
+                    'title': 'Prune Old Data',
+                    'period': 300,
+                    'stacked': False,
+                    'stat': 'Average',
+                }
+            },
+            {
+                'type': 'metric',
+                'height': 3,
+                'width': 24,
+                'properties': {
+                    'metrics': [
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-ecosystem-switch-DEV-growDb'],
+                        ['.', 'Invocations', '.', '.', {'stat': 'Sum'}],
+                        ['.', 'Duration', '.', '.'],
+                        ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
+                        ['.', 'Throttles', '.', '.']
+                    ],
+                    'view': 'singleValue',
+                    'region': 'us-south-10',
+                    'title': 'Grow DB',
+                    'period': 300,
+                    'stacked': False,
+                    'stat': 'Average',
+                }
+            },
+            {
+                'type': 'metric',
+                'height': 3,
+                'width': 24,
+                'properties': {
+                    'metrics': [
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'function_DEV_name_not_added_to_lookups_yet'],
+                        ['.', 'Invocations', '.', '.', {'stat': 'Sum'}],
+                        ['.', 'Duration', '.', '.'],
+                        ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
+                        ['.', 'Throttles', '.', '.']
+                    ],
+                    'view': 'singleValue',
+                    'region': 'us-south-10',
+                    'title': 'function_DEV_name_not_added_to_lookups_yet',
+                    'period': 300,
+                    'stacked': False,
+                    'stat': 'Average',
+                }
             }
         ]
 
-        positioning = Positioning()
         # Make sure the resultant widget list is correct
         # noinspection PyPackageRequirements
         self.assertListEqual(
-            create_lambda_widgets(self.region, self.deploy_stage, positioning),
+            create_lambda_widgets(self.region, self.deploy_stage),
             expected_widget_list
         )
 

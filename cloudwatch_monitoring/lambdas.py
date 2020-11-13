@@ -4,16 +4,16 @@ module for creating lambda widgets
 """
 import boto3
 from .lookups import (dashboard_lambdas, custom_lambda_widgets)
+from .constants import positioning
 
 
-def create_lambda_widgets(region, deploy_stage, positioning):
+def create_lambda_widgets(region, deploy_stage):
     """
     Iterate over an account's list of lambdas and create generic widgets for those with
     wma:organization = 'IOW' tags.  It also creates some custom widgets.
 
     :param region: The region, for us that's usually us-west-2
     :param deploy_stage: The specified deployment environment (DEV, TEST, QA, PROD-EXTERNAL)
-    :param positioning: The x, y coordinates and height, width dimensions of the widget
     :return: List of lambda widgets
     :rtype: list
     """
@@ -21,16 +21,14 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     lambda_widgets = []
 
     # set dimensions for custom lambda widgets
-    positioning.width = 12
-    positioning.height = 6
+    positioning['width'] = 12
+    positioning['height'] = 6
 
     # Custom widget for monitoring error handler invocation counts over time
     error_handler_activity = {
         'type': 'metric',
-        'x': positioning.x,
-        'y': positioning.y,
-        'height': positioning.height,
-        'width': positioning.width,
+        'height': positioning['height'],
+        'width': positioning['width'],
         'properties': {
             "metrics": [
                 ["AWS/Lambda", "ConcurrentExecutions", "FunctionName",
@@ -48,17 +46,14 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     }
 
     lambda_widgets.append(error_handler_activity)
-    positioning.iterate_positioning()
 
     # Custom widget for monitoring concurrency of lambdas specifically involved in the ETL
     concurrent_lambdas = {
         'type': 'metric',
-        'x': positioning.x,
-        'y': positioning.y,
-        'height': positioning.height,
-        'width': positioning.width,
+        'height': positioning['height'],
+        'width': positioning['width'],
         'properties': {
-            "metrics": generate_concurrent_lambdas_metrics(deploy_stage),
+            "metrics": generate_custom_lambda_metrics(deploy_stage, 'ConcurrentExecutions', 'concurrent_lambdas'),
             "view": "timeSeries",
             "stacked": True,
             "region": region,
@@ -69,32 +64,88 @@ def create_lambda_widgets(region, deploy_stage, positioning):
     }
 
     lambda_widgets.append(concurrent_lambdas)
-    positioning.iterate_positioning()
+
+    # Custom widget for monitoring average duration of transform db lambdas
+    duration_of_transform_db_lambdas_average = {
+        'type': 'metric',
+        'height': positioning['height'],
+        'width': positioning['width'],
+        'properties': {
+            "metrics": generate_custom_lambda_metrics(deploy_stage, 'Duration', 'duration_of_transform_db_lambdas'),
+            "view": "timeSeries",
+            "stacked": False,
+            "region": region,
+            "period": 300,
+            "stat": "Average",
+            "title": "Duration of Transformation DB Lambdas (Average)"
+        }
+    }
+
+    lambda_widgets.append(duration_of_transform_db_lambdas_average)
+
+    # Custom widget for monitoring max duration of transform db lambdas
+    duration_of_transform_db_lambdas_max = {
+        'type': 'metric',
+        'height': positioning['height'],
+        'width': positioning['width'],
+        'properties': {
+            "metrics": generate_custom_lambda_metrics(deploy_stage, 'Duration', 'duration_of_transform_db_lambdas'),
+            "view": "timeSeries",
+            "stacked": False,
+            "region": region,
+            "period": 300,
+            "stat": "Maximum",
+            "title": "Duration of Transformation DB Lambdas (Maximum)"
+        }
+    }
+
+    lambda_widgets.append(duration_of_transform_db_lambdas_max)
 
     api_calls = LambdaAPICalls(region, deploy_stage)
     # grab all the lambdas in the account/region
     all_lambda_metadata_response = api_calls.get_all_lambda_metadata()
 
     # iterate over the list of lambda metadata and create widgets for the assets we care about based on filters
+
+    dv_widgets = []
+    sv_widgets = []
+    data_in_widgets = []
+    data_purge_widgets = []
+    error_widgets = []
+    environment_management_widgets = []
+    nwis_web_widgets = []
+    misc_widgets = []
+
     for function in all_lambda_metadata_response['Functions']:
 
         if api_calls.is_iow_lambda_filter(function):
+
             function_name = function['FunctionName']
 
-            # set dimensions for generic lambda widgets
-            positioning.width = positioning.max_width
-            positioning.height = 3
+            # hack apart the function name to get the repo name and the descriptor
+            function_name_without_tier = function_name.replace(f"-{deploy_stage}", '')
+            function_name_parts = function_name_without_tier.split('-')
+            descriptor = function_name_parts[-1]
+            function_name_parts_without_tier_or_descriptor = function_name_parts[:-1]
+            repo_name = '-'.join(function_name_parts_without_tier_or_descriptor)
 
-            # TODO add a lookup for each lambda, including a title property.  See sqs and state machine
-            # modules for examples, where we use our specified title if we have it, or default to the lambda name if we
-            # do not.
+            # set the widget title based on the label in our lookups, defaults to the original function name
+            # set the etl branch so we can group the generic lambdas together by their purpose in the etl.
+            widget_etl_branch = 'not defined'
+            widget_title = function_name
+            for lookup in dashboard_lambdas:
+                if repo_name == dashboard_lambdas[lookup]['repo_name'] and descriptor == dashboard_lambdas[lookup]['descriptor']:
+                    widget_title = dashboard_lambdas[lookup]['label']
+                    widget_etl_branch = dashboard_lambdas[lookup]['etl_branch']
+
+            # set dimensions for generic lambda widgets
+            positioning['width'] = 24
+            positioning['height'] = 3
 
             widget = {
                 'type': 'metric',
-                'x': positioning.x,
-                'y': positioning.y,
-                'height': positioning.height,
-                'width': positioning.width,
+                'height': positioning['height'],
+                'width': positioning['width'],
                 'properties': {
                     "metrics": [
                         ["AWS/Lambda", "ConcurrentExecutions", "FunctionName", function_name],
@@ -105,15 +156,40 @@ def create_lambda_widgets(region, deploy_stage, positioning):
                     ],
                     "view": "singleValue",
                     "region": region,
-                    "title": function_name,
+                    "title": widget_title,
                     "period": 300,
                     "stacked": False,
                     "stat": "Average"
                 }
             }
 
-            lambda_widgets.append(widget)
-            positioning.iterate_positioning()
+            if 'dv' == widget_etl_branch:
+                dv_widgets.append(widget)
+            elif 'sv' == widget_etl_branch:
+                sv_widgets.append(widget)
+            elif 'environment_management' == widget_etl_branch:
+                environment_management_widgets.append(widget)
+            elif 'error_handling' == widget_etl_branch:
+                error_widgets.append(widget)
+            elif 'data_ingest' == widget_etl_branch:
+                data_in_widgets.append(widget)
+            elif 'data_purging' == widget_etl_branch:
+                data_purge_widgets.append(widget)
+            elif 'nwis_web' == widget_etl_branch:
+                nwis_web_widgets.append(widget)
+            else:
+                misc_widgets.append(widget)
+
+    # add the generic widget groups so they appear together in the dashboard
+    lambda_widgets.extend(error_widgets)
+    lambda_widgets.extend(data_in_widgets)
+    lambda_widgets.extend(dv_widgets)
+    lambda_widgets.extend(sv_widgets)
+    lambda_widgets.extend(nwis_web_widgets)
+    lambda_widgets.extend(data_purge_widgets)
+    lambda_widgets.extend(environment_management_widgets)
+    # When we don't have a lookup defined for the lambda yet, it will appear at the bottom of the list
+    lambda_widgets.extend(misc_widgets)
 
     return lambda_widgets
 
@@ -134,11 +210,13 @@ def lambda_properties(lookup_name, deploy_stage):
     return {'name': name, 'label': label}
 
 
-def generate_concurrent_lambdas_metrics(deploy_stage):
+def generate_custom_lambda_metrics(deploy_stage, metric_name, lookup_list_name):
     """
-    Generates concurrent lambda widget's metrics.
+    Generates custom lambda widget metrics.
 
     :param deploy_stage: The deployment tier
+    :param metric_name: The name of the metric, like "Duration" or "ConcurrentExecutions"
+    :param lookup_list_name: the lookup list containing the lambdas we wish to monitor
     :return: The list of generated metrics
     :rtype: list
     """
@@ -146,14 +224,14 @@ def generate_concurrent_lambdas_metrics(deploy_stage):
     metrics_list = []
     count = 0
 
-    for name in custom_lambda_widgets['concurrent_lambdas']:
+    for name in custom_lambda_widgets[lookup_list_name]:
         lambda_attributes = lambda_properties(name, deploy_stage)
 
         if count < 1:
             # the first metric in the list has some additional stuff
             first_metric = [
                 "AWS/Lambda",
-                "ConcurrentExecutions",
+                metric_name,
                 "FunctionName",
                 lambda_attributes['name'],
                 {"label": lambda_attributes['label']}
