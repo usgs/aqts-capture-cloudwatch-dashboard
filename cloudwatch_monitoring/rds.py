@@ -17,6 +17,21 @@ def create_rds_widgets(region, deploy_stage):
     """
     rds_widgets = []
 
+    # set dimensions of the rds title widget
+    positioning['width'] = 24
+    positioning['height'] = 1
+
+    rds_section_title_widget = {
+        'type': 'text',
+        'height': positioning['height'],
+        'width': positioning['width'],
+        'properties': {
+            "markdown": "# Database Status"
+        }
+    }
+
+    rds_widgets.append(rds_section_title_widget)
+
     # db status widgets, cpu utilization and number of db connections
     for db_name in rds_instances:
         rds_widgets.append(generate_db_status_widget(region, deploy_stage, db_name))

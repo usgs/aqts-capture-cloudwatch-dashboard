@@ -17,8 +17,24 @@ def create_state_machine_widgets(region, deploy_stage):
     :return: list of state machine widgets
     :rtype: list
     """
-    api_calls = StepFunctionAPICalls(region, deploy_stage)
     state_machine_widgets = []
+
+    # set dimensions of the state machine title widget
+    positioning['width'] = 24
+    positioning['height'] = 1
+
+    state_machine_section_title_widget = {
+        'type': 'text',
+        'height': positioning['height'],
+        'width': positioning['width'],
+        'properties': {
+            "markdown": "# State Machine Status"
+        }
+    }
+
+    state_machine_widgets.append(state_machine_section_title_widget)
+
+    api_calls = StepFunctionAPICalls(region, deploy_stage)
 
     # grab all the state machines in the account/region
     all_state_machines_response = api_calls.get_all_state_machines()
