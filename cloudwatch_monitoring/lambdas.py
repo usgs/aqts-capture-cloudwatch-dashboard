@@ -251,7 +251,7 @@ def create_lambda_widgets(region, deploy_stage):
             else:
                 misc_widgets.append(widget)
                 misc_widgets.append(concurrent_executions_widget)
-                misc_widgets.append(widget)
+                misc_widgets.append(duration_widget)
 
     # add the generic widget groups so they appear together in the dashboard
     lambda_widgets.extend(error_widgets)
