@@ -16,7 +16,7 @@ class TestCreateLambdaWidgets(TestCase):
         self.client_type = 'lambda'
         self.max_items = 10
         self.valid_function_name_1 = 'lambda-function-in-DEV-account'
-        self.valid_function_name_2 = 'another-lambda-function-in-DEV-account'
+        self.valid_function_name_2 = 'aqts-capture-trigger-DEV-aqtsCaptureTrigger'
         self.valid_function_name_3 = 'sweet_DEV_function_name'
         self.valid_function_name_4 = 'cool_function_DEV_name'
         self.bad_function_name = 'some-function-name-with-no-valid-TIER-specified'
@@ -129,7 +129,7 @@ class TestCreateLambdaWidgets(TestCase):
              {'label': 'DV stat Transformer'}],
             ['...', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', {'label': 'Error Handler'}],
             ['...', 'aqts-capture-raw-load-DEV-iowCapture', {'label': 'Raw Loader'}],
-            ['...', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', {'label': 'Capture trigger'}],
+            ['...', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', {'label': 'Capture Trigger'}],
             ['...', 'aqts-capture-ts-corrected-DEV-preProcess', {'label': 'TS corrected preprocessor'}],
             ['...', 'aqts-capture-ts-description-DEV-processTsDescription',
              {'label': 'TS descriptions preprocessor'}],
@@ -369,7 +369,7 @@ class TestCreateLambdaWidgets(TestCase):
                 'width': 24,
                 'properties': {
                     'metrics': [
-                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'another-lambda-function-in-DEV-account'],
+                        ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger'],
                         ['.', 'Invocations', '.', '.', {'stat': 'Sum'}],
                         ['.', 'Duration', '.', '.'],
                         ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
@@ -377,7 +377,7 @@ class TestCreateLambdaWidgets(TestCase):
                     ],
                     'view': 'singleValue',
                     'region': 'us-south-10',
-                    'title': 'another-lambda-function-in-DEV-account',
+                    'title': 'Capture Trigger',
                     'period': 300,
                     'stacked': False,
                     'stat': 'Average',

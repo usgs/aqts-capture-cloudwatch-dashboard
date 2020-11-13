@@ -27,7 +27,7 @@ dashboard_lambdas = {
     'capture_trigger': {
         'repo_name': 'aqts-capture-trigger',
         'descriptor': 'aqtsCaptureTrigger',
-        'label': 'Capture trigger',
+        'label': 'Capture Trigger',
         'etl_branch': 'data_ingest'
     },
     'ts_corrected': {
