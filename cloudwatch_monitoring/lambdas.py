@@ -125,7 +125,7 @@ def create_lambda_widgets(region, deploy_stage):
         'height': positioning['height'],
         'width': positioning['width'],
         'properties': {
-            "markdown": "# The following is a list of every IOW tagged lambda in the account."
+            "markdown": "# Status of each 'IOW' tagged lambda in the account"
         }
     }
 
