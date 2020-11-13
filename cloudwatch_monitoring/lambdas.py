@@ -139,8 +139,10 @@ def create_lambda_widgets(region, deploy_stage):
                     widget_etl_branch = dashboard_lambdas[lookup]['etl_branch']
 
             # set dimensions for generic lambda widgets
-            positioning['width'] = 24
-            positioning['height'] = 3
+            # positioning['width'] = 24
+            # positioning['height'] = 3
+            positioning['width'] = 4
+            positioning['height'] = 6
 
             widget = {
                 'type': 'metric',
@@ -163,21 +165,81 @@ def create_lambda_widgets(region, deploy_stage):
                 }
             }
 
+            positioning['width'] = 10
+            positioning['height'] = 6
+
+            concurrent_executions_widget = {
+                'type': 'metric',
+                'height': positioning['height'],
+                'width': positioning['width'],
+                'properties': {
+                    "metrics": [
+                        ["AWS/Lambda", "ConcurrentExecutions", "FunctionName", function_name, {"stat": "Maximum", "label": "ConcurrentExecutions (max)"}],
+                        [".", "Invocations", ".", "."],
+                        [".", "Errors", ".", "."],
+                        [".", "Throttles", ".", ".", {"stat": "Average"}]
+                    ],
+                    "view": "timeSeries",
+                    "region": region,
+                    "title": f"{widget_title} Concurrent Executions",
+                    "period": 300,
+                    "stat": "Sum",
+                    "stacked": False
+                }
+            }
+
+            positioning['width'] = 10
+            positioning['height'] = 6
+
+            duration_widget = {
+                'type': 'metric',
+                'height': positioning['height'],
+                'width': positioning['width'],
+                'properties': {
+                    "metrics": [
+                        ["AWS/Lambda", "Duration", "FunctionName", function_name, {"yAxis": "left"}],
+                        ["...", {"yAxis": "right", "stat": "Maximum"}]
+                    ],
+                    "view": "timeSeries",
+                    "region": region,
+                    "title": f"{widget_title} Duration",
+                    "period": 300,
+                    "stat": "Average",
+                    "stacked": False
+                }
+            }
+
             if 'dv' == widget_etl_branch:
                 dv_widgets.append(widget)
+                dv_widgets.append(concurrent_executions_widget)
+                dv_widgets.append(duration_widget)
             elif 'sv' == widget_etl_branch:
                 sv_widgets.append(widget)
+                sv_widgets.append(concurrent_executions_widget)
+                sv_widgets.append(duration_widget)
             elif 'environment_management' == widget_etl_branch:
                 environment_management_widgets.append(widget)
+                environment_management_widgets.append(concurrent_executions_widget)
+                environment_management_widgets.append(duration_widget)
             elif 'error_handling' == widget_etl_branch:
                 error_widgets.append(widget)
+                error_widgets.append(concurrent_executions_widget)
+                error_widgets.append(duration_widget)
             elif 'data_ingest' == widget_etl_branch:
                 data_in_widgets.append(widget)
+                data_in_widgets.append(concurrent_executions_widget)
+                data_in_widgets.append(duration_widget)
             elif 'data_purging' == widget_etl_branch:
                 data_purge_widgets.append(widget)
+                data_purge_widgets.append(concurrent_executions_widget)
+                data_purge_widgets.append(duration_widget)
             elif 'nwis_web' == widget_etl_branch:
                 nwis_web_widgets.append(widget)
+                nwis_web_widgets.append(concurrent_executions_widget)
+                nwis_web_widgets.append(duration_widget)
             else:
+                misc_widgets.append(widget)
+                misc_widgets.append(concurrent_executions_widget)
                 misc_widgets.append(widget)
 
     # add the generic widget groups so they appear together in the dashboard
