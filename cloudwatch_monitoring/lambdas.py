@@ -203,9 +203,6 @@ def create_lambda_widgets(region, deploy_stage):
                 }
             }
 
-            positioning['width'] = 10
-            positioning['height'] = 6
-
             duration_widget = {
                 'type': 'metric',
                 'height': positioning['height'],
