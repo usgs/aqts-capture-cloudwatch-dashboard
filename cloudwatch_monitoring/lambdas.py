@@ -181,6 +181,8 @@ def create_lambda_widgets(region, deploy_stage):
                 'properties': {
                     "metrics": [
                         # TODO: this should not give validation errors, but it does.
+                        # doc: https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html#CloudWatch-Dashboard-Properties-Rendering-Object-Format
+
                         # ["AWS/Lambda", "Invocations", {"FunctionName", function_name}, {"color": "2ca02c"}],  # green 2ca02c
                         # [".", "Errors", ".", ".", {"stat": "Sum", "color": "d62728"}],  # red d62728
                         # [".", "Duration", ".", ".", {"color": "ff7f0e"}],  # orange ff7f0e
