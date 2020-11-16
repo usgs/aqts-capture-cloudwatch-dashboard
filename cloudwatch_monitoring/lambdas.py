@@ -187,7 +187,7 @@ def create_lambda_widgets(region, deploy_stage):
                         # [".", "Throttles", ".", ".", {"color": "9467bd"}]  # purple 9467bd
 
                         ["AWS/Lambda", "Invocations", {"FunctionName", function_name}],  # green 2ca02c
-                        [".", "Errors", ".", ".", {"stat": "Sum", "color": "d62728"}],  # red d62728
+                        [".", "Errors", ".", ".", {"stat": "Sum"}],  # red d62728
                         [".", "Duration", ".", "."],  # orange ff7f0e
                         [".", "ConcurrentExecutions", ".", ".", {"stat": "Sum"}],  # blue 1f77b4
                         [".", "Throttles", ".", "."]  # purple 9467bd
