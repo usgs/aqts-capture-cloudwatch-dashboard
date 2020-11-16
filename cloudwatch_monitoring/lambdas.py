@@ -180,17 +180,18 @@ def create_lambda_widgets(region, deploy_stage):
                 'width': positioning['width'],
                 'properties': {
                     "metrics": [
+                        # TODO: this should not give validation errors, but it does.
                         # ["AWS/Lambda", "Invocations", {"FunctionName", function_name}, {"color": "2ca02c"}],  # green 2ca02c
                         # [".", "Errors", ".", ".", {"stat": "Sum", "color": "d62728"}],  # red d62728
                         # [".", "Duration", ".", ".", {"color": "ff7f0e"}],  # orange ff7f0e
                         # [".", "ConcurrentExecutions", ".", ".", {"stat": "Sum", "color": "1f77b4"}],  # blue 1f77b4
                         # [".", "Throttles", ".", ".", {"color": "9467bd"}]  # purple 9467bd
 
-                        ["AWS/Lambda", "Invocations", "FunctionName", function_name],  # green 2ca02c
-                        [".", "Errors", ".", ".", {"stat": "Sum", "color": "d62728"}],  # red d62728
-                        [".", "Duration", ".", "."],  # orange ff7f0e
-                        [".", "ConcurrentExecutions", ".", ".", {"stat": "Sum"}],  # blue 1f77b4
-                        [".", "Throttles", ".", "."]  # purple 9467bd
+                        ["AWS/Lambda", "Invocations", "FunctionName", function_name],
+                        [".", "Errors", ".", ".", {"stat": "Sum"}],
+                        [".", "Duration", ".", "."],
+                        [".", "ConcurrentExecutions", ".", ".", {"stat": "Sum"}],
+                        [".", "Throttles", ".", "."]
                     ],
                     "view": "singleValue",
                     "region": region,
