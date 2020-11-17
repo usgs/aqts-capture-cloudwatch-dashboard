@@ -17,8 +17,24 @@ def create_sqs_widgets(region, deploy_stage):
     :return: list of SQS widgets
     :rtype: list
     """
-    api_calls = SQSAPICalls(region, deploy_stage)
     sqs_widgets = []
+
+    # set dimensions of the sqs title widget
+    positioning['width'] = 24
+    positioning['height'] = 1
+
+    sqs_section_title_widget = {
+        'type': 'text',
+        'height': positioning['height'],
+        'width': positioning['width'],
+        'properties': {
+            "markdown": "# Queue Status"
+        }
+    }
+
+    sqs_widgets.append(sqs_section_title_widget)
+
+    api_calls = SQSAPICalls(region, deploy_stage)
 
     # grab all the sqs queue urls in the account/region
     all_sqs_queue_urls_response = api_calls.get_all_sqs_queue_urls()

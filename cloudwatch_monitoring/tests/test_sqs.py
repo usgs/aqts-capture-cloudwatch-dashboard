@@ -4,6 +4,7 @@ Tests for the sqs module.
 """
 from unittest import TestCase, mock
 
+from .test_widgets import expected_queue_list
 from ..sqs import (SQSAPICalls, create_sqs_widgets)
 
 
@@ -209,74 +210,6 @@ class TestCreateSQSWidgets(TestCase):
             mock.call(self.invalid_queue_url_1),
             mock.call(self.valid_queue_url_1),
             mock.call(self.valid_queue_url_3)
-        ]
-
-        # we do not expect the invalid queue name would have resulted in a widget
-        expected_queue_list = [
-            {
-                'type': 'metric',
-                'height': 6,
-                'width': 12,
-                'properties': {
-                    "metrics": [
-                        ["AWS/SQS", "ApproximateNumberOfMessagesVisible", "QueueName", self.valid_queue_name_2],
-                        [".", "ApproximateAgeOfOldestMessage", ".", ".", {"yAxis": "right"}],
-                        [".", "NumberOfMessagesReceived", ".", ".", {"stat": "Sum"}],
-                        [".", "NumberOfMessagesSent", ".", ".", {"stat": "Sum"}],
-                        [".", "NumberOfMessagesDeleted", ".", "."],
-                        [".", "ApproximateNumberOfMessagesDelayed", ".", "."]
-                    ],
-                    "view": "timeSeries",
-                    "stacked": False,
-                    "region": self.region,
-                    "period": 60,
-                    "title": "Capture Trigger Queue",
-                    "stat": "Average",
-
-                }
-            },
-            {
-                'type': 'metric',
-                'height': 6,
-                'width': 12,
-                'properties': {
-                    "metrics": [
-                        ["AWS/SQS", "ApproximateNumberOfMessagesVisible", "QueueName", self.valid_queue_name_1],
-                        [".", "ApproximateAgeOfOldestMessage", ".", ".", {"yAxis": "right"}],
-                        [".", "NumberOfMessagesReceived", ".", ".", {"stat": "Sum"}],
-                        [".", "NumberOfMessagesSent", ".", ".", {"stat": "Sum"}],
-                        [".", "NumberOfMessagesDeleted", ".", "."],
-                        [".", "ApproximateNumberOfMessagesDelayed", ".", "."]
-                    ],
-                    "view": "timeSeries",
-                    "stacked": False,
-                    "region": self.region,
-                    "period": 60,
-                    "title": "Error Queue",
-                    "stat": "Average",
-                }
-            },
-            {
-                'type': 'metric',
-                'height': 6,
-                'width': 12,
-                'properties': {
-                    "metrics": [
-                        ["AWS/SQS", "ApproximateNumberOfMessagesVisible", "QueueName", self.valid_queue_name_3],
-                        [".", "ApproximateAgeOfOldestMessage", ".", ".", {"yAxis": "right"}],
-                        [".", "NumberOfMessagesReceived", ".", ".", {"stat": "Sum"}],
-                        [".", "NumberOfMessagesSent", ".", ".", {"stat": "Sum"}],
-                        [".", "NumberOfMessagesDeleted", ".", "."],
-                        [".", "ApproximateNumberOfMessagesDelayed", ".", "."]
-                    ],
-                    "view": "timeSeries",
-                    "stacked": False,
-                    "region": self.region,
-                    "period": 60,
-                    "title": self.valid_queue_name_3,
-                    "stat": "Average",
-                }
-            }
         ]
 
         # Make sure the resultant widget list is correct
