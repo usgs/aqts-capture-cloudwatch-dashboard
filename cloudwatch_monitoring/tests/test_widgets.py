@@ -142,7 +142,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 8,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-error-handler-DEV-aqtsErrorHandler',{'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -163,7 +163,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 6,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', {'yAxis': 'left'}],
@@ -175,6 +175,20 @@ expected_lambda_widget_list = [
             'period': 300,
             'stat': 'Average',
             'stacked': False
+        }
+    },
+
+    # error handler memory usage
+    {
+        "type": "log",
+        'height': 6,
+        'width': 6,
+        "properties": {
+            "query": f"SOURCE '/aws/lambda/aqts-capture-error-handler-DEV-aqtsErrorHandler' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+            "region": 'us-south-10',
+            "title": "Error Handler Memory Usage",
+            "view": "timeSeries",
+            "stacked": False
         }
     },
 
@@ -204,7 +218,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 8,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -225,7 +239,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 6,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', {'yAxis': 'left'}],
@@ -237,6 +251,20 @@ expected_lambda_widget_list = [
             'period': 300,
             'stat': 'Average',
             'stacked': False
+        }
+    },
+
+    # capture trigger memory usage
+    {
+        "type": "log",
+        'height': 6,
+        'width': 6,
+        "properties": {
+            "query": f"SOURCE '/aws/lambda/aqts-capture-trigger-DEV-aqtsCaptureTrigger' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+            "region": 'us-south-10',
+            "title": "Capture Trigger Memory Usage",
+            "view": "timeSeries",
+            "stacked": False
         }
     },
 
@@ -266,7 +294,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 8,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-dvstat-transform-DEV-transform', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -287,7 +315,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 6,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-dvstat-transform-DEV-transform', {'yAxis': 'left'}],
@@ -299,6 +327,20 @@ expected_lambda_widget_list = [
             'period': 300,
             'stat': 'Average',
             'stacked': False
+        }
+    },
+
+    # DV stat transformer memory usage
+    {
+        "type": "log",
+        'height': 6,
+        'width': 6,
+        "properties": {
+            "query": f"SOURCE '/aws/lambda/aqts-capture-dvstat-transform-DEV-transform' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+            "region": 'us-south-10',
+            "title": "DV stat Transformer Memory Usage",
+            "view": "timeSeries",
+            "stacked": False
         }
     },
 
@@ -328,7 +370,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 8,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-transform', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -349,7 +391,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 6,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-transform', {'yAxis': 'left'}],
@@ -361,6 +403,20 @@ expected_lambda_widget_list = [
             'period': 300,
             'stat': 'Average',
             'stacked': False
+        }
+    },
+
+    # field visit transformer memory usage
+    {
+        "type": "log",
+        'height': 6,
+        'width': 6,
+        "properties": {
+            "query": f"SOURCE '/aws/lambda/aqts-capture-field-visit-transform-DEV-transform' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+            "region": 'us-south-10',
+            "title": "Field visit transformer Memory Usage",
+            "view": "timeSeries",
+            "stacked": False
         }
     },
 
@@ -390,7 +446,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 8,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'etl-discrete-groundwater-rdb-DEV-loadRdb', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -410,7 +466,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 6,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'Duration', 'FunctionName', 'etl-discrete-groundwater-rdb-DEV-loadRdb', {'yAxis': 'left'}],
@@ -422,6 +478,20 @@ expected_lambda_widget_list = [
             'period': 300,
             'stat': 'Average',
             'stacked': False
+        }
+    },
+
+    # RDB loader memory usage
+    {
+        "type": "log",
+        'height': 6,
+        'width': 6,
+        "properties": {
+            "query": f"SOURCE '/aws/lambda/etl-discrete-groundwater-rdb-DEV-loadRdb' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+            "region": 'us-south-10',
+            "title": "Load RDB Files Memory Usage",
+            "view": "timeSeries",
+            "stacked": False
         }
     },
 
@@ -451,7 +521,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 8,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-pruner-DEV-pruneTimeSeries', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -471,7 +541,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 6,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-pruner-DEV-pruneTimeSeries', {'yAxis': 'left'}],
@@ -483,6 +553,20 @@ expected_lambda_widget_list = [
             'period': 300,
             'stat': 'Average',
             'stacked': False
+        }
+    },
+
+    # transform db pruner memory usage
+    {
+        "type": "log",
+        'height': 6,
+        'width': 6,
+        "properties": {
+            "query": f"SOURCE '/aws/lambda/aqts-capture-pruner-DEV-pruneTimeSeries' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+            "region": 'us-south-10',
+            "title": "Prune Old Data Memory Usage",
+            "view": "timeSeries",
+            "stacked": False
         }
     },
 
@@ -512,7 +596,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 8,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-ecosystem-switch-DEV-growDb', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -532,7 +616,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 6,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-ecosystem-switch-DEV-growDb', {'yAxis': 'left'}],
@@ -544,6 +628,20 @@ expected_lambda_widget_list = [
             'period': 300,
             'stat': 'Average',
             'stacked': False
+        }
+    },
+
+    # ecosystem switch - grow db memory usage
+    {
+        "type": "log",
+        'height': 6,
+        'width': 6,
+        "properties": {
+            "query": f"SOURCE '/aws/lambda/aqts-capture-ecosystem-switch-DEV-growDb' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+            "region": 'us-south-10',
+            "title": "Grow DB Memory Usage",
+            "view": "timeSeries",
+            "stacked": False
         }
     },
 
@@ -573,7 +671,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 8,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'function_DEV_name_not_added_to_lookups_yet', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -594,7 +692,7 @@ expected_lambda_widget_list = [
     {
         'type': 'metric',
         'height': 6,
-        'width': 10,
+        'width': 6,
         'properties': {
             'metrics': [
                 ['AWS/Lambda', 'Duration', 'FunctionName', 'function_DEV_name_not_added_to_lookups_yet', {'yAxis': 'left'}],
@@ -606,6 +704,20 @@ expected_lambda_widget_list = [
             'period': 300,
             'stat': 'Average',
             'stacked': False
+        }
+    },
+
+    # misc/lookup not added yet for this function - memory usage
+    {
+        "type": "log",
+        'height': 6,
+        'width': 6,
+        "properties": {
+            "query": f"SOURCE '/aws/lambda/function_DEV_name_not_added_to_lookups_yet' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+            "region": 'us-south-10',
+            "title": "function_DEV_name_not_added_to_lookups_yet Memory Usage",
+            "view": "timeSeries",
+            "stacked": False
         }
     }
 ]
