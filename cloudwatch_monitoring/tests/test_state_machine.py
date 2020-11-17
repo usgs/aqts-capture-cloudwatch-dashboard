@@ -4,6 +4,7 @@ Tests for the state machine module.
 """
 from unittest import TestCase, mock
 
+from .test_widgets import expected_state_machine_list
 from ..state_machine import (StepFunctionAPICalls, create_state_machine_widgets)
 
 
@@ -251,67 +252,6 @@ class TestCreateStateMachineWidgets(TestCase):
             mock.call(self.invalid_state_machine_arn),
             mock.call(self.valid_state_machine_arn_1),
             mock.call(self.valid_state_machine_arn_3)
-        ]
-
-        # we do not expect the invalid state machine would have resulted in a widget
-        expected_state_machine_list = [
-            {
-                'type': 'metric',
-                'height': 6,
-                'width': 12,
-                'properties': {
-                    "metrics": [
-                        ["AWS/States", "ExecutionsStarted", "StateMachineArn", self.valid_state_machine_arn_2],
-                        [".", "ExecutionsSucceeded", ".", "."],
-                        [".", "ExecutionsFailed", ".", "."],
-                        [".", "ExecutionsTimedOut", ".", "."]
-                    ],
-                    "view": "timeSeries",
-                    "stacked": False,
-                    "region": self.region,
-                    "stat": "Sum",
-                    "period": 60,
-                    "title": "Shrink Capture DB State Machine"
-                }
-            },
-            {
-                'type': 'metric',
-                'height': 6,
-                'width': 12,
-                'properties': {
-                    "metrics": [
-                        ["AWS/States", "ExecutionsStarted", "StateMachineArn", self.valid_state_machine_arn_1],
-                        [".", "ExecutionsSucceeded", ".", "."],
-                        [".", "ExecutionsFailed", ".", "."],
-                        [".", "ExecutionsTimedOut", ".", "."]
-                    ],
-                    "view": "timeSeries",
-                    "stacked": False,
-                    "region": self.region,
-                    "stat": "Sum",
-                    "period": 60,
-                    "title": "Grow Capture DB State Machine"
-                }
-            },
-            {
-                'type': 'metric',
-                'height': 6,
-                'width': 12,
-                'properties': {
-                    "metrics": [
-                        ["AWS/States", "ExecutionsStarted", "StateMachineArn", self.valid_state_machine_arn_3],
-                        [".", "ExecutionsSucceeded", ".", "."],
-                        [".", "ExecutionsFailed", ".", "."],
-                        [".", "ExecutionsTimedOut", ".", "."]
-                    ],
-                    "view": "timeSeries",
-                    "stacked": False,
-                    "region": self.region,
-                    "stat": "Sum",
-                    "period": 60,
-                    "title": self.valid_state_machine_name_3
-                }
-            }
         ]
 
         # Make sure the resultant widget list is correct
