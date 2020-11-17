@@ -171,7 +171,8 @@ def create_lambda_widgets(region, deploy_stage):
             positioning['width'] = 4
             positioning['height'] = 6
 
-            # create 3 widgets, 1 for numeric metrics, and 2 for charting those same metrics in a visual format
+            # create 4 widgets per lambda in the account
+            # 1 for numeric metrics, 2 for charting those same metrics graphically, and 1 for memory usage
             widget = {
                 'type': 'metric',
                 'height': positioning['height'],
