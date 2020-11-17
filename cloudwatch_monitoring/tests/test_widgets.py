@@ -123,10 +123,10 @@ expected_lambda_widget_list = [
         'width': 4,
         'properties': {
             'metrics': [
-                ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-error-handler-DEV-aqtsErrorHandler'],
+                ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', {'stat': 'Sum'}],
                 ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
                 ['.', 'Duration', '.', '.'],
-                ['.', 'ConcurrentExecutions', '.', '.', {'stat': 'Sum'}],
+                ['.', 'ConcurrentExecutions', '.', '.'],
                 ['.', 'Throttles', '.', '.']
             ],
             'view': 'singleValue',
@@ -185,10 +185,10 @@ expected_lambda_widget_list = [
         'width': 4,
         'properties': {
             'metrics': [
-                ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger'],
+                ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', {'stat': 'Sum'}],
                 ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
                 ['.', 'Duration', '.', '.'],
-                ['.', 'ConcurrentExecutions', '.', '.', {'stat': 'Sum'}],
+                ['.', 'ConcurrentExecutions', '.', '.'],
                 ['.', 'Throttles', '.', '.']
             ],
             'view': 'singleValue',
@@ -247,10 +247,10 @@ expected_lambda_widget_list = [
         'width': 4,
         'properties': {
             'metrics': [
-                ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-dvstat-transform-DEV-transform'],
+                ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-dvstat-transform-DEV-transform', {'stat': 'Sum'}],
                 ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
                 ['.', 'Duration', '.', '.'],
-                ['.', 'ConcurrentExecutions', '.', '.', {'stat': 'Sum'}],
+                ['.', 'ConcurrentExecutions', '.', '.'],
                 ['.', 'Throttles', '.', '.']
             ],
             'view': 'singleValue',
@@ -309,10 +309,10 @@ expected_lambda_widget_list = [
         'width': 4,
         'properties': {
             'metrics': [
-                ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-transform'],
+                ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-transform', {'stat': 'Sum'}],
                 ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
                 ['.', 'Duration', '.', '.'],
-                ['.', 'ConcurrentExecutions', '.', '.', {'stat': 'Sum'}],
+                ['.', 'ConcurrentExecutions', '.', '.'],
                 ['.', 'Throttles', '.', '.']
             ],
             'view': 'singleValue',
@@ -371,10 +371,10 @@ expected_lambda_widget_list = [
         'width': 4,
         'properties': {
             'metrics': [
-                ['AWS/Lambda', 'Invocations', 'FunctionName', 'etl-discrete-groundwater-rdb-DEV-loadRdb'],
+                ['AWS/Lambda', 'Invocations', 'FunctionName', 'etl-discrete-groundwater-rdb-DEV-loadRdb', {'stat': 'Sum'}],
                 ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
                 ['.', 'Duration', '.', '.'],
-                ['.', 'ConcurrentExecutions', '.', '.', {'stat': 'Sum'}],
+                ['.', 'ConcurrentExecutions', '.', '.'],
                 ['.', 'Throttles', '.', '.']
             ],
             'view': 'singleValue',
@@ -432,10 +432,10 @@ expected_lambda_widget_list = [
         'width': 4,
         'properties': {
             'metrics': [
-                ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-pruner-DEV-pruneTimeSeries'],
+                ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-pruner-DEV-pruneTimeSeries', {'stat': 'Sum'}],
                 ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
                 ['.', 'Duration', '.', '.'],
-                ['.', 'ConcurrentExecutions', '.', '.', {'stat': 'Sum'}],
+                ['.', 'ConcurrentExecutions', '.', '.'],
                 ['.', 'Throttles', '.', '.']
             ],
             'view': 'singleValue',
@@ -493,10 +493,10 @@ expected_lambda_widget_list = [
         'width': 4,
         'properties': {
             'metrics': [
-                ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-ecosystem-switch-DEV-growDb'],
+                ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-ecosystem-switch-DEV-growDb', {'stat': 'Sum'}],
                 ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
                 ['.', 'Duration', '.', '.'],
-                ['.', 'ConcurrentExecutions', '.', '.', {'stat': 'Sum'}],
+                ['.', 'ConcurrentExecutions', '.', '.'],
                 ['.', 'Throttles', '.', '.']
             ],
             'view': 'singleValue',
@@ -554,10 +554,10 @@ expected_lambda_widget_list = [
         'width': 4,
         'properties': {
             'metrics': [
-                ['AWS/Lambda', 'Invocations', 'FunctionName', 'function_DEV_name_not_added_to_lookups_yet'],
+                ['AWS/Lambda', 'Invocations', 'FunctionName', 'function_DEV_name_not_added_to_lookups_yet', {'stat': 'Sum'}],
                 ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
                 ['.', 'Duration', '.', '.'],
-                ['.', 'ConcurrentExecutions', '.', '.', {'stat': 'Sum'}],
+                ['.', 'ConcurrentExecutions', '.', '.'],
                 ['.', 'Throttles', '.', '.']
             ],
             'view': 'singleValue',
