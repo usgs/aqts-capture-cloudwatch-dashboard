@@ -202,7 +202,7 @@ def create_lambda_widgets(region, deploy_stage):
                 }
             }
 
-            positioning['width'] = 10
+            positioning['width'] = 8
             positioning['height'] = 6
 
             concurrent_executions_widget = {
@@ -225,6 +225,9 @@ def create_lambda_widgets(region, deploy_stage):
                 }
             }
 
+            positioning['width'] = 6
+            positioning['height'] = 6
+
             duration_widget = {
                 'type': 'metric',
                 'height': positioning['height'],
@@ -243,38 +246,59 @@ def create_lambda_widgets(region, deploy_stage):
                 }
             }
 
+            memory_usage_widget = {
+                "type": "log",
+                'height': positioning['height'],
+                'width': positioning['width'],
+                "properties": {
+                    "query": f"SOURCE '/aws/lambda/{function_name}' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+                    "region": region,
+                    "title": f"{widget_title} Memory Usage",
+                    "view": "timeSeries",
+                    "stacked": False
+                }
+            }
+
             if 'dv' == widget_etl_branch:
                 dv_widgets.append(widget)
                 dv_widgets.append(concurrent_executions_widget)
                 dv_widgets.append(duration_widget)
+                dv_widgets.append(memory_usage_widget)
             elif 'sv' == widget_etl_branch:
                 sv_widgets.append(widget)
                 sv_widgets.append(concurrent_executions_widget)
                 sv_widgets.append(duration_widget)
+                sv_widgets.append(memory_usage_widget)
             elif 'environment_management' == widget_etl_branch:
                 environment_management_widgets.append(widget)
                 environment_management_widgets.append(concurrent_executions_widget)
                 environment_management_widgets.append(duration_widget)
+                environment_management_widgets.append(memory_usage_widget)
             elif 'error_handling' == widget_etl_branch:
                 error_widgets.append(widget)
                 error_widgets.append(concurrent_executions_widget)
                 error_widgets.append(duration_widget)
+                error_widgets.append(memory_usage_widget)
             elif 'data_ingest' == widget_etl_branch:
                 data_in_widgets.append(widget)
                 data_in_widgets.append(concurrent_executions_widget)
                 data_in_widgets.append(duration_widget)
+                data_in_widgets.append(memory_usage_widget)
             elif 'data_purging' == widget_etl_branch:
                 data_purge_widgets.append(widget)
                 data_purge_widgets.append(concurrent_executions_widget)
                 data_purge_widgets.append(duration_widget)
+                data_purge_widgets.append(memory_usage_widget)
             elif 'nwis_web' == widget_etl_branch:
                 nwis_web_widgets.append(widget)
                 nwis_web_widgets.append(concurrent_executions_widget)
                 nwis_web_widgets.append(duration_widget)
+                nwis_web_widgets.append(memory_usage_widget)
             else:
                 misc_widgets.append(widget)
                 misc_widgets.append(concurrent_executions_widget)
                 misc_widgets.append(duration_widget)
+                misc_widgets.append(memory_usage_widget)
 
     # add the generic widget groups so they appear together in the dashboard
     lambda_widgets.extend(error_widgets)
