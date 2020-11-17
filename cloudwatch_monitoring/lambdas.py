@@ -168,8 +168,6 @@ def create_lambda_widgets(region, deploy_stage):
                     widget_etl_branch = dashboard_lambdas[lookup]['etl_branch']
 
             # set dimensions for generic lambda widgets
-            # positioning['width'] = 24
-            # positioning['height'] = 3
             positioning['width'] = 4
             positioning['height'] = 6
 
