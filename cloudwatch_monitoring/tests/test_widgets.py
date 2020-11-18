@@ -617,8 +617,6 @@ grow_db_memory_usage_widget = {
     }
 }
 
-
-
 misc_function_numeric_stats_widget = {
     'type': 'metric',
     'height': 6,
