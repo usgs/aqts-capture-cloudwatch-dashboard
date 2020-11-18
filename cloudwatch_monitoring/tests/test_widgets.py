@@ -180,7 +180,7 @@ error_handler_memory_usage_widget = {
     'height': 6,
     'width': 6,
     "properties": {
-        "query": f"SOURCE '/aws/lambda/aqts-capture-error-handler-DEV-aqtsErrorHandler' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+        "query": f"SOURCE '/aws/lambda/aqts-capture-error-handler-DEV-aqtsErrorHandler' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
         "title": "Error Handler Memory Usage",
         "view": "timeSeries",
@@ -252,7 +252,7 @@ capture_trigger_memory_usage_widget = {
     'height': 6,
     'width': 6,
     "properties": {
-        "query": f"SOURCE '/aws/lambda/aqts-capture-trigger-DEV-aqtsCaptureTrigger' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+        "query": f"SOURCE '/aws/lambda/aqts-capture-trigger-DEV-aqtsCaptureTrigger' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
         "title": "Capture Trigger Memory Usage",
         "view": "timeSeries",
@@ -324,7 +324,7 @@ dvstat_transform_memory_usage_widget = {
     'height': 6,
     'width': 6,
     "properties": {
-        "query": f"SOURCE '/aws/lambda/aqts-capture-dvstat-transform-DEV-transform' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+        "query": f"SOURCE '/aws/lambda/aqts-capture-dvstat-transform-DEV-transform' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
         "title": "DV stat Transformer Memory Usage",
         "view": "timeSeries",
@@ -396,7 +396,7 @@ field_visit_transform_memory_usage_widget = {
     'height': 6,
     'width': 6,
     "properties": {
-        "query": f"SOURCE '/aws/lambda/aqts-capture-field-visit-transform-DEV-transform' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+        "query": f"SOURCE '/aws/lambda/aqts-capture-field-visit-transform-DEV-transform' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
         "title": "Field visit transformer Memory Usage",
         "view": "timeSeries",
@@ -467,7 +467,7 @@ rdb_loader_memory_usage_widget = {
     'height': 6,
     'width': 6,
     "properties": {
-        "query": f"SOURCE '/aws/lambda/etl-discrete-groundwater-rdb-DEV-loadRdb' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+        "query": f"SOURCE '/aws/lambda/etl-discrete-groundwater-rdb-DEV-loadRdb' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
         "title": "Load RDB Files Memory Usage",
         "view": "timeSeries",
@@ -538,7 +538,7 @@ pruner_memory_usage_widget = {
     'height': 6,
     'width': 6,
     "properties": {
-        "query": f"SOURCE '/aws/lambda/aqts-capture-pruner-DEV-pruneTimeSeries' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+        "query": f"SOURCE '/aws/lambda/aqts-capture-pruner-DEV-pruneTimeSeries' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
         "title": "Prune Old Data Memory Usage",
         "view": "timeSeries",
@@ -609,7 +609,7 @@ grow_db_memory_usage_widget = {
     'height': 6,
     'width': 6,
     "properties": {
-        "query": f"SOURCE '/aws/lambda/aqts-capture-ecosystem-switch-DEV-growDb' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+        "query": f"SOURCE '/aws/lambda/aqts-capture-ecosystem-switch-DEV-growDb' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
         "title": "Grow DB Memory Usage",
         "view": "timeSeries",
@@ -681,7 +681,7 @@ misc_function_memory_usage_widget = {
     'height': 6,
     'width': 6,
     "properties": {
-        "query": f"SOURCE '/aws/lambda/function_DEV_name_not_added_to_lookups_yet' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+        "query": f"SOURCE '/aws/lambda/function_DEV_name_not_added_to_lookups_yet' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
         "title": "function_DEV_name_not_added_to_lookups_yet Memory Usage",
         "view": "timeSeries",
