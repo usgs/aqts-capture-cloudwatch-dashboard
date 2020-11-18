@@ -243,7 +243,7 @@ def create_lambda_widgets(region, deploy_stage):
                 'height': positioning['height'],
                 'width': positioning['width'],
                 "properties": {
-                    "query": f"SOURCE '/aws/lambda/{function_name}' | filter @type=\"REPORT\" | avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+                    "query": f"SOURCE '/aws/lambda/{function_name}' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
                     "region": region,
                     "title": f"{widget_title} Memory Usage",
                     "view": "timeSeries",
