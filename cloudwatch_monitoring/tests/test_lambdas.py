@@ -6,7 +6,8 @@ from unittest import TestCase, mock
 
 from .test_widgets import (expected_lambda_widget_list, concurrent_lambdas_metrics_list,
                            duration_of_transform_db_lambdas_metrics_list)
-from ..lambdas import (LambdaAPICalls, create_lambda_widgets, lambda_properties, generate_custom_lambda_metrics)
+from ..lambdas import (LambdaAPICalls, create_lambda_widgets, get_widget_properties, lambda_properties,
+                       generate_custom_lambda_metrics)
 
 
 class TestCreateLambdaWidgets(TestCase):
@@ -19,7 +20,7 @@ class TestCreateLambdaWidgets(TestCase):
         self.valid_function_name_1 = 'aqts-capture-field-visit-transform-DEV-transform'
         self.valid_function_name_2 = 'aqts-capture-trigger-DEV-aqtsCaptureTrigger'
         self.valid_function_name_3 = 'aqts-capture-ecosystem-switch-DEV-growDb'
-        self.valid_function_name_4 = 'function_DEV_name_not_added_to_lookups_yet'
+        self.valid_function_name_4 = 'function-name-not-added-to-lookups-yet-DEV-descriptor'
         self.valid_function_name_5 = 'aqts-capture-dvstat-transform-DEV-transform'
         self.valid_function_name_6 = 'aqts-capture-error-handler-DEV-aqtsErrorHandler'
         self.valid_function_name_7 = 'aqts-capture-pruner-DEV-pruneTimeSeries'
@@ -161,15 +162,23 @@ class TestCreateLambdaWidgets(TestCase):
             }
         }
 
-    def test_lambda_properties(self):
-        expected_properties = {
-            'name': 'aqts-capture-dvstat-transform-DEV-transform',
-            'label': 'DV stat Transformer'
+        self.widget_properties = {
+            'title': 'Field visit transformer',
+            'etl_branch': 'sv'
         }
 
+        self.widget_properties_es_logger = {
+            'title': 'Field visit transformer ES logger',
+            'etl_branch': 'sv'
+        }
+
+    def test_lambda_properties(self):
         self.assertDictEqual(
             lambda_properties('dvstat_transform', self.deploy_stage),
-            expected_properties
+            {
+                'name': 'aqts-capture-dvstat-transform-DEV-transform',
+                'label': 'DV stat Transformer'
+            }
         )
 
     def test_generate_custom_lambda_metrics_concurrent_lambdas(self):
@@ -182,6 +191,48 @@ class TestCreateLambdaWidgets(TestCase):
         self.assertListEqual(
             generate_custom_lambda_metrics(self.deploy_stage, 'Duration', 'duration_of_transform_db_lambdas'),
             duration_of_transform_db_lambdas_metrics_list
+        )
+
+    def test_get_widget_properties(self):
+        self.assertDictEqual(
+            get_widget_properties(self.valid_function_name_1, self.deploy_stage),
+            self.widget_properties
+        )
+
+    def test_get_widget_properties_es_logger(self):
+        self.assertDictEqual(
+            get_widget_properties('aqts-capture-field-visit-transform-DEV-es-logs-plugin', self.deploy_stage),
+            self.widget_properties_es_logger
+        )
+
+    def test_get_widget_properties_prod_external(self):
+        self.assertDictEqual(
+            get_widget_properties('aqts-capture-field-visit-transform-PROD-EXTERNAL-transform', 'PROD-EXTERNAL'),
+            self.widget_properties
+        )
+
+    def test_get_widget_properties_prod_external_es_logger(self):
+        self.assertDictEqual(
+            get_widget_properties('aqts-capture-field-visit-transform-PROD-EXTERNAL-es-logs-plugin', 'PROD-EXTERNAL'),
+            self.widget_properties_es_logger
+        )
+
+    def test_get_widget_properties_unknown_function(self):
+        self.assertDictEqual(
+            get_widget_properties(self.valid_function_name_4, self.deploy_stage),
+            {
+                'title': self.valid_function_name_4,
+                'etl_branch': 'not defined'
+            }
+        )
+
+    def test_get_widget_properties_unknown_function_es_logger(self):
+        self.assertDictEqual(
+            get_widget_properties('function_name_not_added_to_lookups_yet_DEV-es-logs-plugin', self.deploy_stage),
+            {
+                'title': 'function_name_not_added_to_lookups_yet_DEV-es-logs-plugin',
+                'etl_branch': 'not defined'
+            }
         )
 
     @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
