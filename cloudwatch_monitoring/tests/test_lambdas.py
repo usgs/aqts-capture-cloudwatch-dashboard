@@ -25,6 +25,7 @@ class TestCreateLambdaWidgets(TestCase):
         self.valid_function_name_6 = 'aqts-capture-error-handler-DEV-aqtsErrorHandler'
         self.valid_function_name_7 = 'aqts-capture-pruner-DEV-pruneTimeSeries'
         self.valid_function_name_8 = 'etl-discrete-groundwater-rdb-DEV-loadRdb'
+        self.valid_function_es_logger = 'aqts-capture-field-visit-transform-DEV-es-logs-plugin'
         self.bad_function_name = 'some-function-name-with-no-valid-TIER-specified'
         self.marker = 'some huge string'
 
@@ -73,22 +74,6 @@ class TestCreateLambdaWidgets(TestCase):
             'NextMarker': self.marker
         }
 
-        self.full_function_list = {
-            'Functions': [
-                {'FunctionName': self.valid_function_name_2},
-                {'FunctionName': self.bad_function_name},
-                {'FunctionName': self.valid_function_name_3},
-                {'FunctionName': self.bad_function_name},
-                {'FunctionName': self.valid_function_name_1},
-                {'FunctionName': self.valid_function_name_4},
-                {'FunctionName': self.valid_function_name_5},
-                {'FunctionName': self.valid_function_name_6},
-                {'FunctionName': self.valid_function_name_7},
-                {'FunctionName': self.valid_function_name_8},
-            ],
-            'NextMarker': self.marker
-        }
-
         self.valid_function_1 = {
             'FunctionName': self.valid_function_name_1
         }
@@ -121,8 +106,29 @@ class TestCreateLambdaWidgets(TestCase):
             'FunctionName': self.valid_function_name_8
         }
 
+        self.valid_function_es_logger = {
+            'FunctionName': self.valid_function_es_logger
+        }
+
         self.bad_function = {
             'FunctionName': self.bad_function_name
+        }
+
+        self.full_function_list = {
+            'Functions': [
+                self.valid_function_2,
+                self.bad_function,
+                self.valid_function_3,
+                self.bad_function,
+                self.valid_function_1,
+                self.valid_function_4,
+                self.valid_function_5,
+                self.valid_function_6,
+                self.valid_function_7,
+                self.valid_function_8,
+                self.valid_function_es_logger
+            ],
+            'NextMarker': self.marker
         }
 
         # happy path
@@ -344,7 +350,7 @@ class TestCreateLambdaWidgets(TestCase):
         # return values
         m_api_calls.return_value.get_all_lambda_metadata.return_value = self.full_function_list
         m_api_calls.return_value.is_iow_lambda_filter.side_effect = [
-            True, False, True, False, True, True, True, True, True, True
+            True, False, True, False, True, True, True, True, True, True, True
         ]
 
         # expected calls
@@ -359,6 +365,7 @@ class TestCreateLambdaWidgets(TestCase):
             mock.call(self.valid_function_6),
             mock.call(self.valid_function_7),
             mock.call(self.valid_function_8),
+            mock.call(self.valid_function_es_logger)
         ]
 
         # Make sure the resultant widget list is correct

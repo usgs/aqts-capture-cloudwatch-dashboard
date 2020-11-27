@@ -404,6 +404,78 @@ field_visit_transform_memory_usage_widget = {
     }
 }
 
+field_visit_transform_es_logger_numeric_stats_widget = {
+    'type': 'metric',
+    'height': 6,
+    'width': 4,
+    'properties': {
+        'metrics': [
+            ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-es-logs-plugin', {'stat': 'Sum'}],
+            ['.', 'Errors', '.', '.', {'stat': 'Sum'}],
+            ['.', 'Duration', '.', '.'],
+            ['.', 'ConcurrentExecutions', '.', '.'],
+            ['.', 'Throttles', '.', '.']
+        ],
+        'view': 'singleValue',
+        'region': 'us-south-10',
+        'title': 'Field visit transformer ES logger',
+        'period': 300,
+        'stacked': False,
+        'stat': 'Average'
+    }
+}
+
+field_visit_transform_es_logger_concurrent_executions_widget = {
+    'type': 'metric',
+    'height': 6,
+    'width': 8,
+    'properties': {
+        'metrics': [
+            ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-es-logs-plugin', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
+            ['.', 'Invocations', '.', '.'],
+            ['.', 'Errors', '.', '.'],
+            ['.', 'Throttles', '.', '.', {'stat': 'Average'}]
+        ],
+        'view': 'timeSeries',
+        'region': 'us-south-10',
+        'title': 'Field visit transformer ES logger Concurrent Executions',
+        'period': 300,
+        'stat': 'Sum',
+        'stacked': False
+    }
+}
+
+field_visit_transform_es_logger_duration_widget = {
+    'type': 'metric',
+    'height': 6,
+    'width': 6,
+    'properties': {
+        'metrics': [
+            ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-es-logs-plugin', {'yAxis': 'left'}],
+            ['...', {'yAxis': 'right', 'stat': 'Maximum'}]
+        ],
+        'view': 'timeSeries',
+        'region': 'us-south-10',
+        'title': 'Field visit transformer ES logger Duration',
+        'period': 300,
+        'stat': 'Average',
+        'stacked': False
+    }
+}
+
+field_visit_transform_es_logger_memory_usage_widget = {
+    "type": "log",
+    'height': 6,
+    'width': 6,
+    "properties": {
+        "query": f"SOURCE '/aws/lambda/aqts-capture-field-visit-transform-DEV-es-logs-plugin' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+        "region": 'us-south-10',
+        "title": "Field visit transformer ES logger Memory Usage",
+        "view": "timeSeries",
+        "stacked": False
+    }
+}
+
 rdb_loader_numeric_stats_widget = {
     'type': 'metric',
     'height': 6,
@@ -723,6 +795,11 @@ expected_lambda_widget_list = [
     field_visit_transform_concurrent_executions_widget,
     field_visit_transform_duration_widget,
     field_visit_transform_memory_usage_widget,
+
+    field_visit_transform_es_logger_numeric_stats_widget,
+    field_visit_transform_es_logger_concurrent_executions_widget,
+    field_visit_transform_es_logger_duration_widget,
+    field_visit_transform_es_logger_memory_usage_widget,
 
     rdb_loader_numeric_stats_widget,
     rdb_loader_concurrent_executions_widget,
