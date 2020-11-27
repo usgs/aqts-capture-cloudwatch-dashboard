@@ -14,5 +14,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added title widgets for each distinct asset type
 - Added additional graphical widgets for each IOW lambda in the account
 - Added memory usage widget for each lambda widget
+- Added support for naming/sorting elasticsearch lambda widgets
 
 ## [Unreleased]
