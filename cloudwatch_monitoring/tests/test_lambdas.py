@@ -234,9 +234,9 @@ class TestCreateLambdaWidgets(TestCase):
 
     def test_get_widget_properties_unknown_function_es_logger(self):
         self.assertDictEqual(
-            get_widget_properties('function_name_not_added_to_lookups_yet_DEV-es-logs-plugin', self.deploy_stage),
+            get_widget_properties('function-name-not-added-to-lookups-yet-DEV-es-logs-plugin', self.deploy_stage),
             {
-                'title': 'function_name_not_added_to_lookups_yet_DEV-es-logs-plugin',
+                'title': 'function-name-not-added-to-lookups-yet-DEV-es-logs-plugin',
                 'etl_branch': 'not defined'
             }
         )
