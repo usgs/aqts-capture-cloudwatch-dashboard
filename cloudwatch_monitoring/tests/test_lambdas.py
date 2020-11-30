@@ -54,9 +54,9 @@ class TestCreateLambdaWidgets(TestCase):
 
         self.function_list_after_successful_pagination = {
             'Functions': [
+                {'FunctionName': self.valid_function_name_1},
                 {'FunctionName': self.valid_function_name_2},
                 {'FunctionName': self.bad_function_name},
-                {'FunctionName': self.valid_function_name_1},
                 {'FunctionName': self.bad_function_name}
             ],
             'NextMarker': self.marker

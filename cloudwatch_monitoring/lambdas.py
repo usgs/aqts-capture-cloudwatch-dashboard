@@ -407,6 +407,9 @@ class LambdaAPICalls:
                 # no more pages, move on
                 break
 
+        # The order in which we receive lambda metadata isn't guaranteed
+        # sort alphabetically by function name to group each lambda function with its elasticsearch logger function
+        response['Functions'] = sorted(response['Functions'], key=lambda i: i['FunctionName'])
         return response
 
     def is_iow_lambda_filter(self, function):
