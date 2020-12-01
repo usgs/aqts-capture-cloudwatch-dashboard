@@ -38,7 +38,7 @@ def create_sns_widgets(region, deploy_stage):
     positioning['width'] = 12
     positioning['height'] = 6
 
-    all_iow_sns_topics_widget = {
+    sns_failure_notifications_widget = {
         'type': 'metric',
         'height': positioning['height'],
         'width': positioning['width'],
@@ -63,7 +63,6 @@ def create_sns_widgets(region, deploy_stage):
     for topic in response['Topics']:
         topic_arn = topic['TopicArn']
         if api_calls.is_iow_topic_filter(topic_arn):
-
             # incoming topic arn example: arn:aws:sns:us-west-2:579777464052:aqts-capture-error-handler-DEV-topic
             # we want the topic name after the last ":"
             arn_parts = topic_arn.split(':')
@@ -71,19 +70,19 @@ def create_sns_widgets(region, deploy_stage):
             tier_agnostic_topic_name = topic_name.replace(f"-{deploy_stage}-topic", '')
 
             metric = generate_number_of_messages_published_metric(topic_name, tier_agnostic_topic_name, count)
-            all_iow_sns_topics_widget['properties']['metrics'].append(metric)
+            sns_failure_notifications_widget['properties']['metrics'].append(metric)
             count += 1
 
-    sns_widgets.append(all_iow_sns_topics_widget)
+    sns_widgets.append(sns_failure_notifications_widget)
 
     return sns_widgets
 
 
 def generate_number_of_messages_published_metric(topic_name, tier_agnostic_topic_name, count):
-
     try:
         label = sns_topics[tier_agnostic_topic_name]['title']
     except KeyError:
+        # No title property or possibly lookup added for this sns topic yet, default to topic name
         label = topic_name
 
     if count < 1:
