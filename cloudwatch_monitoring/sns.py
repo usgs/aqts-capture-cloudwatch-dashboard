@@ -61,6 +61,7 @@ def create_sns_widgets(region, deploy_stage):
     # iterate over the list of sns topics and create widgets for the assets we care about based on filters
     count = 0
     for topic in response['Topics']:
+        print(topic)
         if api_calls.is_iow_topic_filter(topic['TopicArn']):
             print(topic['TopicArn'])
             # incoming topic arn example: arn:aws:sns:us-west-2:579777464052:aqts-capture-error-handler-DEV-topic
