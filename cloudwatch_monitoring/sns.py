@@ -118,14 +118,14 @@ class SNSAPICalls:
                     NextToken=next_token)
                 response['Topics'].extend(response_iterator['Topics'])
             else:
-                response_iterator = self.sns_client.list_queues()
+                response_iterator = self.sns_client.list_topics()
                 response.update(response_iterator)
             try:
                 next_token = response_iterator['NextToken']
             except KeyError:
                 # no more pages, move on
                 break
-
+        print(response)
         return response
 
     def is_iow_topic_filter(self, topic_arn):
