@@ -341,6 +341,16 @@ sqs_queues = {
     }
 }
 
+# sns topics
+sns_topics = {
+    'aqts-capture-error-handler': {
+        'title': 'Error Handler SNS notifications'
+    },
+    'etl-discrete-groundwater-rdb': {
+        'title': 'RDB Loader SNS notifications'
+    }
+}
+
 # State machine properties
 state_machines = {
     'aqts-capture-state-machine': {
