@@ -61,11 +61,12 @@ def create_sns_widgets(region, deploy_stage):
     # iterate over the list of sns topics and create widgets for the assets we care about based on filters
     count = 0
     for topic in response['Topics']:
-        if api_calls.is_iow_topic_filter(topic['TopicArn']):
-            print(topic['TopicArn'])
+        topic_arn = topic['TopicArn']
+        if api_calls.is_iow_topic_filter(topic_arn):
+
             # incoming topic arn example: arn:aws:sns:us-west-2:579777464052:aqts-capture-error-handler-DEV-topic
             # we want the topic name after the last ":"
-            arn_parts = topic.split(':')
+            arn_parts = topic_arn.split(':')
             topic_name = arn_parts[-1]
             tier_agnostic_topic_name = topic_name.replace(f"-{deploy_stage}-topic", '')
 
