@@ -80,11 +80,17 @@ def create_sns_widgets(region, deploy_stage):
 
 
 def generate_number_of_messages_published_metric(topic_name, tier_agnostic_topic_name, count):
+
+    try:
+        label = sns_topics[tier_agnostic_topic_name]['title']
+    except KeyError:
+        label = topic_name
+
     if count < 1:
         # the first metric in the list has some additional stuff
-        metric = ["AWS/SNS", 'NumberOfMessagesPublished', "TopicName", topic_name, {"label": tier_agnostic_topic_name['title']}]
+        metric = ["AWS/SNS", 'NumberOfMessagesPublished', "TopicName", topic_name, {"label": label}]
     else:
-        metric = ["...", topic_name, {"label": tier_agnostic_topic_name['title']}]
+        metric = ["...", topic_name, {"label": label}]
 
     return metric
 
