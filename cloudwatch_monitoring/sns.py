@@ -62,7 +62,7 @@ def create_sns_widgets(region, deploy_stage):
     count = 0
     for topic in response['Topics']:
         if api_calls.is_iow_topic_filter(topic['TopicArn']):
-
+            print(topic['TopicArn'])
             # incoming topic arn example: arn:aws:sns:us-west-2:579777464052:aqts-capture-error-handler-DEV-topic
             # we want the topic name after the last ":"
             arn_parts = topic.split(':')
@@ -125,7 +125,7 @@ class SNSAPICalls:
             except KeyError:
                 # no more pages, move on
                 break
-        print(response)
+
         return response
 
     def is_iow_topic_filter(self, topic_arn):
