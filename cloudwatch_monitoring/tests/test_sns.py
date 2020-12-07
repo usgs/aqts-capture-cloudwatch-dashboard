@@ -5,7 +5,7 @@ Tests for the sns module.
 from unittest import TestCase, mock
 
 from .test_widgets import expected_sns_list
-from ..sns import (SNSAPICalls, create_sns_widgets, generate_number_of_messages_published_metric)
+from ..sns import (SnsApiCalls, create_sns_widgets, generate_number_of_messages_published_metric)
 
 
 class TestCreateSNSWidgets(TestCase):
@@ -113,7 +113,7 @@ class TestCreateSNSWidgets(TestCase):
     def test_get_all_sns_topics(self, m_client):
         mock_sns_client = mock.Mock()
         m_client.return_value = mock_sns_client
-        api_calls = SNSAPICalls(self.region, self.deploy_stage)
+        api_calls = SnsApiCalls(self.region, self.deploy_stage)
 
         # only one topic returned from list_topics
         mock_sns_client.list_topics.return_value = self.topic_list_no_next_token
@@ -134,7 +134,7 @@ class TestCreateSNSWidgets(TestCase):
     def test_get_all_sns_topics_next_token_pagination(self, m_client):
         mock_sns_client = mock.Mock()
         m_client.return_value = mock_sns_client
-        api_calls = SNSAPICalls(self.region, self.deploy_stage)
+        api_calls = SnsApiCalls(self.region, self.deploy_stage)
 
         # 2 pages returned, the first page has a NextToken key that causes us to begin iterating through pages
         # of list_topics responses
@@ -165,7 +165,7 @@ class TestCreateSNSWidgets(TestCase):
         mock_sns_client = mock.Mock()
         m_client.return_value = mock_sns_client
         mock_sns_client.list_tags_for_resource.return_value = self.tags_list_for_valid_topic_arn_1
-        api_calls = SNSAPICalls(self.region, self.deploy_stage)
+        api_calls = SnsApiCalls(self.region, self.deploy_stage)
 
         # assert the return value is true, since list_tags_for_resource returned a valid response
         # noinspection PyPackageRequirements
@@ -184,7 +184,7 @@ class TestCreateSNSWidgets(TestCase):
         mock_sns_client = mock.Mock()
         m_client.return_value = mock_sns_client
         mock_sns_client.list_tags_for_resource.return_value = self.tags_list_empty_tags
-        api_calls = SNSAPICalls(self.region, self.deploy_stage)
+        api_calls = SnsApiCalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since list_tags_for_resource returned a response with no 'Tags' key
         # noinspection PyPackageRequirements
@@ -197,7 +197,7 @@ class TestCreateSNSWidgets(TestCase):
         mock_sns_client = mock.Mock()
         m_client.return_value = mock_sns_client
         mock_sns_client.list_tags_for_resource.return_value = self.tags_list_no_tags
-        api_calls = SNSAPICalls(self.region, self.deploy_stage)
+        api_calls = SnsApiCalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since list_tags_for_resource returned a response with no tags in the Tags dict
         # noinspection PyPackageRequirements
@@ -210,7 +210,7 @@ class TestCreateSNSWidgets(TestCase):
         mock_sns_client = mock.Mock()
         m_client.return_value = mock_sns_client
         mock_sns_client.list_tags_for_resource.return_value = self.tags_list_no_wma_org_key
-        api_calls = SNSAPICalls(self.region, self.deploy_stage)
+        api_calls = SnsApiCalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since list_tags_for_resource returned a response with no
         # wma:organization key in the Tags dict
@@ -224,7 +224,7 @@ class TestCreateSNSWidgets(TestCase):
         mock_sns_client = mock.Mock()
         m_client.return_value = mock_sns_client
         mock_sns_client.list_tags_for_resource.return_value = self.tags_list_no_iow_value
-        api_calls = SNSAPICalls(self.region, self.deploy_stage)
+        api_calls = SnsApiCalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since list_tags_for_resource returned a response with a valid
         # wma:organization key, but the value is not "IOW"
@@ -233,7 +233,7 @@ class TestCreateSNSWidgets(TestCase):
             api_calls.is_iow_topic_filter(self.valid_topic_arn_1)
         )
 
-    @mock.patch('cloudwatch_monitoring.sns.SNSAPICalls', autospec=True)
+    @mock.patch('cloudwatch_monitoring.sns.SnsApiCalls', autospec=True)
     def test_create_sns_widgets(self, m_api_calls):
         # return values
         m_api_calls.return_value.get_all_sns_topics.return_value = self.full_sns_topic_list

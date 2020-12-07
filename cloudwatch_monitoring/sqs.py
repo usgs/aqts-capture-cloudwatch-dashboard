@@ -34,7 +34,7 @@ def create_sqs_widgets(region, deploy_stage):
 
     sqs_widgets.append(sqs_section_title_widget)
 
-    api_calls = SQSAPICalls(region, deploy_stage)
+    api_calls = SqsApiCalls(region, deploy_stage)
 
     # grab all the sqs queue urls in the account/region
     all_sqs_queue_urls_response = api_calls.get_all_sqs_queue_urls()
@@ -88,10 +88,10 @@ def create_sqs_widgets(region, deploy_stage):
     return sqs_widgets
 
 
-class SQSAPICalls:
+class SqsApiCalls:
     def __init__(self, region, deploy_stage):
         """
-        Constructor for the SQSAPICalls class.
+        Constructor for the SqsApiCalls class.
 
         :param region: usually 'us-west-2'
         :param deploy_stage: The deployment tier (DEV, TEST, QA, PROD-EXTERNAL)

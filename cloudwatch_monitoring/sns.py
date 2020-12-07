@@ -76,7 +76,7 @@ def create_sns_widgets(region, deploy_stage):
         }
     }
 
-    api_calls = SNSAPICalls(region, deploy_stage)
+    api_calls = SnsApiCalls(region, deploy_stage)
 
     # grab all the sns topics in the account/region
     response = api_calls.get_all_sns_topics()
@@ -117,10 +117,10 @@ def generate_number_of_messages_published_metric(topic_name, tier_agnostic_topic
     return metric
 
 
-class SNSAPICalls:
+class SnsApiCalls:
     def __init__(self, region, deploy_stage):
         """
-        Constructor for the SNSAPICalls class.
+        Constructor for the SnsApiCalls class.
 
         :param region: usually 'us-west-2'
         :param deploy_stage: The deployment tier (DEV, TEST, QA, PROD-EXTERNAL)
