@@ -38,7 +38,31 @@ def create_sns_widgets(region, deploy_stage):
     positioning['width'] = 12
     positioning['height'] = 6
 
-    sns_failure_notifications_widget = {
+    # create the error handler widget
+    error_handler_sns_notifications_widget = {
+        'type': 'metric',
+        'height': positioning['height'],
+        'width': positioning['width'],
+        'properties': {
+            "metrics": [
+                ["AWS/SNS", "PublishSize", "TopicName", f"aqts-capture-error-handler-{deploy_stage}-topic", {"label": "publish size"}],
+                [".", "NumberOfMessagesPublished", ".", ".", {"label": "messages published"}],
+                [".", "NumberOfNotificationsDelivered", ".", ".", {"label": "notifications delivered"}],
+                [".", "NumberOfNotificationsFailed", ".", ".", {"label": "notifications failed"}]
+            ],
+            "view": "timeSeries",
+            "stacked": False,
+            "region": region,
+            "stat": "Sum",
+            "period": 3600,
+            "title": "Error Handler Failure Notifications (Counts per hour)"
+        }
+    }
+
+    sns_widgets.append(error_handler_sns_notifications_widget)
+
+    # create the template for the generic sns notifications widget
+    sns_notifications_widget = {
         'type': 'metric',
         'height': positioning['height'],
         'width': positioning['width'],
@@ -70,10 +94,10 @@ def create_sns_widgets(region, deploy_stage):
             tier_agnostic_topic_name = topic_name.replace(f"-{deploy_stage}-topic", '')
 
             metric = generate_number_of_messages_published_metric(topic_name, tier_agnostic_topic_name, count)
-            sns_failure_notifications_widget['properties']['metrics'].append(metric)
+            sns_notifications_widget['properties']['metrics'].append(metric)
             count += 1
 
-    sns_widgets.append(sns_failure_notifications_widget)
+    sns_widgets.append(sns_notifications_widget)
 
     return sns_widgets
 
