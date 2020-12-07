@@ -1013,3 +1013,49 @@ expected_state_machine_list = [
         }
     }
 ]
+
+expected_sns_list = [
+    {
+        'type': 'text',
+        'height': 1,
+        'width': 24,
+        'properties': {
+            "markdown": "# SNS Status"
+        }
+    },
+    {
+        'type': 'metric',
+        'height': 6,
+        'width': 12,
+        'properties': {
+            "metrics": [
+                ["AWS/SNS", "NumberOfMessagesPublished", "TopicName", "aqts-capture-error-handler-DEV-topic", {"label": "messages published"}],
+                [".", "NumberOfNotificationsDelivered", ".", ".", {"label": "notifications delivered"}],
+                [".", "NumberOfNotificationsFailed", ".", ".", {"label": "notifications failed"}]
+            ],
+            "view": "timeSeries",
+            "stacked": False,
+            "region": "us-south-10",
+            "stat": "Sum",
+            "period": 3600,
+            "title": "Error Handler Failure Notifications (Counts per hour)"}
+    },
+    {
+        'type': 'metric',
+        'height': 6,
+        'width': 12,
+        'properties': {
+            "metrics": [
+                ["AWS/SNS", "NumberOfMessagesPublished", "TopicName", "etl-discrete-groundwater-rdb-DEV-topic", {"label": "RDB Loader"}],
+                ["...", "aqts-capture-error-handler-DEV-topic", {"label": "Error Handler"}],
+                ["...", "aqts-capture-field-visit-transform-DEV-topic", {"label": "Field visit transformer"}]
+            ],
+            "view": "timeSeries",
+            "stacked": False,
+            "region": "us-south-10",
+            "stat": "Sum",
+            "period": 3600,
+            "title": "SNS Failure Notifications (Count per hour)"
+        }
+    }
+]
