@@ -45,8 +45,7 @@ def create_sns_widgets(region, deploy_stage):
         'width': positioning['width'],
         'properties': {
             "metrics": [
-                ["AWS/SNS", "PublishSize", "TopicName", f"aqts-capture-error-handler-{deploy_stage}-topic", {"label": "publish size"}],
-                [".", "NumberOfMessagesPublished", ".", ".", {"label": "messages published"}],
+                ["AWS/SNS", "NumberOfMessagesPublished", "TopicName", f"aqts-capture-error-handler-{deploy_stage}-topic", {"label": "messages published"}],
                 [".", "NumberOfNotificationsDelivered", ".", ".", {"label": "notifications delivered"}],
                 [".", "NumberOfNotificationsFailed", ".", ".", {"label": "notifications failed"}]
             ],
