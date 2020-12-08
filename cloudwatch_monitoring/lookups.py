@@ -341,6 +341,64 @@ sqs_queues = {
     }
 }
 
+# sns topics
+sns_topics = {
+    'aqts-capture-error-handler': {
+        'title': 'Error Handler'
+    },
+    'etl-discrete-groundwater-rdb': {
+        'title': 'RDB Loader'
+    },
+    'aqts-capture-dvstat-transform': {
+        'title': 'DV stat Transformer'
+    },
+    'aqts-capture-raw-load': {
+        'title': 'Raw load'
+    },
+    'aqts-capture-raw-load-extra-small': {
+        'title': 'Raw Load extra small'
+    },
+    'aqts-capture-raw-load-small': {
+        'title': 'Raw load small'
+    },
+    'aqts-capture-raw-load-medium': {
+        'title': 'Raw load medium'
+    },
+    'aqts-capture-trigger': {
+        'title': 'Capture Trigger'
+    },
+    'aqts-capture-ts-corrected': {
+        'title': 'TS corrected preprocessor'
+    },
+    'aqts-capture-ts-description': {
+        'title': 'TS descriptions preprocessor'
+    },
+    'aqts-ts-type-router': {
+        'title': 'TS type router'
+    },
+    'aqts-capture-ts-loader': {
+        'title': 'DV TS loader'
+    },
+    'aqts-capture-ts-field-visit': {
+        'title': 'Field visit preprocessor'
+    },
+    'aqts-capture-field-visit-transform': {
+        'title': 'Field visit transformer'
+    },
+    'aqts-capture-discrete-loader': {
+        'title': 'Discrete GW loader'
+    },
+    'aqts-capture-field-visit-metadata': {
+        'title': 'Field visit metadata preprocessor'
+    },
+    'aqts-capture-ecosystem-switch': {
+        'title': 'Ecosystem Switch'
+    },
+    'aqts-capture-state-machine': {
+        'title': 'ETL state machine'
+    }
+}
+
 # State machine properties
 state_machines = {
     'aqts-capture-state-machine': {

@@ -5,10 +5,10 @@
 This tool uses the AWS Python SDK (boto3) to create, update, and deploy a cloudwatch dashboard for the purpose of monitoring the aqts-capture etl assets.
 
 ### How it works
-Using the Jenkins job runner, we build a docker container with python installed, then run the python entry-point script to begin creating a cloudwatch dashboard.
+Using the Jenkins job runner, we build a docker container with python installed, then run the python entry-point script to create a cloudwatch dashboard.  See the `Jenkinsfile` for more details.
 
 ### Unit testing
-Make sure you have python version 3.8 (or later), pip, and venv installed, then run:
+Make sure you have `python` version 3.8 (or later), `pip`, and `venv` installed, then run:
 
 ```shell script
 python3 -m venv env

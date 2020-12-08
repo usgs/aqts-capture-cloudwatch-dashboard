@@ -6,6 +6,7 @@ from cloudwatch_monitoring.lambdas import create_lambda_widgets
 from cloudwatch_monitoring.rds import create_rds_widgets
 from cloudwatch_monitoring.sqs import create_sqs_widgets
 from cloudwatch_monitoring.state_machine import create_state_machine_widgets
+from cloudwatch_monitoring.sns import create_sns_widgets
 
 # Entrypoint from the jenkins script
 if __name__ == '__main__':
@@ -23,6 +24,7 @@ if __name__ == '__main__':
     widgets.extend(create_sqs_widgets(region, deploy_stage))
     widgets.extend(create_rds_widgets(region, deploy_stage))
     widgets.extend(create_state_machine_widgets(region, deploy_stage))
+    widgets.extend(create_sns_widgets(region, deploy_stage))
     widgets.extend(create_lambda_widgets(region, deploy_stage))
 
     # create the dashboard when the widget list is complete

@@ -5,7 +5,7 @@ Tests for the sqs module.
 from unittest import TestCase, mock
 
 from .test_widgets import expected_queue_list
-from ..sqs import (SQSAPICalls, create_sqs_widgets)
+from ..sqs import (SqsApiCalls, create_sqs_widgets)
 
 
 class TestCreateSQSWidgets(TestCase):
@@ -76,7 +76,7 @@ class TestCreateSQSWidgets(TestCase):
     def test_get_all_sqs_queue_urls(self, m_client):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
-        api_calls = SQSAPICalls(self.region, self.deploy_stage)
+        api_calls = SqsApiCalls(self.region, self.deploy_stage)
 
         # only one queue returned from list_queues
         mock_sqs_client.list_queues.return_value = self.queue_list_no_next_token
@@ -97,7 +97,7 @@ class TestCreateSQSWidgets(TestCase):
     def test_get_all_sqs_queue_urls_next_token_pagination(self, m_client):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
-        api_calls = SQSAPICalls(self.region, self.deploy_stage)
+        api_calls = SqsApiCalls(self.region, self.deploy_stage)
 
         # 2 queues returned, the first queue has the key NextToken that causes us to begin iterating through pages
         # of list_queues responses
@@ -128,7 +128,7 @@ class TestCreateSQSWidgets(TestCase):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
         mock_sqs_client.list_queue_tags.return_value = self.tags_list_for_valid_queue_url_1
-        api_calls = SQSAPICalls(self.region, self.deploy_stage)
+        api_calls = SqsApiCalls(self.region, self.deploy_stage)
 
         # assert the return value is true, since list_queue_tags returned a valid response
         # noinspection PyPackageRequirements
@@ -147,7 +147,7 @@ class TestCreateSQSWidgets(TestCase):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
         mock_sqs_client.list_queue_tags.return_value = self.tags_list_empty_tags
-        api_calls = SQSAPICalls(self.region, self.deploy_stage)
+        api_calls = SqsApiCalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since list_queue_tags returned a response with no 'Tags' key
         # noinspection PyPackageRequirements
@@ -160,7 +160,7 @@ class TestCreateSQSWidgets(TestCase):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
         mock_sqs_client.list_queue_tags.return_value = self.tags_list_no_tags
-        api_calls = SQSAPICalls(self.region, self.deploy_stage)
+        api_calls = SqsApiCalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since list_queue_tags returned a response with no tags in the Tags dict
         # noinspection PyPackageRequirements
@@ -173,7 +173,7 @@ class TestCreateSQSWidgets(TestCase):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
         mock_sqs_client.list_queue_tags.return_value = self.tags_list_no_wma_org_key
-        api_calls = SQSAPICalls(self.region, self.deploy_stage)
+        api_calls = SqsApiCalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since list_queue_tags returned a response with no wma:organization key in
         # the Tags dict
@@ -187,7 +187,7 @@ class TestCreateSQSWidgets(TestCase):
         mock_sqs_client = mock.Mock()
         m_client.return_value = mock_sqs_client
         mock_sqs_client.list_queue_tags.return_value = self.tags_list_no_iow_value
-        api_calls = SQSAPICalls(self.region, self.deploy_stage)
+        api_calls = SqsApiCalls(self.region, self.deploy_stage)
 
         # assert the return value is False, since list_queue_tags returned a response with a valid wma:organization
         # key, but the value is not "IOW"
@@ -196,7 +196,7 @@ class TestCreateSQSWidgets(TestCase):
             api_calls.is_iow_queue_filter(self.valid_queue_url_1)
         )
 
-    @mock.patch('cloudwatch_monitoring.sqs.SQSAPICalls', autospec=True)
+    @mock.patch('cloudwatch_monitoring.sqs.SqsApiCalls', autospec=True)
     def test_create_sqs_widgets(self, m_api_calls):
         # return values
         m_api_calls.return_value.get_all_sqs_queue_urls.return_value = self.full_queue_list
