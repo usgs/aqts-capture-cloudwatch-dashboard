@@ -34,13 +34,18 @@ if __name__ == '__main__':
     main_dashboard_widgets.extend(create_lambda_widgets(region, deploy_stage, iow_functions))
 
     # add widgets to memory usage dashboard
-    memory_usage_widgets.extend(create_lambda_memory_usage_widgets(region, deploy_stage, iow_functions))
+    memory_usage_widgets.extend(create_lambda_memory_usage_widgets(region, iow_functions))
 
     # add widgets to ecosystem switch dashboard
     ecosystem_switch_widgets.extend(create_ecosystem_switch_widgets(region, deploy_stage, iow_functions))
 
-    # create the dashboard when the widget list is complete
+    # create a dashboard for high level monitoring of aqts-capture etl
     cloudwatch_client = boto3.client("cloudwatch", region_name=region)
-    dashboard_body = {'widgets': main_dashboard_widgets}
-    dashboard_body_json = json.dumps(dashboard_body)
-    cloudwatch_client.put_dashboard(DashboardName="aqts-capture-etl-" + deploy_stage, DashboardBody=dashboard_body_json)
+    main_dashboard_body = {'widgets': main_dashboard_widgets}
+    main_dashboard_body_json = json.dumps(main_dashboard_body)
+    cloudwatch_client.put_dashboard(DashboardName="aqts-capture-etl-" + deploy_stage, DashboardBody=main_dashboard_body_json)
+
+    # create a dashboard for lambda memory usage
+    memory_usage_dashboard_body = {'widgets': memory_usage_widgets}
+    memory_usage_dashboard_body_json = json.dumps(memory_usage_dashboard_body)
+    cloudwatch_client.put_dashboard(DashboardName="aqts-capture-lambda-memory-usage-" + deploy_stage, DashboardBody=memory_usage_dashboard_body_json)

@@ -5,9 +5,10 @@ Tests for the lambdas module.
 from unittest import TestCase, mock
 
 from .test_widgets import (expected_lambda_widget_list, concurrent_lambdas_metrics_list,
-                           duration_of_transform_db_lambdas_metrics_list, expected_filtered_function_list)
+                           duration_of_transform_db_lambdas_metrics_list, expected_filtered_function_list,
+                           expected_lambda_memory_usage_widget_list)
 from ..lambdas import (LambdaAPICalls, create_lambda_widgets, get_widget_properties, lambda_properties,
-                       generate_custom_lambda_metrics, get_iow_functions)
+                       generate_custom_lambda_metrics, get_iow_functions, create_lambda_memory_usage_widgets)
 
 
 class TestCreateLambdaWidgets(TestCase):
@@ -385,4 +386,12 @@ class TestCreateLambdaWidgets(TestCase):
         self.assertListEqual(
             create_lambda_widgets(self.region, self.deploy_stage, expected_filtered_function_list),
             expected_lambda_widget_list
+        )
+
+    def test_create_lambda_memory_usage_widgets(self):
+        # Make sure the resultant widget list is correct
+        # noinspection PyPackageRequirements
+        self.assertListEqual(
+            create_lambda_memory_usage_widgets(self.region, expected_filtered_function_list),
+            expected_lambda_memory_usage_widget_list
         )
