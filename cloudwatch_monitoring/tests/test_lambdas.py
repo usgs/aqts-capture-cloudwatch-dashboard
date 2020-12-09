@@ -5,9 +5,9 @@ Tests for the lambdas module.
 from unittest import TestCase, mock
 
 from .test_widgets import (expected_lambda_widget_list, concurrent_lambdas_metrics_list,
-                           duration_of_transform_db_lambdas_metrics_list)
+                           duration_of_transform_db_lambdas_metrics_list, expected_filtered_function_list)
 from ..lambdas import (LambdaAPICalls, create_lambda_widgets, get_widget_properties, lambda_properties,
-                       generate_custom_lambda_metrics)
+                       generate_custom_lambda_metrics, get_iow_functions)
 
 
 class TestCreateLambdaWidgets(TestCase):
@@ -344,6 +344,40 @@ class TestCreateLambdaWidgets(TestCase):
         self.assertFalse(
             api_calls.is_iow_lambda_filter(self.valid_function_4)
         )
+
+    @mock.patch('cloudwatch_monitoring.lambdas.LambdaAPICalls', autospec=True)
+    def test_get_iow_functions(self, m_api_calls):
+        # return values
+        m_api_calls.return_value.get_all_lambda_metadata.return_value = self.full_function_list
+        m_api_calls.return_value.is_iow_lambda_filter.side_effect = [
+            True, False, True, False, True, True, True, True, True, True, True
+        ]
+
+        # expected calls
+        expected_is_iow_lambda_filter_calls = [
+            mock.call(self.valid_function_2),
+            mock.call(self.bad_function),
+            mock.call(self.valid_function_3),
+            mock.call(self.bad_function),
+            mock.call(self.valid_function_1),
+            mock.call(self.valid_function_4),
+            mock.call(self.valid_function_5),
+            mock.call(self.valid_function_6),
+            mock.call(self.valid_function_7),
+            mock.call(self.valid_function_8),
+            mock.call(self.valid_function_es_logger)
+        ]
+
+        # Make sure the resultant filtered function list is correct
+        # noinspection PyPackageRequirements
+        self.assertListEqual(
+            get_iow_functions(self.region, self.deploy_stage),
+            expected_filtered_function_list
+        )
+
+        # assert helper functions were called the expected number of times and in the proper order
+        m_api_calls.return_value.get_all_lambda_metadata.assert_called_once()
+        m_api_calls.return_value.is_iow_lambda_filter.assert_has_calls(expected_is_iow_lambda_filter_calls, any_order=False)
 
     @mock.patch('cloudwatch_monitoring.lambdas.LambdaAPICalls', autospec=True)
     def test_create_lambda_widgets(self, m_api_calls):

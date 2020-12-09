@@ -822,6 +822,18 @@ expected_lambda_widget_list = [
     misc_function_memory_usage_widget
 ]
 
+expected_filtered_function_list = [
+    {'function_name': 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', 'title': 'Capture Trigger', 'etl_branch': 'data_ingest'},
+    {'function_name': 'aqts-capture-ecosystem-switch-DEV-growDb', 'title': 'Grow DB', 'etl_branch': 'environment_management'},
+    {'function_name': 'aqts-capture-field-visit-transform-DEV-transform', 'title': 'Field visit transformer', 'etl_branch': 'sv'},
+    {'function_name': 'function-name-not-added-to-lookups-yet-DEV-descriptor', 'title': 'function-name-not-added-to-lookups-yet-DEV-descriptor', 'etl_branch': 'not defined'},
+    {'function_name': 'aqts-capture-dvstat-transform-DEV-transform', 'title': 'DV stat Transformer', 'etl_branch': 'dv'},
+    {'function_name': 'aqts-capture-error-handler-DEV-aqtsErrorHandler', 'title': 'Error Handler', 'etl_branch': 'error_handling'},
+    {'function_name': 'aqts-capture-pruner-DEV-pruneTimeSeries', 'title': 'Prune Old Data', 'etl_branch': 'data_purging'},
+    {'function_name': 'etl-discrete-groundwater-rdb-DEV-loadRdb', 'title': 'Load RDB Files', 'etl_branch': 'nwis_web'},
+    {'function_name': 'aqts-capture-field-visit-transform-DEV-es-logs-plugin', 'title': 'Field visit transformer ES logger', 'etl_branch': 'sv'}
+]
+
 expected_nwcapture_db_status_widget = {
     'type': 'metric',
     'height': 6,
