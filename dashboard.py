@@ -3,7 +3,8 @@ import json
 import os
 
 from cloudwatch_monitoring.lambdas import (create_lambda_widgets, create_lambda_memory_usage_widgets,
-                                           create_ecosystem_switch_widgets, get_iow_functions)
+                                           # create_ecosystem_switch_widgets,
+                                           get_iow_functions)
 from cloudwatch_monitoring.rds import create_rds_widgets
 from cloudwatch_monitoring.sqs import create_sqs_widgets
 from cloudwatch_monitoring.state_machine import create_state_machine_widgets
