@@ -128,7 +128,7 @@ max_duration_of_transform_db_lambdas = {
 error_handler_numeric_stats_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 4,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', {'stat': 'Sum'}],
@@ -149,7 +149,7 @@ error_handler_numeric_stats_widget = {
 error_handler_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-error-handler-DEV-aqtsErrorHandler',{'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -169,7 +169,7 @@ error_handler_concurrent_executions_widget = {
 error_handler_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', {'yAxis': 'left'}],
@@ -200,7 +200,7 @@ error_handler_memory_usage_widget = {
 capture_trigger_numeric_stats_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 4,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', {'stat': 'Sum'}],
@@ -221,7 +221,7 @@ capture_trigger_numeric_stats_widget = {
 capture_trigger_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -241,7 +241,7 @@ capture_trigger_concurrent_executions_widget = {
 capture_trigger_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', {'yAxis': 'left'}],
@@ -272,7 +272,7 @@ capture_trigger_memory_usage_widget = {
 dvstat_transform_numeric_stats_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 4,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-dvstat-transform-DEV-transform', {'stat': 'Sum'}],
@@ -293,7 +293,7 @@ dvstat_transform_numeric_stats_widget = {
 dvstat_transform_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-dvstat-transform-DEV-transform', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -313,7 +313,7 @@ dvstat_transform_concurrent_executions_widget = {
 dvstat_transform_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-dvstat-transform-DEV-transform', {'yAxis': 'left'}],
@@ -344,7 +344,7 @@ dvstat_transform_memory_usage_widget = {
 field_visit_transform_numeric_stats_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 4,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-transform', {'stat': 'Sum'}],
@@ -365,7 +365,7 @@ field_visit_transform_numeric_stats_widget = {
 field_visit_transform_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-transform', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -385,7 +385,7 @@ field_visit_transform_concurrent_executions_widget = {
 field_visit_transform_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-transform', {'yAxis': 'left'}],
@@ -416,7 +416,7 @@ field_visit_transform_memory_usage_widget = {
 field_visit_transform_es_logger_numeric_stats_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 4,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-es-logs-plugin', {'stat': 'Sum'}],
@@ -437,7 +437,7 @@ field_visit_transform_es_logger_numeric_stats_widget = {
 field_visit_transform_es_logger_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-es-logs-plugin', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -457,7 +457,7 @@ field_visit_transform_es_logger_concurrent_executions_widget = {
 field_visit_transform_es_logger_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-es-logs-plugin', {'yAxis': 'left'}],
@@ -488,7 +488,7 @@ field_visit_transform_es_logger_memory_usage_widget = {
 rdb_loader_numeric_stats_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 4,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Invocations', 'FunctionName', 'etl-discrete-groundwater-rdb-DEV-loadRdb', {'stat': 'Sum'}],
@@ -509,7 +509,7 @@ rdb_loader_numeric_stats_widget = {
 rdb_loader_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'etl-discrete-groundwater-rdb-DEV-loadRdb', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -528,7 +528,7 @@ rdb_loader_concurrent_executions_widget = {
 rdb_loader_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'etl-discrete-groundwater-rdb-DEV-loadRdb', {'yAxis': 'left'}],
@@ -559,7 +559,7 @@ rdb_loader_memory_usage_widget = {
 pruner_numeric_stats_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 4,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-pruner-DEV-pruneTimeSeries', {'stat': 'Sum'}],
@@ -580,7 +580,7 @@ pruner_numeric_stats_widget = {
 pruner_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-pruner-DEV-pruneTimeSeries', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -599,7 +599,7 @@ pruner_concurrent_executions_widget = {
 pruner_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-pruner-DEV-pruneTimeSeries', {'yAxis': 'left'}],
@@ -630,7 +630,7 @@ pruner_memory_usage_widget = {
 grow_db_numeric_stats_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 4,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Invocations', 'FunctionName', 'aqts-capture-ecosystem-switch-DEV-growDb', {'stat': 'Sum'}],
@@ -651,7 +651,7 @@ grow_db_numeric_stats_widget = {
 grow_db_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-ecosystem-switch-DEV-growDb', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -670,7 +670,7 @@ grow_db_concurrent_executions_widget = {
 grow_db_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-ecosystem-switch-DEV-growDb', {'yAxis': 'left'}],
@@ -701,7 +701,7 @@ grow_db_memory_usage_widget = {
 misc_function_numeric_stats_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 4,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Invocations', 'FunctionName', 'function-name-not-added-to-lookups-yet-DEV-descriptor', {'stat': 'Sum'}],
@@ -722,7 +722,7 @@ misc_function_numeric_stats_widget = {
 misc_function_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'function-name-not-added-to-lookups-yet-DEV-descriptor', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -742,7 +742,7 @@ misc_function_concurrent_executions_widget = {
 misc_function_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'function-name-not-added-to-lookups-yet-DEV-descriptor', {'yAxis': 'left'}],

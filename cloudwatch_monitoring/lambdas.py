@@ -149,7 +149,7 @@ def create_lambda_widgets(region, deploy_stage, iow_functions):
         branch = function['etl_branch']
 
         # set dimensions for generic lambda widgets
-        positioning['width'] = 8
+        positioning['width'] = 4
         positioning['height'] = 6
 
         # create 4 widgets per lambda in the account
@@ -175,6 +175,10 @@ def create_lambda_widgets(region, deploy_stage, iow_functions):
             }
         }
 
+        # set dimensions for generic lambda widgets
+        positioning['width'] = 10
+        positioning['height'] = 6
+
         concurrent_executions_widget = {
             'type': 'metric',
             'height': positioning['height'],
@@ -194,6 +198,10 @@ def create_lambda_widgets(region, deploy_stage, iow_functions):
                 "stacked": False
             }
         }
+
+        # set dimensions for generic lambda widgets
+        positioning['width'] = 10
+        positioning['height'] = 6
 
         duration_widget = {
             'type': 'metric',
