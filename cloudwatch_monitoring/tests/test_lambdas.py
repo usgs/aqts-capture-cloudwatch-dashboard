@@ -379,36 +379,10 @@ class TestCreateLambdaWidgets(TestCase):
         m_api_calls.return_value.get_all_lambda_metadata.assert_called_once()
         m_api_calls.return_value.is_iow_lambda_filter.assert_has_calls(expected_is_iow_lambda_filter_calls, any_order=False)
 
-    @mock.patch('cloudwatch_monitoring.lambdas.LambdaAPICalls', autospec=True)
-    def test_create_lambda_widgets(self, m_api_calls):
-        # return values
-        m_api_calls.return_value.get_all_lambda_metadata.return_value = self.full_function_list
-        m_api_calls.return_value.is_iow_lambda_filter.side_effect = [
-            True, False, True, False, True, True, True, True, True, True, True
-        ]
-
-        # expected calls
-        expected_is_iow_lambda_filter_calls = [
-            mock.call(self.valid_function_2),
-            mock.call(self.bad_function),
-            mock.call(self.valid_function_3),
-            mock.call(self.bad_function),
-            mock.call(self.valid_function_1),
-            mock.call(self.valid_function_4),
-            mock.call(self.valid_function_5),
-            mock.call(self.valid_function_6),
-            mock.call(self.valid_function_7),
-            mock.call(self.valid_function_8),
-            mock.call(self.valid_function_es_logger)
-        ]
-
+    def test_create_lambda_widgets(self):
         # Make sure the resultant widget list is correct
         # noinspection PyPackageRequirements
         self.assertListEqual(
-            create_lambda_widgets(self.region, self.deploy_stage),
+            create_lambda_widgets(self.region, self.deploy_stage, expected_filtered_function_list),
             expected_lambda_widget_list
         )
-
-        # assert our helper functions were called the expected number of times and in the proper order
-        m_api_calls.return_value.get_all_lambda_metadata.assert_called_once()
-        m_api_calls.return_value.is_iow_lambda_filter.assert_has_calls(expected_is_iow_lambda_filter_calls, any_order=False)

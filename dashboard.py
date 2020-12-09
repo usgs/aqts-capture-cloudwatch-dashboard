@@ -3,7 +3,7 @@ import json
 import os
 
 from cloudwatch_monitoring.lambdas import (create_lambda_widgets, create_lambda_memory_usage_widgets,
-                                           create_ecosystem_switch_widgets)
+                                           create_ecosystem_switch_widgets, get_iow_functions)
 from cloudwatch_monitoring.rds import create_rds_widgets
 from cloudwatch_monitoring.sqs import create_sqs_widgets
 from cloudwatch_monitoring.state_machine import create_state_machine_widgets
@@ -23,18 +23,21 @@ if __name__ == '__main__':
     memory_usage_widgets = []
     ecosystem_switch_widgets = []
 
+    # grab list of iow lambda functions
+    iow_functions = get_iow_functions(region, deploy_stage)
+
     # add widgets to main dashboard
     main_dashboard_widgets.extend(create_sqs_widgets(region, deploy_stage))
     main_dashboard_widgets.extend(create_rds_widgets(region, deploy_stage))
     main_dashboard_widgets.extend(create_state_machine_widgets(region, deploy_stage))
     main_dashboard_widgets.extend(create_sns_widgets(region, deploy_stage))
-    main_dashboard_widgets.extend(create_lambda_widgets(region, deploy_stage))
+    main_dashboard_widgets.extend(create_lambda_widgets(region, deploy_stage, iow_functions))
 
     # add widgets to memory usage dashboard
-    memory_usage_widgets.extend(create_lambda_memory_usage_widgets(region, deploy_stage))
+    memory_usage_widgets.extend(create_lambda_memory_usage_widgets(region, deploy_stage, iow_functions))
 
     # add widgets to ecosystem switch dashboard
-    ecosystem_switch_widgets.extend(create_ecosystem_switch_widgets(region, deploy_stage))
+    ecosystem_switch_widgets.extend(create_ecosystem_switch_widgets(region, deploy_stage, iow_functions))
 
     # create the dashboard when the widget list is complete
     cloudwatch_client = boto3.client("cloudwatch", region_name=region)

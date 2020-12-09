@@ -7,11 +7,12 @@ from .lookups import (dashboard_lambdas, custom_lambda_widgets)
 from .constants import positioning
 
 
-def create_lambda_widgets(region, deploy_stage):
+def create_lambda_widgets(region, deploy_stage, iow_functions):
     """
     Iterate over an account's list of lambdas and create generic widgets for those with
     wma:organization = 'IOW' tags.  It also creates some custom widgets.
 
+    :param iow_functions: filtered list of iow lambda functions
     :param region: The region, for us that's usually us-west-2
     :param deploy_stage: The specified deployment environment (DEV, TEST, QA, PROD-EXTERNAL)
     :return: List of lambda widgets
@@ -140,8 +141,6 @@ def create_lambda_widgets(region, deploy_stage):
     nwis_web_widgets = []
     misc_widgets = []
 
-    iow_functions = get_iow_functions(region, deploy_stage)
-
     # iterate over the list of iow functions create widgets for the assets we care about based on filters
     for function in iow_functions:
 
@@ -269,6 +268,10 @@ def create_lambda_widgets(region, deploy_stage):
     lambda_widgets.extend(misc_widgets)
 
     return lambda_widgets
+
+
+# def create_lambda_memory_usage_widgets(region, deploy_stage):
+
 
 
 def get_iow_functions(region, deploy_stage):
