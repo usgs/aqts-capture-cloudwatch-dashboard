@@ -49,8 +49,8 @@ def create_iow_lambda_widgets(region, iow_functions):
         title = function['title']
         branch = function['etl_branch']
 
-        # Remove this conditional if you want to see elasticsearch logger lambda widgets on the dashboard
-        if 'es-logs-plugin' not in function_name:
+        # Remove the "es-logs-plugin" check if you want to see elasticsearch logger lambda widgets on the main dashboard
+        if 'es-logs-plugin' not in function_name and 'aqts-capture-ecosystem-switch' not in function_name:
 
             widgets = generate_row_of_lambda_widgets(function_name, region, title)
 

@@ -813,10 +813,6 @@ expected_iow_lambda_widget_list = [
     pruner_concurrent_executions_widget,
     pruner_duration_widget,
 
-    grow_db_numeric_stats_widget,
-    grow_db_concurrent_executions_widget,
-    grow_db_duration_widget,
-
     misc_function_numeric_stats_widget,
     misc_function_concurrent_executions_widget,
     misc_function_duration_widget
