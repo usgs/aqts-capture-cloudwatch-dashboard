@@ -384,7 +384,7 @@ class TestCreateLambdaWidgets(TestCase):
         # Make sure the resultant widget list is correct
         # noinspection PyPackageRequirements
         self.assertListEqual(
-            create_iow_lambda_widgets(self.region, self.deploy_stage, expected_filtered_function_list),
+            create_iow_lambda_widgets(self.region, expected_filtered_function_list),
             expected_iow_lambda_widget_list
         )
 

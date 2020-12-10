@@ -7,14 +7,13 @@ from .lookups import (dashboard_lambdas, custom_lambda_widgets)
 from .constants import positioning
 
 
-def create_iow_lambda_widgets(region, deploy_stage, iow_functions):
+def create_iow_lambda_widgets(region, iow_functions):
     """
     Iterate over an account's list of lambdas and create generic widgets for those with
     wma:organization = 'IOW' tags.
 
     :param iow_functions: filtered list of iow lambda functions
     :param region: The region, for us that's usually us-west-2
-    :param deploy_stage: The specified deployment environment (DEV, TEST, QA, PROD-EXTERNAL)
     :return: List of lambda widgets
     :rtype: list
     """
@@ -51,102 +50,105 @@ def create_iow_lambda_widgets(region, deploy_stage, iow_functions):
         title = function['title']
         branch = function['etl_branch']
 
-        # set dimensions for generic lambda widgets
-        positioning['width'] = 4
-        positioning['height'] = 6
+        # Remove this conditional if you want to see elasticsearch logger lambda widgets on the dashboard
+        if 'es-logs-plugin' not in function_name:
 
-        # create 4 widgets per lambda in the account
-        # 1 for numeric metrics, 2 for charting those same metrics graphically, and 1 for memory usage
-        numeric_stats_widget = {
-            'type': 'metric',
-            'height': positioning['height'],
-            'width': positioning['width'],
-            'properties': {
-                "metrics": [
-                    ["AWS/Lambda", "Invocations", "FunctionName", function_name, {"stat": "Sum"}],
-                    [".", "Errors", ".", ".", {"stat": "Sum"}],
-                    [".", "Duration", ".", "."],
-                    [".", "ConcurrentExecutions", ".", "."],
-                    [".", "Throttles", ".", "."]
-                ],
-                "view": "singleValue",
-                "region": region,
-                "title": title,
-                "period": 300,
-                "stacked": False,
-                "stat": "Average"
+            # set dimensions for generic lambda widgets
+            positioning['width'] = 4
+            positioning['height'] = 6
+
+            # create 3 widgets per lambda in the account
+            # 1 for numeric metrics, 2 for charting those same metrics graphically
+            numeric_stats_widget = {
+                'type': 'metric',
+                'height': positioning['height'],
+                'width': positioning['width'],
+                'properties': {
+                    "metrics": [
+                        ["AWS/Lambda", "Invocations", "FunctionName", function_name, {"stat": "Sum"}],
+                        [".", "Errors", ".", ".", {"stat": "Sum"}],
+                        [".", "Duration", ".", "."],
+                        [".", "ConcurrentExecutions", ".", "."],
+                        [".", "Throttles", ".", "."]
+                    ],
+                    "view": "singleValue",
+                    "region": region,
+                    "title": title,
+                    "period": 300,
+                    "stacked": False,
+                    "stat": "Average"
+                }
             }
-        }
 
-        # set dimensions for generic lambda widgets
-        positioning['width'] = 10
-        positioning['height'] = 6
+            # set dimensions for generic lambda widgets
+            positioning['width'] = 10
+            positioning['height'] = 6
 
-        concurrent_executions_widget = {
-            'type': 'metric',
-            'height': positioning['height'],
-            'width': positioning['width'],
-            'properties': {
-                "metrics": [
-                    ["AWS/Lambda", "ConcurrentExecutions", "FunctionName", function_name, {"stat": "Maximum", "label": "ConcurrentExecutions (max)"}],
-                    [".", "Invocations", ".", "."],
-                    [".", "Errors", ".", "."],
-                    [".", "Throttles", ".", ".", {"stat": "Average"}]
-                ],
-                "view": "timeSeries",
-                "region": region,
-                "title": f"{title} Concurrent Executions",
-                "period": 300,
-                "stat": "Sum",
-                "stacked": False
+            concurrent_executions_widget = {
+                'type': 'metric',
+                'height': positioning['height'],
+                'width': positioning['width'],
+                'properties': {
+                    "metrics": [
+                        ["AWS/Lambda", "ConcurrentExecutions", "FunctionName", function_name, {"stat": "Maximum", "label": "ConcurrentExecutions (max)"}],
+                        [".", "Invocations", ".", "."],
+                        [".", "Errors", ".", "."],
+                        [".", "Throttles", ".", ".", {"stat": "Average"}]
+                    ],
+                    "view": "timeSeries",
+                    "region": region,
+                    "title": f"{title} Concurrent Executions",
+                    "period": 300,
+                    "stat": "Sum",
+                    "stacked": False
+                }
             }
-        }
 
-        # set dimensions for generic lambda widgets
-        positioning['width'] = 10
-        positioning['height'] = 6
+            # set dimensions for generic lambda widgets
+            positioning['width'] = 10
+            positioning['height'] = 6
 
-        duration_widget = {
-            'type': 'metric',
-            'height': positioning['height'],
-            'width': positioning['width'],
-            'properties': {
-                "metrics": [
-                    ["AWS/Lambda", "Duration", "FunctionName", function_name, {"yAxis": "left"}],
-                    ["...", {"yAxis": "right", "stat": "Maximum"}]
-                ],
-                "view": "timeSeries",
-                "region": region,
-                "title": f"{title} Duration",
-                "period": 300,
-                "stat": "Average",
-                "stacked": False
+            duration_widget = {
+                'type': 'metric',
+                'height': positioning['height'],
+                'width': positioning['width'],
+                'properties': {
+                    "metrics": [
+                        ["AWS/Lambda", "Duration", "FunctionName", function_name, {"yAxis": "left"}],
+                        ["...", {"yAxis": "right", "stat": "Maximum"}]
+                    ],
+                    "view": "timeSeries",
+                    "region": region,
+                    "title": f"{title} Duration",
+                    "period": 300,
+                    "stat": "Average",
+                    "stacked": False
+                }
             }
-        }
 
-        widgets = [numeric_stats_widget, concurrent_executions_widget, duration_widget]
+            widgets = [numeric_stats_widget, concurrent_executions_widget, duration_widget]
 
-        # inner function to sort the autogenerated widgets into etl-branch-specific lists for grouped display
-        def sort_widgets_by_etl_branch(widget_list):
-            for w in widget_list:
-                if 'dv' == branch:
-                    dv_widgets.append(w)
-                elif 'sv' == branch:
-                    sv_widgets.append(w)
-                elif 'environment_management' == branch:
-                    environment_management_widgets.append(w)
-                elif 'error_handling' == branch:
-                    error_widgets.append(w)
-                elif 'data_ingest' == branch:
-                    data_in_widgets.append(w)
-                elif 'data_purging' == branch:
-                    data_purge_widgets.append(w)
-                elif 'nwis_web' == branch:
-                    nwis_web_widgets.append(w)
-                else:
-                    misc_widgets.append(w)
+            # inner function to sort the autogenerated widgets into etl-branch-specific lists for grouped display
+            def sort_widgets_by_etl_branch(widget_list):
+                for w in widget_list:
+                    if 'dv' == branch:
+                        dv_widgets.append(w)
+                    elif 'sv' == branch:
+                        sv_widgets.append(w)
+                    elif 'environment_management' == branch:
+                        environment_management_widgets.append(w)
+                    elif 'error_handling' == branch:
+                        error_widgets.append(w)
+                    elif 'data_ingest' == branch:
+                        data_in_widgets.append(w)
+                    elif 'data_purging' == branch:
+                        data_purge_widgets.append(w)
+                    elif 'nwis_web' == branch:
+                        nwis_web_widgets.append(w)
+                    else:
+                        misc_widgets.append(w)
 
-        sort_widgets_by_etl_branch(widgets)
+            sort_widgets_by_etl_branch(widgets)
 
     # add the generic widget groups so they appear together in the dashboard
     lambda_widgets.extend(error_widgets)
@@ -171,8 +173,7 @@ def create_custom_lambda_widgets(region, deploy_stage):
     :return: List of custom lambda widgets
     :rtype: list
     """
-
-    custom_lambda_widgets = []
+    lambda_widgets = []
 
     # set dimensions for custom lambda widgets
     positioning['width'] = 24
@@ -187,7 +188,7 @@ def create_custom_lambda_widgets(region, deploy_stage):
         }
     }
 
-    custom_lambda_widgets.append(custom_lambda_section_title_widget)
+    lambda_widgets.append(custom_lambda_section_title_widget)
 
     # set dimensions for custom lambda widgets
     positioning['width'] = 12
@@ -214,7 +215,7 @@ def create_custom_lambda_widgets(region, deploy_stage):
         }
     }
 
-    custom_lambda_widgets.append(error_handler_activity)
+    lambda_widgets.append(error_handler_activity)
 
     # Custom widget for monitoring concurrency of lambdas specifically involved in the ETL
     concurrent_lambdas = {
@@ -232,7 +233,7 @@ def create_custom_lambda_widgets(region, deploy_stage):
         }
     }
 
-    custom_lambda_widgets.append(concurrent_lambdas)
+    lambda_widgets.append(concurrent_lambdas)
 
     # Custom widget for monitoring average duration of transform db lambdas
     duration_of_transform_db_lambdas_average = {
@@ -250,7 +251,7 @@ def create_custom_lambda_widgets(region, deploy_stage):
         }
     }
 
-    custom_lambda_widgets.append(duration_of_transform_db_lambdas_average)
+    lambda_widgets.append(duration_of_transform_db_lambdas_average)
 
     # Custom widget for monitoring max duration of transform db lambdas
     duration_of_transform_db_lambdas_max = {
@@ -268,9 +269,9 @@ def create_custom_lambda_widgets(region, deploy_stage):
         }
     }
 
-    custom_lambda_widgets.append(duration_of_transform_db_lambdas_max)
+    lambda_widgets.append(duration_of_transform_db_lambdas_max)
 
-    return custom_lambda_widgets
+    return lambda_widgets
 
 
 def create_lambda_memory_usage_widgets(region, iow_functions):
