@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     memory_usage_widgets.extend(create_lambda_memory_usage_widgets(region, iow_functions))
 
-    ecosystem_switch_widgets.extend(create_ecosystem_switch_widgets(region, deploy_stage, iow_functions))
+    ecosystem_switch_widgets.extend(create_ecosystem_switch_widgets(region, iow_functions))
 
     # create a dashboard for high level monitoring of aqts-capture etl
     cloudwatch_client = boto3.client("cloudwatch", region_name=region)
