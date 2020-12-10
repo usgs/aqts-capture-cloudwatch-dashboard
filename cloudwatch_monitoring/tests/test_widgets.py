@@ -842,7 +842,8 @@ expected_lambda_memory_usage_widget_list = [
     error_handler_memory_usage_widget,
     pruner_memory_usage_widget,
     rdb_loader_memory_usage_widget,
-    field_visit_transform_es_logger_memory_usage_widget
+    # uncomment this line if re-enabling the elasticsearch logger widgets
+    # field_visit_transform_es_logger_memory_usage_widget
 ]
 
 expected_ecosystem_switch_widget_list = [

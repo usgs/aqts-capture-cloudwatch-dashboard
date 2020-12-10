@@ -224,24 +224,25 @@ def create_lambda_memory_usage_widgets(region, iow_functions):
         function_name = function['function_name']
         title = function['title']
 
-        # set dimensions for memory usage widgets
-        positioning['width'] = 24
-        positioning['height'] = 6
+        if 'es-logs-plugin' not in function_name:
+            # set dimensions for memory usage widgets
+            positioning['width'] = 24
+            positioning['height'] = 6
 
-        memory_usage_widget = {
-            "type": "log",
-            'height': positioning['height'],
-            'width': positioning['width'],
-            "properties": {
-                "query": f"SOURCE '/aws/lambda/{function_name}' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
-                "region": region,
-                "title": f"{title} Memory Usage",
-                "view": "timeSeries",
-                "stacked": False
+            memory_usage_widget = {
+                "type": "log",
+                'height': positioning['height'],
+                'width': positioning['width'],
+                "properties": {
+                    "query": f"SOURCE '/aws/lambda/{function_name}' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
+                    "region": region,
+                    "title": f"{title} Memory Usage",
+                    "view": "timeSeries",
+                    "stacked": False
+                }
             }
-        }
 
-        memory_usage_widgets.append(memory_usage_widget)
+            memory_usage_widgets.append(memory_usage_widget)
 
     return memory_usage_widgets
 
