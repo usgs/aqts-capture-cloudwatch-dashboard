@@ -34,7 +34,7 @@ if __name__ == '__main__':
     main_dashboard_widgets.extend(create_state_machine_widgets(region, deploy_stage))
     main_dashboard_widgets.extend(create_sns_widgets(region, deploy_stage))
     main_dashboard_widgets.extend(create_custom_lambda_widgets(region, deploy_stage))
-    main_dashboard_widgets.extend(create_iow_lambda_widgets(region, deploy_stage, iow_functions))
+    main_dashboard_widgets.extend(create_iow_lambda_widgets(region, iow_functions))
 
     # memory usage widgets
     memory_usage_widgets.extend(create_lambda_memory_usage_widgets(region, iow_functions))
