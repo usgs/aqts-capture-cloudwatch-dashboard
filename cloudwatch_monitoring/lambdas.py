@@ -7,10 +7,10 @@ from .lookups import (dashboard_lambdas, custom_lambda_widgets)
 from .constants import positioning
 
 
-def create_lambda_widgets(region, deploy_stage, iow_functions):
+def create_iow_lambda_widgets(region, deploy_stage, iow_functions):
     """
     Iterate over an account's list of lambdas and create generic widgets for those with
-    wma:organization = 'IOW' tags.  It also creates some custom widgets.
+    wma:organization = 'IOW' tags.
 
     :param iow_functions: filtered list of iow lambda functions
     :param region: The region, for us that's usually us-west-2
@@ -18,104 +18,7 @@ def create_lambda_widgets(region, deploy_stage, iow_functions):
     :return: List of lambda widgets
     :rtype: list
     """
-
     lambda_widgets = []
-
-    # set dimensions for custom lambda widgets
-    positioning['width'] = 24
-    positioning['height'] = 1
-
-    custom_lambda_section_title_widget = {
-        'type': 'text',
-        'height': positioning['height'],
-        'width': positioning['width'],
-        'properties': {
-            "markdown": "# Lambda Status"
-        }
-    }
-
-    lambda_widgets.append(custom_lambda_section_title_widget)
-
-    # set dimensions for custom lambda widgets
-    positioning['width'] = 12
-    positioning['height'] = 6
-
-    # Custom widget for monitoring error handler invocation counts over time
-    error_handler_activity = {
-        'type': 'metric',
-        'height': positioning['height'],
-        'width': positioning['width'],
-        'properties': {
-            "metrics": [
-                ["AWS/Lambda", "ConcurrentExecutions", "FunctionName",
-                    lambda_properties('error_handler', deploy_stage)['name'], "Resource",
-                    lambda_properties('error_handler', deploy_stage)['name']],
-                [".", "Invocations", ".", ".", {"stat": "Sum"}]
-            ],
-            "view": "timeSeries",
-            "stacked": False,
-            "region": region,
-            "title": "Error Handler Activity",
-            "period": 60,
-            "stat": "Average"
-        }
-    }
-
-    lambda_widgets.append(error_handler_activity)
-
-    # Custom widget for monitoring concurrency of lambdas specifically involved in the ETL
-    concurrent_lambdas = {
-        'type': 'metric',
-        'height': positioning['height'],
-        'width': positioning['width'],
-        'properties': {
-            "metrics": generate_custom_lambda_metrics(deploy_stage, 'ConcurrentExecutions', 'concurrent_lambdas'),
-            "view": "timeSeries",
-            "stacked": True,
-            "region": region,
-            "period": 60,
-            "stat": "Average",
-            "title": "Concurrent Lambdas (Average per minute)",
-        }
-    }
-
-    lambda_widgets.append(concurrent_lambdas)
-
-    # Custom widget for monitoring average duration of transform db lambdas
-    duration_of_transform_db_lambdas_average = {
-        'type': 'metric',
-        'height': positioning['height'],
-        'width': positioning['width'],
-        'properties': {
-            "metrics": generate_custom_lambda_metrics(deploy_stage, 'Duration', 'duration_of_transform_db_lambdas'),
-            "view": "timeSeries",
-            "stacked": False,
-            "region": region,
-            "period": 300,
-            "stat": "Average",
-            "title": "Duration of Transformation DB Lambdas (Average)"
-        }
-    }
-
-    lambda_widgets.append(duration_of_transform_db_lambdas_average)
-
-    # Custom widget for monitoring max duration of transform db lambdas
-    duration_of_transform_db_lambdas_max = {
-        'type': 'metric',
-        'height': positioning['height'],
-        'width': positioning['width'],
-        'properties': {
-            "metrics": generate_custom_lambda_metrics(deploy_stage, 'Duration', 'duration_of_transform_db_lambdas'),
-            "view": "timeSeries",
-            "stacked": False,
-            "region": region,
-            "period": 300,
-            "stat": "Maximum",
-            "title": "Duration of Transformation DB Lambdas (Maximum)"
-        }
-    }
-
-    lambda_widgets.append(duration_of_transform_db_lambdas_max)
 
     # set dimensions for title text widget
     positioning['width'] = 24
@@ -257,6 +160,117 @@ def create_lambda_widgets(region, deploy_stage, iow_functions):
     lambda_widgets.extend(misc_widgets)
 
     return lambda_widgets
+
+
+def create_custom_lambda_widgets(region, deploy_stage):
+    """
+    Creates some custom lambda widgets.
+
+    :param region: The region, for us that's usually us-west-2
+    :param deploy_stage: The specified deployment environment (DEV, TEST, QA, PROD-EXTERNAL)
+    :return: List of custom lambda widgets
+    :rtype: list
+    """
+
+    custom_lambda_widgets = []
+
+    # set dimensions for custom lambda widgets
+    positioning['width'] = 24
+    positioning['height'] = 1
+
+    custom_lambda_section_title_widget = {
+        'type': 'text',
+        'height': positioning['height'],
+        'width': positioning['width'],
+        'properties': {
+            "markdown": "# Lambda Status"
+        }
+    }
+
+    custom_lambda_widgets.append(custom_lambda_section_title_widget)
+
+    # set dimensions for custom lambda widgets
+    positioning['width'] = 12
+    positioning['height'] = 6
+
+    # Custom widget for monitoring error handler invocation counts over time
+    error_handler_activity = {
+        'type': 'metric',
+        'height': positioning['height'],
+        'width': positioning['width'],
+        'properties': {
+            "metrics": [
+                ["AWS/Lambda", "ConcurrentExecutions", "FunctionName",
+                 lambda_properties('error_handler', deploy_stage)['name'], "Resource",
+                 lambda_properties('error_handler', deploy_stage)['name']],
+                [".", "Invocations", ".", ".", {"stat": "Sum"}]
+            ],
+            "view": "timeSeries",
+            "stacked": False,
+            "region": region,
+            "title": "Error Handler Activity",
+            "period": 60,
+            "stat": "Average"
+        }
+    }
+
+    custom_lambda_widgets.append(error_handler_activity)
+
+    # Custom widget for monitoring concurrency of lambdas specifically involved in the ETL
+    concurrent_lambdas = {
+        'type': 'metric',
+        'height': positioning['height'],
+        'width': positioning['width'],
+        'properties': {
+            "metrics": generate_custom_lambda_metrics(deploy_stage, 'ConcurrentExecutions', 'concurrent_lambdas'),
+            "view": "timeSeries",
+            "stacked": True,
+            "region": region,
+            "period": 60,
+            "stat": "Average",
+            "title": "Concurrent Lambdas (Average per minute)",
+        }
+    }
+
+    custom_lambda_widgets.append(concurrent_lambdas)
+
+    # Custom widget for monitoring average duration of transform db lambdas
+    duration_of_transform_db_lambdas_average = {
+        'type': 'metric',
+        'height': positioning['height'],
+        'width': positioning['width'],
+        'properties': {
+            "metrics": generate_custom_lambda_metrics(deploy_stage, 'Duration', 'duration_of_transform_db_lambdas'),
+            "view": "timeSeries",
+            "stacked": False,
+            "region": region,
+            "period": 300,
+            "stat": "Average",
+            "title": "Duration of Transformation DB Lambdas (Average)"
+        }
+    }
+
+    custom_lambda_widgets.append(duration_of_transform_db_lambdas_average)
+
+    # Custom widget for monitoring max duration of transform db lambdas
+    duration_of_transform_db_lambdas_max = {
+        'type': 'metric',
+        'height': positioning['height'],
+        'width': positioning['width'],
+        'properties': {
+            "metrics": generate_custom_lambda_metrics(deploy_stage, 'Duration', 'duration_of_transform_db_lambdas'),
+            "view": "timeSeries",
+            "stacked": False,
+            "region": region,
+            "period": 300,
+            "stat": "Maximum",
+            "title": "Duration of Transformation DB Lambdas (Maximum)"
+        }
+    }
+
+    custom_lambda_widgets.append(duration_of_transform_db_lambdas_max)
+
+    return custom_lambda_widgets
 
 
 def create_lambda_memory_usage_widgets(region, iow_functions):

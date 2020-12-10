@@ -4,10 +4,10 @@ Tests for the lambdas module.
 """
 from unittest import TestCase, mock
 
-from .test_widgets import (expected_lambda_widget_list, concurrent_lambdas_metrics_list,
-                           duration_of_transform_db_lambdas_metrics_list, expected_filtered_function_list,
-                           expected_lambda_memory_usage_widget_list)
-from ..lambdas import (LambdaAPICalls, create_lambda_widgets, get_widget_properties, lambda_properties,
+from .test_widgets import (expected_iow_lambda_widget_list, expected_custom_lambda_widget_list,
+                           concurrent_lambdas_metrics_list, duration_of_transform_db_lambdas_metrics_list,
+                           expected_filtered_function_list, expected_lambda_memory_usage_widget_list)
+from ..lambdas import (LambdaAPICalls, create_iow_lambda_widgets, create_custom_lambda_widgets, get_widget_properties, lambda_properties,
                        generate_custom_lambda_metrics, get_iow_functions, create_lambda_memory_usage_widgets)
 
 
@@ -380,12 +380,20 @@ class TestCreateLambdaWidgets(TestCase):
         m_api_calls.return_value.get_all_lambda_metadata.assert_called_once()
         m_api_calls.return_value.is_iow_lambda_filter.assert_has_calls(expected_is_iow_lambda_filter_calls, any_order=False)
 
-    def test_create_lambda_widgets(self):
+    def test_create_iow_lambda_widgets(self):
         # Make sure the resultant widget list is correct
         # noinspection PyPackageRequirements
         self.assertListEqual(
-            create_lambda_widgets(self.region, self.deploy_stage, expected_filtered_function_list),
-            expected_lambda_widget_list
+            create_iow_lambda_widgets(self.region, self.deploy_stage, expected_filtered_function_list),
+            expected_iow_lambda_widget_list
+        )
+
+    def test_create_custom_lambda_widgets(self):
+        # Make sure the resultant widget list is correct
+        # noinspection PyPackageRequirements
+        self.assertListEqual(
+            create_custom_lambda_widgets(self.region, self.deploy_stage),
+            expected_custom_lambda_widget_list
         )
 
     def test_create_lambda_memory_usage_widgets(self):
