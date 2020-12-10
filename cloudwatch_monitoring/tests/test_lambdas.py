@@ -6,9 +6,12 @@ from unittest import TestCase, mock
 
 from .test_widgets import (expected_iow_lambda_widget_list, expected_custom_lambda_widget_list,
                            concurrent_lambdas_metrics_list, duration_of_transform_db_lambdas_metrics_list,
-                           expected_filtered_function_list, expected_lambda_memory_usage_widget_list)
-from ..lambdas import (LambdaAPICalls, create_iow_lambda_widgets, create_custom_lambda_widgets, get_widget_properties, lambda_properties,
-                       generate_custom_lambda_metrics, get_iow_functions, create_lambda_memory_usage_widgets)
+                           expected_filtered_function_list, expected_lambda_memory_usage_widget_list,
+                           expected_ecosystem_switch_widget_list, expected_row_of_lambda_widgets)
+from ..lambdas import (LambdaAPICalls, create_iow_lambda_widgets, create_custom_lambda_widgets, get_widget_properties,
+                       lambda_properties, generate_custom_lambda_metrics, get_iow_functions,
+                       create_lambda_memory_usage_widgets, create_ecosystem_switch_widgets,
+                       generate_row_of_lambda_widgets)
 
 
 class TestCreateLambdaWidgets(TestCase):
@@ -242,6 +245,12 @@ class TestCreateLambdaWidgets(TestCase):
             }
         )
 
+    def test_generate_row_of_lambda_widgets(self):
+        self.assertListEqual(
+            generate_row_of_lambda_widgets(self.valid_function_name_6, self.region, 'Error Handler'),
+            expected_row_of_lambda_widgets
+        )
+
     @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
     def test_get_all_lambda_metadata(self, m_client):
         mock_lambda_client = mock.Mock()
@@ -402,4 +411,12 @@ class TestCreateLambdaWidgets(TestCase):
         self.assertListEqual(
             create_lambda_memory_usage_widgets(self.region, expected_filtered_function_list),
             expected_lambda_memory_usage_widget_list
+        )
+
+    def test_create_ecosystem_switch_widgets(self):
+        # Make sure the resultant widget list is correct
+        # noinspection PyPackageRequirements
+        self.assertListEqual(
+            create_ecosystem_switch_widgets(self.region, expected_filtered_function_list),
+            expected_ecosystem_switch_widget_list
         )
