@@ -17,4 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added support for naming/sorting elasticsearch lambda widgets
 - Added widgets for monitoring SNS assets
 
+### Changed
+- There are now 3 total dashboards: main, memory usage, and ecosystem switch
+
+### Removed
+- Removed monitoring of elasticsearch logging lambdas, can enable again by adjusting filters
+
 ## [Unreleased]

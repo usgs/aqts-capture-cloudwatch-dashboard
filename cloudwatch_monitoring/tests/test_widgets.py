@@ -55,6 +55,24 @@ iow_lambda_title = {
     }
 }
 
+iow_lambda_memory_usage_title = {
+    'type': 'text',
+    'height': 1,
+    'width': 24,
+    'properties': {
+        'markdown': "# Memory usage of each 'IOW' tagged lambda in the account"
+    }
+}
+
+ecosystem_switch_title = {
+    'type': 'text',
+    'height': 1,
+    'width': 24,
+    'properties': {
+        'markdown': "# Status of each 'IOW' tagged ecosystem switch lambda in the account"
+    }
+}
+
 error_handler_activity_widget = {
     'type': 'metric',
     'height': 6,
@@ -140,7 +158,7 @@ error_handler_numeric_stats_widget = {
 error_handler_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-error-handler-DEV-aqtsErrorHandler',{'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -160,7 +178,7 @@ error_handler_concurrent_executions_widget = {
 error_handler_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 6,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-error-handler-DEV-aqtsErrorHandler', {'yAxis': 'left'}],
@@ -178,7 +196,7 @@ error_handler_duration_widget = {
 error_handler_memory_usage_widget = {
     "type": "log",
     'height': 6,
-    'width': 6,
+    'width': 24,
     "properties": {
         "query": f"SOURCE '/aws/lambda/aqts-capture-error-handler-DEV-aqtsErrorHandler' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
@@ -212,7 +230,7 @@ capture_trigger_numeric_stats_widget = {
 capture_trigger_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -232,7 +250,7 @@ capture_trigger_concurrent_executions_widget = {
 capture_trigger_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 6,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', {'yAxis': 'left'}],
@@ -250,7 +268,7 @@ capture_trigger_duration_widget = {
 capture_trigger_memory_usage_widget = {
     "type": "log",
     'height': 6,
-    'width': 6,
+    'width': 24,
     "properties": {
         "query": f"SOURCE '/aws/lambda/aqts-capture-trigger-DEV-aqtsCaptureTrigger' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
@@ -284,7 +302,7 @@ dvstat_transform_numeric_stats_widget = {
 dvstat_transform_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-dvstat-transform-DEV-transform', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -304,7 +322,7 @@ dvstat_transform_concurrent_executions_widget = {
 dvstat_transform_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 6,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-dvstat-transform-DEV-transform', {'yAxis': 'left'}],
@@ -322,7 +340,7 @@ dvstat_transform_duration_widget = {
 dvstat_transform_memory_usage_widget = {
     "type": "log",
     'height': 6,
-    'width': 6,
+    'width': 24,
     "properties": {
         "query": f"SOURCE '/aws/lambda/aqts-capture-dvstat-transform-DEV-transform' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
@@ -356,7 +374,7 @@ field_visit_transform_numeric_stats_widget = {
 field_visit_transform_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-transform', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -376,7 +394,7 @@ field_visit_transform_concurrent_executions_widget = {
 field_visit_transform_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 6,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-transform', {'yAxis': 'left'}],
@@ -394,7 +412,7 @@ field_visit_transform_duration_widget = {
 field_visit_transform_memory_usage_widget = {
     "type": "log",
     'height': 6,
-    'width': 6,
+    'width': 24,
     "properties": {
         "query": f"SOURCE '/aws/lambda/aqts-capture-field-visit-transform-DEV-transform' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
@@ -428,7 +446,7 @@ field_visit_transform_es_logger_numeric_stats_widget = {
 field_visit_transform_es_logger_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-es-logs-plugin', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -448,7 +466,7 @@ field_visit_transform_es_logger_concurrent_executions_widget = {
 field_visit_transform_es_logger_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 6,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-field-visit-transform-DEV-es-logs-plugin', {'yAxis': 'left'}],
@@ -466,7 +484,7 @@ field_visit_transform_es_logger_duration_widget = {
 field_visit_transform_es_logger_memory_usage_widget = {
     "type": "log",
     'height': 6,
-    'width': 6,
+    'width': 24,
     "properties": {
         "query": f"SOURCE '/aws/lambda/aqts-capture-field-visit-transform-DEV-es-logs-plugin' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
@@ -500,7 +518,7 @@ rdb_loader_numeric_stats_widget = {
 rdb_loader_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'etl-discrete-groundwater-rdb-DEV-loadRdb', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -519,7 +537,7 @@ rdb_loader_concurrent_executions_widget = {
 rdb_loader_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 6,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'etl-discrete-groundwater-rdb-DEV-loadRdb', {'yAxis': 'left'}],
@@ -537,7 +555,7 @@ rdb_loader_duration_widget = {
 rdb_loader_memory_usage_widget = {
     "type": "log",
     'height': 6,
-    'width': 6,
+    'width': 24,
     "properties": {
         "query": f"SOURCE '/aws/lambda/etl-discrete-groundwater-rdb-DEV-loadRdb' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
@@ -571,7 +589,7 @@ pruner_numeric_stats_widget = {
 pruner_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-pruner-DEV-pruneTimeSeries', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -590,7 +608,7 @@ pruner_concurrent_executions_widget = {
 pruner_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 6,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-pruner-DEV-pruneTimeSeries', {'yAxis': 'left'}],
@@ -608,7 +626,7 @@ pruner_duration_widget = {
 pruner_memory_usage_widget = {
     "type": "log",
     'height': 6,
-    'width': 6,
+    'width': 24,
     "properties": {
         "query": f"SOURCE '/aws/lambda/aqts-capture-pruner-DEV-pruneTimeSeries' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
@@ -642,7 +660,7 @@ grow_db_numeric_stats_widget = {
 grow_db_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'aqts-capture-ecosystem-switch-DEV-growDb', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -661,7 +679,7 @@ grow_db_concurrent_executions_widget = {
 grow_db_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 6,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'aqts-capture-ecosystem-switch-DEV-growDb', {'yAxis': 'left'}],
@@ -679,7 +697,7 @@ grow_db_duration_widget = {
 grow_db_memory_usage_widget = {
     "type": "log",
     'height': 6,
-    'width': 6,
+    'width': 24,
     "properties": {
         "query": f"SOURCE '/aws/lambda/aqts-capture-ecosystem-switch-DEV-growDb' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
@@ -713,7 +731,7 @@ misc_function_numeric_stats_widget = {
 misc_function_concurrent_executions_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 8,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'ConcurrentExecutions', 'FunctionName', 'function-name-not-added-to-lookups-yet-DEV-descriptor', {'stat': 'Maximum', 'label': 'ConcurrentExecutions (max)'}],
@@ -733,7 +751,7 @@ misc_function_concurrent_executions_widget = {
 misc_function_duration_widget = {
     'type': 'metric',
     'height': 6,
-    'width': 6,
+    'width': 10,
     'properties': {
         'metrics': [
             ['AWS/Lambda', 'Duration', 'FunctionName', 'function-name-not-added-to-lookups-yet-DEV-descriptor', {'yAxis': 'left'}],
@@ -751,7 +769,7 @@ misc_function_duration_widget = {
 misc_function_memory_usage_widget = {
     "type": "log",
     'height': 6,
-    'width': 6,
+    'width': 24,
     "properties": {
         "query": f"SOURCE '/aws/lambda/function-name-not-added-to-lookups-yet-DEV-descriptor' | filter @type=\"REPORT\" | max(@memorySize) as allocatedMemory, avg(@maxMemoryUsed) as mean_MemoryUsed, max(@maxMemoryUsed) as max_MemoryUsed by bin(5min)",
         "region": 'us-south-10',
@@ -761,17 +779,7 @@ misc_function_memory_usage_widget = {
     }
 }
 
-expected_lambda_widget_list = [
-
-    # title
-    custom_lambda_title_widget,
-
-    # custom widgets
-    error_handler_activity_widget,
-    concurrent_lambdas_widget,
-    average_duration_of_transform_db_lambdas_widget,
-    max_duration_of_transform_db_lambdas,
-
+expected_iow_lambda_widget_list = [
     # title
     iow_lambda_title,
 
@@ -779,47 +787,91 @@ expected_lambda_widget_list = [
     error_handler_numeric_stats_widget,
     error_handler_concurrent_executions_widget,
     error_handler_duration_widget,
-    error_handler_memory_usage_widget,
 
     capture_trigger_numeric_stats_widget,
     capture_trigger_concurrent_executions_widget,
     capture_trigger_duration_widget,
-    capture_trigger_memory_usage_widget,
 
     dvstat_transform_numeric_stats_widget,
     dvstat_transform_concurrent_executions_widget,
     dvstat_transform_duration_widget,
-    dvstat_transform_memory_usage_widget,
 
     field_visit_transform_numeric_stats_widget,
     field_visit_transform_concurrent_executions_widget,
     field_visit_transform_duration_widget,
-    field_visit_transform_memory_usage_widget,
 
-    field_visit_transform_es_logger_numeric_stats_widget,
-    field_visit_transform_es_logger_concurrent_executions_widget,
-    field_visit_transform_es_logger_duration_widget,
-    field_visit_transform_es_logger_memory_usage_widget,
+    # uncomment these lines if re-enabling the elasticsearch logger widgets
+    # field_visit_transform_es_logger_numeric_stats_widget,
+    # field_visit_transform_es_logger_concurrent_executions_widget,
+    # field_visit_transform_es_logger_duration_widget,
 
     rdb_loader_numeric_stats_widget,
     rdb_loader_concurrent_executions_widget,
     rdb_loader_duration_widget,
-    rdb_loader_memory_usage_widget,
 
     pruner_numeric_stats_widget,
     pruner_concurrent_executions_widget,
     pruner_duration_widget,
-    pruner_memory_usage_widget,
-
-    grow_db_numeric_stats_widget,
-    grow_db_concurrent_executions_widget,
-    grow_db_duration_widget,
-    grow_db_memory_usage_widget,
 
     misc_function_numeric_stats_widget,
     misc_function_concurrent_executions_widget,
-    misc_function_duration_widget,
-    misc_function_memory_usage_widget
+    misc_function_duration_widget
+]
+
+expected_custom_lambda_widget_list = [
+    # title
+    custom_lambda_title_widget,
+
+    # custom widgets
+    error_handler_activity_widget,
+    concurrent_lambdas_widget,
+    average_duration_of_transform_db_lambdas_widget,
+    max_duration_of_transform_db_lambdas
+]
+
+expected_lambda_memory_usage_widget_list = [
+    # title
+    iow_lambda_memory_usage_title,
+
+    # autogenerated widgets
+    capture_trigger_memory_usage_widget,
+    grow_db_memory_usage_widget,
+    field_visit_transform_memory_usage_widget,
+    misc_function_memory_usage_widget,
+    dvstat_transform_memory_usage_widget,
+    error_handler_memory_usage_widget,
+    pruner_memory_usage_widget,
+    rdb_loader_memory_usage_widget,
+    # uncomment this line if re-enabling the elasticsearch logger widgets
+    # field_visit_transform_es_logger_memory_usage_widget
+]
+
+expected_ecosystem_switch_widget_list = [
+    # title
+    ecosystem_switch_title,
+
+    # autogenerated widgets
+    grow_db_numeric_stats_widget,
+    grow_db_concurrent_executions_widget,
+    grow_db_duration_widget,
+]
+
+expected_row_of_lambda_widgets = [
+    error_handler_numeric_stats_widget,
+    error_handler_concurrent_executions_widget,
+    error_handler_duration_widget
+]
+
+expected_filtered_function_list = [
+    {'function_name': 'aqts-capture-trigger-DEV-aqtsCaptureTrigger', 'title': 'Capture Trigger', 'etl_branch': 'data_ingest'},
+    {'function_name': 'aqts-capture-ecosystem-switch-DEV-growDb', 'title': 'Grow DB', 'etl_branch': 'environment_management'},
+    {'function_name': 'aqts-capture-field-visit-transform-DEV-transform', 'title': 'Field visit transformer', 'etl_branch': 'sv'},
+    {'function_name': 'function-name-not-added-to-lookups-yet-DEV-descriptor', 'title': 'function-name-not-added-to-lookups-yet-DEV-descriptor', 'etl_branch': 'not defined'},
+    {'function_name': 'aqts-capture-dvstat-transform-DEV-transform', 'title': 'DV stat Transformer', 'etl_branch': 'dv'},
+    {'function_name': 'aqts-capture-error-handler-DEV-aqtsErrorHandler', 'title': 'Error Handler', 'etl_branch': 'error_handling'},
+    {'function_name': 'aqts-capture-pruner-DEV-pruneTimeSeries', 'title': 'Prune Old Data', 'etl_branch': 'data_purging'},
+    {'function_name': 'etl-discrete-groundwater-rdb-DEV-loadRdb', 'title': 'Load RDB Files', 'etl_branch': 'nwis_web'},
+    {'function_name': 'aqts-capture-field-visit-transform-DEV-es-logs-plugin', 'title': 'Field visit transformer ES logger', 'etl_branch': 'sv'}
 ]
 
 expected_nwcapture_db_status_widget = {

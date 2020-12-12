@@ -4,10 +4,14 @@ Tests for the lambdas module.
 """
 from unittest import TestCase, mock
 
-from .test_widgets import (expected_lambda_widget_list, concurrent_lambdas_metrics_list,
-                           duration_of_transform_db_lambdas_metrics_list)
-from ..lambdas import (LambdaAPICalls, create_lambda_widgets, get_widget_properties, lambda_properties,
-                       generate_custom_lambda_metrics)
+from .test_widgets import (expected_iow_lambda_widget_list, expected_custom_lambda_widget_list,
+                           concurrent_lambdas_metrics_list, duration_of_transform_db_lambdas_metrics_list,
+                           expected_filtered_function_list, expected_lambda_memory_usage_widget_list,
+                           expected_ecosystem_switch_widget_list, expected_row_of_lambda_widgets)
+from ..lambdas import (LambdaAPICalls, create_iow_lambda_widgets, create_custom_lambda_widgets, get_widget_properties,
+                       lambda_properties, generate_custom_lambda_metrics, get_iow_functions,
+                       create_lambda_memory_usage_widgets, create_ecosystem_switch_widgets,
+                       generate_row_of_lambda_widgets)
 
 
 class TestCreateLambdaWidgets(TestCase):
@@ -241,6 +245,12 @@ class TestCreateLambdaWidgets(TestCase):
             }
         )
 
+    def test_generate_row_of_lambda_widgets(self):
+        self.assertListEqual(
+            generate_row_of_lambda_widgets(self.valid_function_name_6, self.region, 'Error Handler'),
+            expected_row_of_lambda_widgets
+        )
+
     @mock.patch('cloudwatch_monitoring.lambdas.boto3.client', autospec=True)
     def test_get_all_lambda_metadata(self, m_client):
         mock_lambda_client = mock.Mock()
@@ -346,7 +356,7 @@ class TestCreateLambdaWidgets(TestCase):
         )
 
     @mock.patch('cloudwatch_monitoring.lambdas.LambdaAPICalls', autospec=True)
-    def test_create_lambda_widgets(self, m_api_calls):
+    def test_get_iow_functions(self, m_api_calls):
         # return values
         m_api_calls.return_value.get_all_lambda_metadata.return_value = self.full_function_list
         m_api_calls.return_value.is_iow_lambda_filter.side_effect = [
@@ -368,13 +378,45 @@ class TestCreateLambdaWidgets(TestCase):
             mock.call(self.valid_function_es_logger)
         ]
 
+        # Make sure the resultant filtered function list is correct
+        # noinspection PyPackageRequirements
+        self.assertListEqual(
+            get_iow_functions(self.region, self.deploy_stage),
+            expected_filtered_function_list
+        )
+
+        # assert helper functions were called the expected number of times and in the proper order
+        m_api_calls.return_value.get_all_lambda_metadata.assert_called_once()
+        m_api_calls.return_value.is_iow_lambda_filter.assert_has_calls(expected_is_iow_lambda_filter_calls, any_order=False)
+
+    def test_create_iow_lambda_widgets(self):
         # Make sure the resultant widget list is correct
         # noinspection PyPackageRequirements
         self.assertListEqual(
-            create_lambda_widgets(self.region, self.deploy_stage),
-            expected_lambda_widget_list
+            create_iow_lambda_widgets(self.region, expected_filtered_function_list),
+            expected_iow_lambda_widget_list
         )
 
-        # assert our helper functions were called the expected number of times and in the proper order
-        m_api_calls.return_value.get_all_lambda_metadata.assert_called_once()
-        m_api_calls.return_value.is_iow_lambda_filter.assert_has_calls(expected_is_iow_lambda_filter_calls, any_order=False)
+    def test_create_custom_lambda_widgets(self):
+        # Make sure the resultant widget list is correct
+        # noinspection PyPackageRequirements
+        self.assertListEqual(
+            create_custom_lambda_widgets(self.region, self.deploy_stage),
+            expected_custom_lambda_widget_list
+        )
+
+    def test_create_lambda_memory_usage_widgets(self):
+        # Make sure the resultant widget list is correct
+        # noinspection PyPackageRequirements
+        self.assertListEqual(
+            create_lambda_memory_usage_widgets(self.region, expected_filtered_function_list),
+            expected_lambda_memory_usage_widget_list
+        )
+
+    def test_create_ecosystem_switch_widgets(self):
+        # Make sure the resultant widget list is correct
+        # noinspection PyPackageRequirements
+        self.assertListEqual(
+            create_ecosystem_switch_widgets(self.region, expected_filtered_function_list),
+            expected_ecosystem_switch_widget_list
+        )
