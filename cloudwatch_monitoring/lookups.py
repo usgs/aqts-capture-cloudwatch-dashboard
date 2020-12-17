@@ -336,6 +336,9 @@ sqs_queues = {
     'aqts-capture-error-queue': {
         'title': 'Error Queue'
     },
+    'aqts-capture-terminal-errors-queue': {
+        'title': 'Terminal Errors'
+    },
     'aqts-capture-trigger-queue': {
         'title': 'Capture Trigger Queue'
     }
