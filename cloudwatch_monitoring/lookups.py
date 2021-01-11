@@ -326,7 +326,7 @@ rds_instances = {
             'identifier': 'observations-qa',
         },
         'PROD-EXTERNAL': {
-            'identifier': 'observations-prod-external-2',
+            'identifier': 'observations-db-legacy-production-external',
         }
     }
 }
