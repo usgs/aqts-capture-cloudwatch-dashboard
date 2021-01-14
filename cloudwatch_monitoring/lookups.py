@@ -311,7 +311,7 @@ rds_instances = {
             'identifier': 'nwcapture-qa',
         },
         'PROD-EXTERNAL': {
-            'identifier': 'nwcapture-prod-external',
+            'identifier': 'aqts-capture-db-legacy-production-external',
         }
     },
     'observations': {

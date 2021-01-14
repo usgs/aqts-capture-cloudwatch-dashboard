@@ -1,4 +1,4 @@
-@Library(value='iow-ecs-pipeline@2.2.0', changelog=false) _
+@Library(value='iow-ecs-pipeline@3.0.0', changelog=false) _
 
 pipeline {
     agent {
@@ -17,6 +17,13 @@ pipeline {
         pollSCM('H/5 * * * *')
     }
     stages {
+        stage('Set build description') {
+            steps {
+                script {
+                    currentBuild.description = "Create dashboard on ${env.DEPLOY_STAGE} tier"
+                }
+            }
+        }
         stage('Run python script to build dashboard') {
             agent {
                 dockerfile {
@@ -42,18 +49,9 @@ pipeline {
                     }
                     // Python/boto3 entrypoint to create the dashboard
                     sh '''
-                        python --version
-                        python3 -m pip --version
                         pip install -r requirements.txt
                         python dashboard.py
                     '''
-                }
-            }
-        }
-        stage('Set build description') {
-            steps {
-                script {
-                    currentBuild.description = "Created dashboard on ${env.DEPLOY_STAGE} tier"
                 }
             }
         }
